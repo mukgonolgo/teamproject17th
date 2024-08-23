@@ -14,4 +14,9 @@ public class MainComtorller {
 	public String login() {
 		return "login";
 	}
+	@GetMapping("/bord")
+	@ResponseBody
+	public String bord() {
+		return "bord";
+	}
 }
