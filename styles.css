@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+.search-container {
+    position: relative;
+    width: 60vw;
+    margin: 50px auto;
+}
+
+.search-box {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 1px solid lightblue;
+    border-radius: 30px;
+    background-color: #fff;
+    outline: none;
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.search-box::placeholder {
+    color: #aaa;
+}
+
+.search-box:focus {
+    background-color: #fff;
+}
+
+.dropdown-menu {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    top: 100%;
+    left: -0.01vW;
+    right: 0;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: 99.1%;
+    border-top: none;
+    border-left: 1px solid lightblue;
+    border-right: 1px solid lightblue;
+    border-bottom: 1px solid lightblue;
+}
+
+.search-container:focus-within .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-section {
+    margin-top: 20px;
+    width: 45%;
+}
+.search-container:focus-within .search-box {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom: none;
+}
+
+.dropdown-section h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.search-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #555;
+    text-decoration: none;
+}
+
+.close-icon {
+    cursor: pointer;
+    color: #555;
+}
+
+.close-icon:hover {
+    color: red;
+}
+
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    padding: 5px 10px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #555;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tag:hover {
+    background-color: lightblue;
+    color: white;
+    cursor: pointer;
+}
