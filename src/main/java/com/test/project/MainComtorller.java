@@ -14,9 +14,23 @@ public class MainComtorller {
 	public String login() {
 		return "login";
 	}
-	@GetMapping("/bord")
-	@ResponseBody
+	@GetMapping("/review")
+	public String review_page() {
+		return "review_page";
+	}
+	@GetMapping("/review_detail")
+	public String review_detail() {
+		return "review_detail";
+	}
+	@GetMapping("/eat")
+	public String eat() {
+		return "eat_friends";	}
+	@GetMapping("/review_feed")
+	public String review_feed() {
+		return "review_feed";
+	}
+	@GetMapping("/footer")
 	public String bord() {
-		return "bord";
+		return "footer";
 	}
 }
