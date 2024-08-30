@@ -19,4 +19,10 @@ public class MainComtorller {
 	public String bord() {
 		return "bord";
 	}
+	
+	@GetMapping("/test")
+	@ResponseBody
+	public String test() {
+		return "test";
+	}
 }
