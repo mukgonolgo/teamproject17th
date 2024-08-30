@@ -1,12 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8" />
-	<title>Document</title>
-</head>
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"   xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
+<div layout:fragment="content">
 <body>
-	메인페이지 상단에 캐로셀 작업 완료
-	<mark>메인페이지 상단에 캐로샐 작업 완료</mark>
-	<mark>작업페이지 사이ㄴ</mark>
+    <div class="container">
+        <h1>환영합니다!</h1>
+        <p th:text="'타임리프와 스프링 부트를 사용한 웹 애플리케이션입니다.'"></p>
+    </div>
+
+
 </body>
+</div>
 </html>

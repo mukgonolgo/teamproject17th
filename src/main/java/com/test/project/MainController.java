@@ -5,18 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class MainComtorller {
+public class MainController {
 	@GetMapping("/")
 	public String index() {
 		return "index";
 	}
-	@GetMapping("/login")
-	public String login() {
-		return "login";
-	}
-	@GetMapping("/bord")
-	@ResponseBody
-	public String bord() {
-		return "bord";
-	}
 }
+
