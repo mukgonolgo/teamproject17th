@@ -1,17 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<title>spring boot study</title>
-	<link rel="stylesheet" th:href="@{/navbar.css}" />
-	<link rel="stylesheet" th:href="@{/futter.css}" />
+	<meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>먹고놀고</title>
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+		<link rel="stylesheet" href="/css/footer.css">
+		<link rel="stylesheet" href="/css/navbar.css">
+		  <!-- 파비콘 링크 -->
+		<link rel="icon" href="/img/spoon.png" type="image/png">
+	    <script src="https://kit.fontawesome.com/07418af434.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
 </head>
 <body>
-
+<nav th:replace="~{/navbar :: navBarFragment}"></nav>
 <!-- 기본 템플릿 안에 삽입될 내용 start -->
 <th:block layout:fragment="content"></th:block>
 
 <futter th:replace="~{/futter :: futterFragment}"></futter>
-
+<!-- 자바스크립트 start -->
+<th:block layout:fragment="script"></th:block>
+<!-- 자바스크립트 end -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/footer.js"></script>
+</body>
+</html>
 </body>
 </html>
