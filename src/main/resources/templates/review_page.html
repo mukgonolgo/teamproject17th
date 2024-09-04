@@ -4,6 +4,7 @@
 </head>
 <div layout:fragment="content">
 <!-- 검색란 -->
+ <!-- 검색란 -->
  <div class="section1 container mt-5">
     <div class="row d-flex justify-content-end">
          <!--지역선택-->
@@ -38,13 +39,23 @@
          </div>
          <!--동네 선택 끝-->
  
-         <!--인원수 선택-->
-         <div class="col-auto">
-             <button class="btn btn-outline-secondary bg-white text-secondary">
-                 인원수<i class="fa-solid fa-user ml-1"></i>
-             </button>
-         </div>
-         <!--인원수 선택 끝-->
+      <!--인원수 선택-->
+      <div class="col-auto">
+        <!--People Count Button-->
+        <button class="btn btn-outline-secondary bg-white text-secondary P_C_button " id="toggleButton">
+            인원수<i class="fa-solid fa-user ml-1"></i>
+        </button>
+        <!--인원수 박스-->
+        <div class="card ml-5 mt-5 hide_box" id="rangeBox" style="width: 300px;">
+            <div class="card-body text-center">
+                <span>인원</span>
+                <label id="rangeValue" for="customRange2">1</label><span>명</span>
+                <input type="range" class="custom-range" min="1" max="10" value="1" id="customRange2">
+            </div>
+            <button class="btn btn-dark ca_button w-100">인원수 적용</button>
+        </div>
+    </div>
+    <!--인원수 선택 끝-->
  
          <!--날짜 선택-->
          <div class="col-auto">
@@ -74,10 +85,12 @@
     <hr>
  </div>
  <!-- section1 끝 -->
-<!--광고 캐로셀-->
-<div class="section2 mb-5">
-   <div class="container ">
-    <div id="carouselExampleFade" class="carousel slide " data-ride="carousel">
+
+
+<!--중간 긴 캐로셀-->
+<div class="section2 my-5">
+   <div class="container my-5">
+    <div id="carouselExampleFade" class="carousel slide my-5" data-ride="carousel">
         <ol class="carousel-indicators">
             <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
             <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
@@ -136,6 +149,7 @@
  </div>
  <!--순서 container-->
 
+
     <!--card-->
     <div class="section3 mt-5">
         <div class="container my-5 ">
@@ -144,7 +158,7 @@
                 <!-- 첫 번째 카드 -->
                 <div class="col-xl-4 col-lg-6 my-2">
                     <div S3_tag_boxv class="card S3_card h-100 custom-border mx-auto">
-                       <a href="/review_feed" class="text-dark">
+                       <a href="" class="text-dark">
                         <h5 class="d-flex align-items-center mt-3 ml-3 ">
                             <img src="/img/profile/1.jpg" alt="" class="rounded-circle" style="width: 50px;">
                             <span class="d-flex align-items-center mx-2">맛집헌터</span>
@@ -178,7 +192,7 @@
                         <div class="card-body d-flex flex-column">
                             <div class="row">
                                 <div class="col-9">
-                                   <a href="review_detail"> 
+                                   <a href=""> 
                                     <h5 class="card-title S3_card-title">역근처 새로 생긴 삼겹살집!</h5>
                                    </a>
                                 </div>
@@ -699,8 +713,9 @@
         <!--container-->
     </div>
     <!--section-->
-
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/review_page_category.js"></script>
+
 </html>

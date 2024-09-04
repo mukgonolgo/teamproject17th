@@ -28,9 +28,6 @@
   bottom: 0;
 }
 
-.m_content{
-	height: 800px;
-}
 
 @media (max-width: 1268px) {
  .cs-card{
