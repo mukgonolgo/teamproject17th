@@ -38,6 +38,11 @@ public class MainComtorller {
 	public String eat() {
 		return "eat_friends";	
 	}
+	@GetMapping("/reservation_completed")
+	public String reservation_completed() {
+		return "/reservation_completed";	
+	}
+	
 	
 	//에러페이지
 	@GetMapping("/error_404")
@@ -56,7 +61,7 @@ public class MainComtorller {
 	public String error_401() {
 		return "/error_401";	
 	}
-	
+
 	@GetMapping("/footer")
 	public String bord() {
 		return "footer";
