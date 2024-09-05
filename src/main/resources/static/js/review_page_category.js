@@ -1,4 +1,6 @@
 
+ 
+ //지역선택================================================
  var cat1_num = new Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
  var cat1_name = new Array('서울','부산','대구','인천','광주','대전','울산','강원','경기','경남','경북','전남','전북','제주','충남','충북');
 
@@ -54,60 +56,104 @@
  cat2_name[16] = new Array('제천시','청주시 상당구','청주시 흥덕구','충주시','괴산군','단양군','보은군','영동군','옥천군','음성군','진천군','청원군');
 
  function cat1_change(key) {
-    if (key == '') return;
-    var sel = document.getElementsByName('h_area2')[0]; // h_area2 셀렉트 요소 가져오기
-    var name = cat2_name[key];
-    var val = cat2_num[key];
+  if (key === '') return;
+  var $sel = $('select[name="h_area2"]'); // jQuery로 <select> 요소 선택
+  var names = cat2_name[key];
+  var values = cat2_num[key];
 
-    // 이전 옵션 삭제
-    for (var i = sel.length - 1; i >= 0; i--) {
-      sel.options[i] = null;
-    }
-    sel.options[0] = new Option('-선택-', '', '', 'true');
+  // 이전 옵션 삭제
+  $sel.empty(); // 모든 옵션 제거
 
-    // 새로운 옵션 추가
-    for (var i = 0; i < name.length; i++) {
-      sel.options[i + 1] = new Option(name[i], val[i]);
-    }
-  }
+  // 기본 선택 옵션 추가
+  $sel.append(new Option('-선택-', '', false, true));
 
-// JavaScript to initialize the Date Picker
-document.addEventListener('DOMContentLoaded', function() {
-    var container = document.getElementById('tui-date-picker-container');
-    var target = document.getElementById('tui-date-picker-target');
+  // 새로운 옵션 추가
+  $.each(names, function(index, name) {
+      $sel.append(new Option(name, values[index]));
+  });
+}
 
-    var instance = new tui.DatePicker(container, {
-        input: {
-            element: target
-        },
-        // Add any other options here
-    });
-
-    // Example: Get selected date
-    console.log(instance.getDate());
-  })
-
-  $(document).ready(function() {
+//인원수, 달력, 메뉴 제이쿼리
+$(document).ready(function() {
     const $rangeInput = $('#customRange2');
     const $rangeValueLabel = $('#rangeValue');
     const $P_C_btn = $('#toggleButton');
+    const $ca_btn = $('.ca_button');
     const $rangeBox = $('#rangeBox');
+    const $calendarInput = $('#calendar-input');
+    const $calendarBox = $('.daterangepicker');
+    const $menuBtn = $('.menu_btn');
+    const $foodBox = $('.food_box');
 
     function updateRange() {
         const value = $rangeInput.val();
-        $rangeValueLabel.text(value);
+        $rangeValueLabel.text(`${value}`); // 박스 안의 텍스트 업데이트
+        $P_C_btn.html(`인원수 <i class="fa-solid fa-user ml-1"></i> ${value}명`); // 버튼 텍스트 업데이트
         const percentage = (value / $rangeInput.attr('max')) * 100;
         $rangeInput.css('--value', `${percentage}%`);
     }
 
     // 범위 입력 값 변경 시 업데이트
-    $rangeInput.on('input', updateRange);
+    $rangeInput.on('input change', updateRange);
 
     // 초기 업데이트
     updateRange();
 
-    // 버튼 클릭 시 박스 토글
-    $P_C_btn.on('click', function() {
-        $rangeBox.toggleClass('show');
+    // ca_Button 클릭 시 박스 숨김
+    $ca_btn.on('click', function() {
+        $rangeBox.removeClass('show').hide();
+    });
+
+    // 인원수 버튼 클릭 시 박스 토글
+    $P_C_btn.on('click', function(event) {
+        $rangeBox.toggle(); 
+        event.stopPropagation(); // 이벤트 버블링 방지
+    });
+
+    // 달력 초기화
+    $calendarInput.daterangepicker({
+        singleDatePicker: true,
+        alwaysShowCalendars: true,
+        startDate: moment().startOf('day'),
+        locale: {
+            format: 'YYYY-MM-DD',
+            daysOfWeek: ['일', '월', '화', '수', '목', '금', '토'],
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            firstDay: 0,
+            applyLabel: '적용',
+            cancelLabel: '취소'
+        }
+    });
+
+    // 달력 버튼 클릭 시 달력 표시
+    $('#calendar-btn').on('click', function(event) {
+        $calendarInput.trigger('click');
+        event.stopPropagation(); // 이벤트 버블링 방지
+    });
+
+    // 메뉴 버튼 클릭 시 food_box 보이게
+    $menuBtn.on('click', function(event) {
+        $foodBox.toggle();
+        event.stopPropagation(); // 이벤트 버블링 방지
+    });
+
+    // 문서 클릭 시 박스 숨기기
+    $(document).on('click', function() {
+        $rangeBox.hide();
+        $calendarBox.hide();
+        $foodBox.hide();
+    });
+
+    // 특정 박스를 클릭할 때는 이벤트가 닫히지 않도록 설정
+    $rangeBox.on('click', function(event) {
+        event.stopPropagation();
+    });
+
+    $calendarBox.on('click', function(event) {
+        event.stopPropagation();
+    });
+
+    $foodBox.on('click', function(event) {
+        event.stopPropagation();
     });
 });
