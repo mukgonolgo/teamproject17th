@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class MainComtorller {
+public class MainContorller {
 	@GetMapping("/")
 	public String index() {
 		return "index";
@@ -31,6 +31,12 @@ public class MainComtorller {
 	@GetMapping("/review_feed")
 	public String review_feed() {
 		return "review_feed";
+	}
+	
+	//리뷰 작성 페이지
+	@GetMapping("/review_create")
+	public String review_create() {
+		return "review_create_form";
 	}
 	
 	//밥친구 페이지

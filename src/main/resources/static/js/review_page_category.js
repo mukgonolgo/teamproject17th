@@ -157,3 +157,16 @@ $(document).ready(function() {
         event.stopPropagation();
     });
 });
+
+$(document).ready(function() {
+    // 드롭다운 항목 클릭 시 버튼 텍스트 업데이트
+    $('.dropdown-menu .dropdown-item').on('click', function(event) {
+        // 기본 링크 동작 방지
+        event.preventDefault();
+        
+        // 클릭한 항목의 텍스트를 가져옵니다
+        const selectedText = $(this).text();
+        // 버튼의 텍스트를 업데이트합니다
+        $(this).closest('.dropdown').find('.dropdown-toggle').text(selectedText);
+    });
+});
