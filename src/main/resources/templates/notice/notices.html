@@ -1,0 +1,55 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+	<link rel="stylesheet" href="/css/notice/notice.css">
+	<div class="No container mt-10 mb-10">
+		   <div class="No_notice text-center m-5">공지사항</div>
+	       <div class="search_box">
+	           <h5 class="mb-3 col-12">공지사항 검색</h5>
+	           <div class=" d-sm-flex justify-content-between align-items-center">
+	               <input type="text" class="form-control mb-3 col-12 col-sm-9" placeholder="검색어를 입력해 주세요.">
+	               <button class="col-12 mb-3 col-sm-2 btn btn-primary ">검색</button>
+	           </div>
+
+	       </div>
+
+		   <div class="accordion" id="accordionExample">
+		              <div class="card" th:each="notice : ${notices}">
+		                  <div class="cardheader row" id="headingOne">
+							<div class="col-3 col-sm-2 col-lg-1 d-flex align-items-center">
+							    <span class="No_no">공지사항</span>
+							</div>
+							<div class="col-9 col-sm-10 col-lg-11 d-flex  align-items-center justify-content-between " type="button" data-toggle="collapse" th:data-target="'#collapse' + ${notice.No_id}"  aria-expanded="true" th:aria-controls="'collapse' + ${notice.No_id}">
+							    <span class="No_title ml-1"  th:text="${notice.No_title}">
+							        [공지] 공지사항 입력해주세요
+							    </span>
+							    <div class="No_btn d-flex">
+									<img src="img/arrow_drop.svg" alt="">
+									<form action="#" th:action="@{/notices/{id}(id=${notice.No_id})}" method="post">
+									    <button class="btn" type="submit" ><i class="fa-solid fa-x" style="color: #e72323;"></i></a>
+									</form>
+								</div>
+
+							</div>
+
+		                  </div>
+		                  <div th:id="'collapse' + ${notice.No_id}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+							<div class="card-body row">
+							    <div class="col-0 col-sm-2 col-lg-1"></div>
+							    <div class="col-0 col-sm-10 col-lg-11 ">
+							        <pre class="No_Content ml-4"th:text="${notice.No_content}">공지사항을 잘 입력하세요</pre>
+							    </div>
+							</div>
+		                  </div>
+		              </div>		            
+		              <!-- 추가 공지사항은 여기에 추가할 수 있습니다 -->
+
+		      </div>
+			  <div style="display: flex; justify-content: flex-end; white-space: nowrap; ">
+			    <a th:href="@{/add-notice}"  style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">공지 작성</a>
+			  </div>
+		          <nav aria-label="Page navigation">
+
+		     </div>
+
+</div>
+</html>

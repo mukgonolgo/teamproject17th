@@ -5,3 +5,6 @@ body {
 .cs-bg-black{
     background-color: #181818 !important;
 }
+.navbar-center{
+	margin-left: 100px !important;
+}

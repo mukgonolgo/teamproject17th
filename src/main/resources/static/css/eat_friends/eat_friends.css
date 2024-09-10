@@ -1,0 +1,120 @@
+@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+body {
+    font-family: 'NanumSquare', sans-serif;
+    font-weight: 500;
+}
+.S2_card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 20px;
+  white-space: nowrap;
+}
+
+.S2_f_card_img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: flex;
+}
+.S2_txt{
+  display: flex;
+}
+
+.row{
+  height: 300px;
+}
+.S2_f_card_img_m {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  object-fit: cover;
+}
+
+.card-body {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  padding: 20px;
+}
+/* 기본 카드 스타일 */
+.S2_card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 부드러운 변화를 위한 트랜지션 */
+  cursor: pointer; /* 카드 위에 마우스를 올렸을 때 포인터로 변경 */
+}
+
+/* 카드 호버 시 적용될 스타일 */
+.S2_card:hover {
+  transform: scale(1.01); /* 카드가 약간 커짐 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+@media (max-width: 992px) {
+  .col-md-4.d-none.d-lg-block {
+    display: none;
+  }
+
+  .S2_f_card_img_m {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+  }
+  .S2_card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)); /* 그라디언트 색상 조정 가능 */
+    z-index: 2;
+  }
+  .S2_txt{
+    z-index: 5 ;
+    color: white;
+   display: flex;
+   text-shadow: 0px 0px 8px black;
+  }
+  .text-muted{
+    color: white !important;
+  }
+
+  .S2_f_card_img_m {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 90%;
+  }
+  .card-body {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  .col-md-4.d-block.d-lg-none {
+    display: none;
+  }
+
+  .S2_f_card_img {
+    border-radius: 0; /* 큰 화면에서는 기본 라운드 제거 */
+  }
+
+  .card-body {
+    position: relative;
+    background: none;
+    color: initial;
+    padding: 20px;
+  }
+}

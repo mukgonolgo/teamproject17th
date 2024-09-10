@@ -1,0 +1,767 @@
+<html layout:decorate="~{layout}" >
+<head>
+    <!-- moment.js 포함 (필수) -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <!-- daterangepicker CSS 포함 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- daterangepicker JS 포함 -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- 커스텀 CSS 추가 -->
+    <link rel="stylesheet" href="/css/review/review_page.css">
+    <link rel="stylesheet" href="/css/category.css">
+    <!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
+    <script src="js/category.js"></script>
+</head>
+<div layout:fragment="content">
+<!-- 검색란 -->
+ <div class="section1 container mt-5">
+    <div class="row d-flex justify-content-end">
+         <!--지역선택-->
+         <div class="col-auto"> 
+             <select name="h_area1" onChange="cat1_change(this.value)" class="h_area1 form-control" >
+                 <option>-지역선택-</option>
+                 <option value='1'>서울</option>
+                 <option value='2'>부산</option>
+                 <option value='3'>대구</option>
+                 <option value='4'>인천</option>
+                 <option value='5'>광주</option>
+                 <option value='6'>대전</option>
+                 <option value='7'>울산</option>
+                 <option value='8'>강원</option>
+                 <option value='9'>경기</option>
+                 <option value='10'>경남</option>
+                 <option value='11'>경북</option>
+                 <option value='12'>전남</option>
+                 <option value='13'>전북</option>
+                 <option value='14'>제주</option>
+                 <option value='15'>충남</option>
+                 <option value='16'>충북</option>
+             </select>
+         </div>
+         <!--지역선택 끝-->
+ 
+         <!--동네 선택-->
+         <div class="col-auto" >
+             <select name="h_area2" onChange="cat2_change(this.value)" class="form-control">
+                 <option>-선택-</option>
+             </select>
+         </div>
+         <!--동네 선택 끝-->
+ 
+      <!--인원수 선택-->
+      <div class="col-auto">
+        <!--People Count Button-->
+        <button class="btn text-secondary bg-white  P_C_button category_btn" id="toggleButton">
+            인원수<i class="fa-solid fa-user ml-1"></i>
+        </button>
+        <!--인원수 박스-->
+        <div class="card ml-5 mt-5 hide_box" id="rangeBox" style="width: 300px;">
+            <div class="card-body text-center">
+                <span>인원</span>
+                <label id="rangeValue" for="customRange2">1</label><span>명</span>
+                <input type="range" class="custom-range" min="1" max="10" value="1" id="customRange2">
+            </div>
+            <button class="btn btn-dark ca_button w-100">인원수 적용</button>
+        </div>
+    </div>
+    <!--인원수 선택 끝-->
+ 
+        <!-- 날짜 선택 -->
+        <div class="col-auto">
+                <button id="calendar-btn" class="btn btn-out bg-white text-secondary category_btn">
+                    날짜 선택 <i class="fa-solid fa-calendar-days"></i>
+                </button>
+                <input type="button" name="datetimes" id="calendar-input" disabled class="btn" />
+
+        </div>
+        <!-- 날짜 선택 끝 -->
+ 
+         <!--메뉴 선택-->
+         <div class="col-auto">
+             <button class="btn text-secondary bg-white  category_btn menu_btn">
+                 메뉴 <i class="fa-solid fa-utensils"></i>
+             </button>
+             <div class="card food_box">
+                <div class="card-body row justify-content-center ">
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/bibimbap_8740490.png" alt="food_icon" class="icon">
+                    <div class="text">한식</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_Chinese.png" alt="food_icon" class="icon">
+                    <div class="text">중식</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_japan.png" alt="food_icon" class="icon">
+                    <div class="text">일식</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_Western.png" alt="food_icon" class="icon">
+                    <div class="text">양식</div>
+                  </button>
+                  <button class="btn border btn-icon col-3 ">
+                    <img src="/img/icon/food_i_fast.png" alt="food_icon" class="icon" >
+                    <div class="text ">패스트푸드</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_asian.png" alt="food_icon" class="icon">
+                    <div class="text">아시안</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_omakase.png" alt="food_icon" class="icon">
+                    <div class="text">오마카세</div>
+                  </button>
+                  <button class="btn border btn-icon col-3">
+                    <img src="/img/icon/food_i_dongne.png" alt="food_icon" class="icon">
+                    <div class="text">동네맛집</div>
+                  </button>
+                </div>
+              </div>
+         </div>
+         <!--메뉴 선택 끝-->
+ 
+         <!--지도 선택-->
+         <div class="col-auto">
+             <button class="btn text-secondary bg-white  category_btn">
+                 지도<i class="fa-solid fa-map ml-1"></i>
+             </button>
+         </div>
+         <!--지도 선택 끝-->
+    </div>
+    <!--row-->
+    <hr>
+ </div>
+ <!-- section1 끝 -->
+
+
+<!--중간 긴 캐로셀-->
+<div class="section2 my-5">
+   <div class="container my-5">
+    <div id="carouselExampleFade" class="carousel slide my-5" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+          </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="/img/sub_carousel/carousel_1.png" class="d-block w-100" alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="/img/sub_carousel/carousel_2.png" class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-target="#carouselExampleFade" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-target="#carouselExampleFade" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </button>
+      </div>
+   </div>
+</div>
+
+<!-- 순서필터 -->
+<div class="container">
+<div class="row justify-content-between align-items-center">
+    <div class="col-auto">
+        <!-- 전체 버튼 -->
+        <div class="dropdown">
+            <button class="btn bg-white dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+              전체
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item active" href="#">전체</a>
+              <a class="dropdown-item" href="#">새로 올라온 순</a>
+              <a class="dropdown-item" href="#">오래된 순</a>
+              <a class="dropdown-item" href="#">별점 순</a>
+              <a class="dropdown-item" href="#">댓글 많은 순</a>
+              <a class="dropdown-item" href="#">좋아요 순</a>
+            </div>
+        </div>
+        <!--dropdown-->
+    </div>
+    <div class="col-auto d-flex align-items-center">
+        <!-- 검색란 -->
+        <div class="d-flex align-items-center">
+            <!-- 동그란 끝부분을 가진 검색바 -->
+            <input type="text" class="form-control custom-search-bar" placeholder="검색어를 입력하세요">
+            <button class="btn btn-dark ml-2" style="width: 70px;">검색</button> <!-- 검색 버튼 -->
+        </div>
+    </div>
+</div>
+<!--row-->
+<hr>
+ </div>
+ <!--순서 container-->
+
+
+    <!--card-->
+    <div class="section3 mt-5">
+        <div class="container my-5 ">
+            <h3 class="mt-5">이번주 <span class="text-danger">🔥HOT한</span> 리뷰</h3>
+            <div class="row">
+                <!-- 첫 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div S3_tag_boxv class="card S3_card h-100 custom-border mx-auto">
+                       <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3 ">
+                            <img src="/img/profile/1.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">맛집헌터</span>
+                        </h5>
+                       </a>
+                        <div id="S3_carouselExaple1" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food1_2.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                            </div>
+                            <!--sm,md에서만 보이게 설정-->
+                            <div class="d-block d-lg-none">
+                                <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            <!--캐로셀버튼-->
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">역근처 새로 생긴 삼겹살집!</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">566</span>
+                                </div>
+                            </div>
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">수원역 근처</span> 돼지냠냠</small></a></p>
+                            <p class="card-text S3_card-text">처음 예약하고 갔는데 사람도 없고 한산해서 좋았어요! 사장님도 친절하고 같이 나온 반찬들도 맛있었습니다.</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#맛집</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#수원역</span></a>
+                                <p class="card-text mt-2"><small class="text-muted">2시간 전 업데이트</small></p>
+                            </div>
+                            <!--tag-->
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+                <!--col-lg-4-->
+                <!-- 두 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div class="card S3_card h-100 custom-border mx-auto">
+                        <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3">
+                            <img src="/img/profile/2.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">먹는게제일좋아</span>
+                        </h5>
+                        </a>
+                        <div id="S3_carouselExaple2" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food2_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food2_3.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                            </div>
+                           <!--sm,md에서만 보이게 설정-->
+                           <div class="d-block d-lg-none">
+                            <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        <!--캐로셀버튼-->
+                        </div>
+                        <!--S3_carouselExaple2-->
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">아이와 함께하기 좋아요</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">452</span>
+                                </div>
+                            </div>
+                            <!--row-->
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href="" class="S3_address"><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">평택 소사벌</span> 샤브마니아</small></a></p>
+                            <p class="card-text S3_card-text">급하게 약속이 잡히는 바람에 사이트에서 부랴부랴 찾아서 간 식당이에요! 아이도 동행했는데 아이가 정말 좋아했습니다! 다음에도 또 갈 의향 100%!</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#샤브샤브</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#아이와 함께</span></a>
+                                <p class="card-text mt-2"><small class="text-muted">2024-08-24 업데이트</small></p>
+                        </div>
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+                <!--col-lg-4-->
+                <!-- 세 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div class="card S3_card h-100 custom-border mx-auto">
+                        <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3">
+                            <img src="/img/profile/3.png" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">국밥러버</span>
+                        </h5>
+                        </a>
+                        <div id="S3_carouselExaple3" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food3_2.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food3_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                            </div>
+                            <!--sm,md에서만 보이게 설정-->
+                           <div class="d-block d-lg-none">
+                            <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                            </div>
+                            <!--캐로셀버튼-->
+                        </div>
+                        <!--S3_carouselExaple3-->
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">인생 국밥집 찾았습니다</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-regular fa-heart text-end" ></i><span class="text-dark mx-1">158</span>
+                                </div>
+                            </div>
+                            <!--row-->
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">부산 서면</span> 할매국밥</small></a></p>
+                            <p class="card-text S3_card-text">기대 1도 안 하고 갔는데 한 입 먹자마자 인생 국밥집이란 걸 알았습니다. 가게 이름대로 할머니가 운영하시는 곳인데 양이 진짜 많아요! 각오하고 가셔야 할 듯..</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 align-items-end S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#부산</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#혼밥</span></a>
+                                <p class="card-text mt-1"><small class="text-muted">2024-08-27 업데이트</small></p>
+                            </div>
+                            <!--tag-->
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+                <!--col-lg-4-->
+            </div>
+            <!--row-->
+            <h3 class="mt-5 my-3">새로 올라온 후기</h3>
+           		 <div class="row">
+                     <!-- 첫 번째 카드 -->
+                     <div class="col-xl-4 col-lg-6 my-2">
+                        <div S3_tag_boxv class="card S3_card h-100 custom-border mx-auto">
+                           <a href="" class="text-dark">
+                            <h5 class="d-flex align-items-center mt-3 ml-3 ">
+                                <img src="/img/profile/1.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                                <span class="d-flex align-items-center mx-2">맛집헌터</span>
+                            </h5>
+                           </a>
+                            <div id="S3_carouselExaple1" class="carousel slide carousel-fade" data-ride="carousel">
+                                <div class="carousel-inner S3_carousel-inner">
+                                    <div class="carousel-item S3_carousel-item active">
+                                        <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food1_2.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                    </div>
+                                </div>
+                                <!--sm,md에서만 보이게 설정-->
+                                <div class="d-block d-lg-none">
+                                    <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                                <!--캐로셀버튼-->
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <div class="row">
+                                    <div class="col-9">
+                                       <a href=""> 
+                                        <h5 class="card-title S3_card-title">역근처 새로 생긴 삼겹살집!</h5>
+                                       </a>
+                                    </div>
+                                    <div class="col-3 text-end text-right">
+                                        <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">566</span>
+                                    </div>
+                                </div>
+                                <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">수원역 근처</span> 돼지냠냠</small></a></p>
+                                <p class="card-text S3_card-text">처음 예약하고 갔는데 사람도 없고 한산해서 좋았어요! 사장님도 친절하고 같이 나온 반찬들도 맛있었습니다.</p>
+                                <div class="flex-grow-1"></div>
+                                <div class="tag mb-2 S3_tag_box">
+                                    <a href=""><span class="badge badge-pill badge-secondary">#맛집</span></a>
+                                    <a href=""><span class="badge badge-pill badge-secondary">#수원역</span></a>
+                                    <p class="card-text mt-2"><small class="text-muted">2시간 전 업데이트</small></p>
+                                </div>
+                                <!--tag-->
+                            </div>
+                            <!--card-body-->
+                        </div>
+                        <!--card-->
+                    </div>
+                    <!--col-lg-4-->
+                    <!-- 두 번째 카드 -->
+                    <div class="col-xl-4 col-lg-6 my-2">
+                        <div class="card S3_card h-100 custom-border mx-auto">
+                            <a href="" class="text-dark">
+                            <h5 class="d-flex align-items-center mt-3 ml-3">
+                                <img src="/img/profile/2.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                                <span class="d-flex align-items-center mx-2">먹는게제일좋아</span>
+                            </h5>
+                            </a>
+                            <div id="S3_carouselExaple2" class="carousel slide carousel-fade" data-ride="carousel">
+                                <div class="carousel-inner S3_carousel-inner">
+                                    <div class="carousel-item S3_carousel-item active">
+                                        <img src="/img/food/food_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food2_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food2_3.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                    </div>
+                                </div>
+                               <!--sm,md에서만 보이게 설정-->
+                               <div class="d-block d-lg-none">
+                                <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            <!--캐로셀버튼-->
+                            </div>
+                            <!--S3_carouselExaple2-->
+                            <div class="card-body d-flex flex-column">
+                                <div class="row">
+                                    <div class="col-9">
+                                       <a href=""> 
+                                        <h5 class="card-title S3_card-title">아이와 함께하기 좋아요</h5>
+                                       </a>
+                                    </div>
+                                    <div class="col-3 text-end text-right">
+                                        <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">452</span>
+                                    </div>
+                                </div>
+                                <!--row-->
+                                <p><small>⭐⭐⭐⭐⭐</small> <a href="" class="S3_address"><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">평택 소사벌</span> 샤브마니아</small></a></p>
+                                <p class="card-text S3_card-text">급하게 약속이 잡히는 바람에 사이트에서 부랴부랴 찾아서 간 식당이에요! 아이도 동행했는데 아이가 정말 좋아했습니다! 다음에도 또 갈 의향 100%!</p>
+                                <div class="flex-grow-1"></div>
+                                <div class="tag mb-2 S3_tag_box">
+                                    <a href=""><span class="badge badge-pill badge-secondary">#샤브샤브</span></a>
+                                    <a href=""><span class="badge badge-pill badge-secondary">#아이와 함께</span></a>
+                                    <p class="card-text mt-2"><small class="text-muted">2024-08-24 업데이트</small></p>
+                            </div>
+                            </div>
+                            <!--card-body-->
+                        </div>
+                        <!--card-->
+                    </div>
+                    <!--col-lg-4-->
+                    <!-- 세 번째 카드 -->
+                    <div class="col-xl-4 col-lg-6 my-2">
+                        <div class="card S3_card h-100 custom-border mx-auto">
+                            <a href="" class="text-dark">
+                            <h5 class="d-flex align-items-center mt-3 ml-3">
+                                <img src="/img/profile/3.png" alt="" class="rounded-circle" style="width: 50px;">
+                                <span class="d-flex align-items-center mx-2">국밥러버</span>
+                            </h5>
+                            </a>
+                            <div id="S3_carouselExaple3" class="carousel slide carousel-fade" data-ride="carousel">
+                                <div class="carousel-inner S3_carousel-inner">
+                                    <div class="carousel-item S3_carousel-item active">
+                                        <img src="/img/food/food_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food3_2.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                    </div>
+                                    <div class="carousel-item S3_carousel-item">
+                                        <img src="/img/food/food3_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                    </div>
+                                </div>
+                                <!--sm,md에서만 보이게 설정-->
+                               <div class="d-block d-lg-none">
+                                <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                                </div>
+                                <!--캐로셀버튼-->
+                            </div>
+                            <!--S3_carouselExaple3-->
+                            <div class="card-body d-flex flex-column">
+                                <div class="row">
+                                    <div class="col-9">
+                                       <a href=""> 
+                                        <h5 class="card-title S3_card-title">인생 국밥집 찾았습니다</h5>
+                                       </a>
+                                    </div>
+                                    <div class="col-3 text-end text-right">
+                                        <i class="fa-regular fa-heart text-end" ></i><span class="text-dark mx-1">158</span>
+                                    </div>
+                                </div>
+                                <!--row-->
+                                <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">부산 서면</span> 할매국밥</small></a></p>
+                                <p class="card-text S3_card-text">기대 1도 안 하고 갔는데 한 입 먹자마자 인생 국밥집이란 걸 알았습니다. 가게 이름대로 할머니가 운영하시는 곳인데 양이 진짜 많아요! 각오하고 가셔야 할 듯..</p>
+                                <div class="flex-grow-1"></div>
+                                <div class="tag mb-2 align-items-end S3_tag_box">
+                                    <a href=""><span class="badge badge-pill badge-secondary">#부산</span></a>
+                                    <a href=""><span class="badge badge-pill badge-secondary">#혼밥</span></a>
+                                    <p class="card-text mt-1"><small class="text-muted">2024-08-27 업데이트</small></p>
+                                </div>
+                                <!--tag-->
+                            </div>
+                            <!--card-body-->
+                        </div>
+                        <!--card-->
+                    </div>
+                    <!--col-lg-4-->
+     
+    
+                         <!-- 첫 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div S3_tag_boxv class="card S3_card h-100 custom-border mx-auto">
+                       <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3 ">
+                            <img src="/img/profile/1.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">맛집헌터</span>
+                        </h5>
+                       </a>
+                        <div id="S3_carouselExaple1" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food1_2.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food1_1.jpg" class="d-block w-100 S3_custom-card-img" alt="food1">
+                                </div>
+                            </div>
+                            <!--sm,md에서만 보이게 설정-->
+                            <div class="d-block d-lg-none">
+                                <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple1" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            <!--캐로셀버튼-->
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">역근처 새로 생긴 삼겹살집!</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">566</span>
+                                </div>
+                            </div>
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">수원역 근처</span> 돼지냠냠</small></a></p>
+                            <p class="card-text S3_card-text">처음 예약하고 갔는데 사람도 없고 한산해서 좋았어요! 사장님도 친절하고 같이 나온 반찬들도 맛있었습니다.</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#맛집</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#수원역</span></a>
+                                <p class="card-text mt-2"><small class="text-muted">2시간 전 업데이트</small></p>
+                            </div>
+                            <!--tag-->
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+                <!--col-lg-4-->
+                <!-- 두 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div class="card S3_card h-100 custom-border mx-auto">
+                        <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3">
+                            <img src="/img/profile/2.jpg" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">먹는게제일좋아</span>
+                        </h5>
+                        </a>
+                        <div id="S3_carouselExaple2" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food2_2.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food2_3.png" class="d-block w-100 S3_custom-card-img" alt="샤브샤브">
+                                </div>
+                            </div>
+                           <!--sm,md에서만 보이게 설정-->
+                           <div class="d-block d-lg-none">
+                            <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple2" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        <!--캐로셀버튼-->
+                        </div>
+                        <!--S3_carouselExaple2-->
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">아이와 함께하기 좋아요</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-solid fa-heart text-end" style="color: #f02424;"></i><span class="text-dark mx-1">452</span>
+                                </div>
+                            </div>
+                            <!--row-->
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href="" class="S3_address"><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">평택 소사벌</span> 샤브마니아</small></a></p>
+                            <p class="card-text S3_card-text">급하게 약속이 잡히는 바람에 사이트에서 부랴부랴 찾아서 간 식당이에요! 아이도 동행했는데 아이가 정말 좋아했습니다! 다음에도 또 갈 의향 100%!</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#샤브샤브</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#아이와 함께</span></a>
+                                <p class="card-text mt-2"><small class="text-muted">2024-08-24 업데이트</small></p>
+                        </div>
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+                <!--col-lg-4-->
+                <!-- 세 번째 카드 -->
+                <div class="col-xl-4 col-lg-6 my-2">
+                    <div class="card S3_card h-100 custom-border mx-auto">
+                        <a href="" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3">
+                            <img src="/img/profile/3.png" alt="" class="rounded-circle" style="width: 50px;">
+                            <span class="d-flex align-items-center mx-2">국밥러버</span>
+                        </h5>
+                        </a>
+                        <div id="S3_carouselExaple3" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner S3_carousel-inner">
+                                <div class="carousel-item S3_carousel-item active">
+                                    <img src="/img/food/food_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food3_2.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                                <div class="carousel-item S3_carousel-item">
+                                    <img src="/img/food/food3_3.png" class="d-block w-100 S3_custom-card-img" alt="국밥">
+                                </div>
+                            </div>
+                            <!--sm,md에서만 보이게 설정-->
+                           <div class="d-block d-lg-none">
+                            <a class="carousel-control-prev S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next S3_hover_btn" href="#S3_carouselExaple3" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                            </div>
+                            <!--캐로셀버튼-->
+                        </div>
+                        <!--S3_carouselExaple3-->
+                        <div class="card-body d-flex flex-column">
+                            <div class="row">
+                                <div class="col-9">
+                                   <a href=""> 
+                                    <h5 class="card-title S3_card-title">인생 국밥집 찾았습니다</h5>
+                                   </a>
+                                </div>
+                                <div class="col-3 text-end text-right">
+                                    <i class="fa-regular fa-heart text-end" ></i><span class="text-dark mx-1">158</span>
+                                </div>
+                            </div>
+                            <!--row-->
+                            <p><small>⭐⭐⭐⭐⭐</small> <a href=""><small class="text-muted"><i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span class="font-weight-bold">부산 서면</span> 할매국밥</small></a></p>
+                            <p class="card-text S3_card-text">기대 1도 안 하고 갔는데 한 입 먹자마자 인생 국밥집이란 걸 알았습니다. 가게 이름대로 할머니가 운영하시는 곳인데 양이 진짜 많아요! 각오하고 가셔야 할 듯..</p>
+                            <div class="flex-grow-1"></div>
+                            <div class="tag mb-2 align-items-end S3_tag_box">
+                                <a href=""><span class="badge badge-pill badge-secondary">#부산</span></a>
+                                <a href=""><span class="badge badge-pill badge-secondary">#혼밥</span></a>
+                                <p class="card-text mt-1"><small class="text-muted">2024-08-27 업데이트</small></p>
+                            </div>
+                            <!--tag-->
+                        </div>
+                        <!--card-body-->
+                    </div>
+                    <!--card-->
+                </div>
+              <!-- col -->
+              </div>
+              <!-- row -->
+            </div>
+        <!--container-->
+    </div>
+
+ </div>
+</html>
