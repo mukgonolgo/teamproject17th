@@ -38,8 +38,20 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.commonmark:commonmark:0.18.0'
+	// Spring Boot Mail for email authentication
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// Spring Boot Validation for validation features
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring Boot Data Redis for Redis database support
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' 
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-parameters'
 }

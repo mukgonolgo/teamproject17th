@@ -1,0 +1,220 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.Log_SUF_container {
+    width: 800px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.Log_SUF_form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.Log_SUF_form-header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.Log_SUF_form-header .Log_SUF_optional {
+    font-size: 12px;
+    color: #777;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.Log_SUF_form-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.Log_SUF_form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.Log_SUF_form-group:first-child,
+.Log_SUF_form-group:nth-child(2) {
+    margin-top: 20px;
+}
+
+.Log_SUF_form-group:nth-child(3) {
+    margin-top: -10px;
+}
+
+.Log_SUF_address-group button {
+    margin-top: -8px;
+    margin-left: 10px;
+}
+
+.Log_SUF_form-group label {
+    width: 150px;
+    font-weight: bold;
+    text-align: left;
+    margin-right: 20px;
+    font-size: 13.5px;
+}
+
+.Log_SUF_form-group input[type="text"],
+.Log_SUF_form-group input[type="password"],
+.Log_SUF_form-group input[type="email"],
+.Log_SUF_form-group input[type="date"],
+.Log_SUF_form-group input[type="tel"],
+.Log_SUF_form-group input[type="file"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.Log_SUF_small-input {
+    width: 130px;
+}
+
+.Log_SUF_medium-input {
+    width: 130px;
+}
+
+.Log_SUF_large-input {
+    width: 180px;
+}
+
+.Log_SUF_form-group input[type="button"] {
+    padding: 8px;
+    border-radius: 5px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.Log_SUF_form-group input[type="radio"] {
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+.Log_SUF_form-group .Log_SUF_note {
+    font-size: 12px;
+    color: #777;
+    margin-left: 170px;
+}
+
+.Log_SUF_form-group button[type="submit"] {
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+.Log_SUF_form-group button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.Log_SUF_form-group .Log_SUF_email-info {
+    margin-left: 170px;
+    font-size: 12px;
+    color: #777;
+}
+
+.Log_SUF_profile-image {
+    position: absolute;
+    right: -140px;
+    top: 20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #666;
+}
+
+.Log_SUF_required {
+    color: red;
+    margin-right: 5px;
+}
+
+.Log_SUF_email-container {
+    display: flex;
+    align-items: center;
+}
+
+.Log_SUF_email-container select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 130px;
+}
+
+.Log_SUF_email-container input[type="text"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 130px;
+}
+
+.Log_SUF_email-at {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.Log_SUF_single-digit-input {
+    width: 10px;
+    text-align: center;
+}
+
+#masked-back {
+    font-size: 16px;
+    margin-left: 5px;
+    color: black;
+}
+
+.Log_SUF_address-group input {
+    margin-bottom: 10px;
+    width: 250px;
+}
+
+.Log_SUF_address-group input[readonly] {
+    background-color: #f0f0f0;
+}
+
+.Log_SUF_address-group button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.Log_SUF_address-group button:hover {
+    background-color: #45a049;
+}

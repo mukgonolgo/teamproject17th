@@ -9,24 +9,31 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserCreateForm {
-    
-    @Size(min=3, max=30)
-    @NotEmpty(message="사용자 아이디를 꼭 입력해주세요.")
+
+    @NotEmpty(message = "성명을 입력하세요")
+    private String name;
+
+    @NotEmpty(message = "아이디를 입력하세요")
     private String username;
-    
-    @NotEmpty(message="사용자 비밀번호를 꼭 입력해주세요.")
-    private String password1;
-    
-    @NotEmpty(message="사용자 비밀번호를 확인해 주셔야 합니다.")
-    private String password2;
-    
-    @NotEmpty(message="이메일은 필수사항입니다.")
-    @Email
-    private String email;
-    
-    @NotEmpty(message="주소는 필수사항입니다.")
-    private String address; // 주소 추가
-    
-    @NotEmpty(message="휴대폰 번호는 필수사항입니다.")
-    private String phoneNumber; // 휴대폰 번호 추가
+
+    @NotEmpty(message = "비밀번호를 입력하세요")
+    @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다")
+    private String password;
+
+    @NotEmpty(message = "비밀번호 확인을 입력하세요")
+    private String confirmPassword;
+
+    @NotEmpty(message = "이메일을 입력하세요")
+    @Email(message = "유효한 이메일 주소를 입력하세요")
+    private String emailDomain;  // 이메일 도메인 필드
+
+    @NotEmpty(message = "연락처를 입력하세요")
+    private String contact;
+
+    @NotEmpty(message = "주소를 입력하세요")
+    private String address;
+
+    private String profileImage;  // 프로필 이미지 필드
+
+    private String snsAgree;  // SNS 수신 동의
 }

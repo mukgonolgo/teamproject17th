@@ -18,16 +18,20 @@ public class SiteUser {
 	private Long id;
 	
 	@Column(unique = true)
-	private String username;
+	private String username;  // 사용자 아이디
 	
-	private String password;
+	private String password;  // 사용자 비밀번호
 	
 	@Column(unique = true)
-	private String email;
+	private String email;  // 이메일 주소
 	
-	private String imageUrl; // 이미지 업로드 위치
+	private String imageUrl;  // 프로필 이미지 경로
 	
-	private String address; // 주소 추가
+	private String address;  // 사용자 주소
 	
-	private String phoneNumber; // 휴대폰 번호 추가
+	private String phoneNumber;  // 휴대폰 번호
+	
+	private String snsAgree;  // SNS 수신 동의 (yes/no)
+	
+	private String name;  // 사용자 이름 (새로 추가한 필드)
 }
