@@ -61,7 +61,7 @@ margin-bottom: 0; /* 시간과 다음 요소 사이의 여백 제거 */
 }
 
 .S3_d_carousel-item .custom-card-img {
-    height: 600px; /* 캐로셀 아이템의 크기에 맞게 이미지를 조정합니다. */
+    height: 400px; /* 캐로셀 아이템의 크기에 맞게 이미지를 조정합니다. */
     object-fit: cover; /* 이미지가 고정된 크기에 맞게 채워지도록 설정합니다. */
     padding: 0px 13px ;
 }

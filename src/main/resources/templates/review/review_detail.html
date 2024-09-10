@@ -94,7 +94,7 @@
 						<div class="row">
 							<div class="col-9">
 
-								<h5 class="card-title S3_card-title" th:text="${review.subject}"></h5>
+								<h5 class="card-title S3_card-title" th:text="${review.title}"></h5>
 
 							</div>
 							<div class="col-3 text-right">
@@ -113,13 +113,18 @@
 						<p class="card-text S3_card-text mt-auto"
 							th:text="${review.content}"></p>
 
-						<div>
-							<span class="badge badge-pill border border-dark" th:text="${review.tag}"></span>
-
+							<div class="tag mb-3 S3_tag_box ml-1">
+							<span th:each="tagMap : ${review.tagMaps}" >
+										<span class="badge badge-pill border border-dark"
+											th:text="'#'+${tagMap.reviewTag.name}"> </span>
+									</span>
 							<p class="card-text mt-2">
-								<small class="text-muted"
-									th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}" />
+								<small class="text-muted"> <span
+									th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+									업데이트
+								</small>
 							</p>
+
 						</div>
 
 						<hr class="my-3">

@@ -22,7 +22,7 @@ a {
 .S3_card-text{
 	display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
     -webkit-box-orient: vertical; /* 수직 방향으로 박스 정렬 */
-    -webkit-line-clamp: 3; /* 줄 수를 설정합니다. (예: 3줄) */
+    -webkit-line-clamp: 4; /* 줄 수를 설정합니다. (예: 3줄) */
 	 height: auto; /* 높이는 자동으로 조절되도록 설정합니다. */
     overflow: hidden;           
     text-overflow: ellipsis !important;    
@@ -30,6 +30,7 @@ a {
 }
 .S3_card-title{
     font-size: 20px;
+    margin-top: -20px;
     text-overflow: ellipsis;
     white-space: nowrap;     
     font-weight: bold;
@@ -37,13 +38,16 @@ a {
     text-align: left; /* 텍스트를 왼쪽으로 정렬 */
    
 }
-.col-9{
+.likes{
+  margin-top: -15px  !important;   
+}
+.col-8, .col-4 ,.col-12{
 	padding: 0px;
 	margin: 0px;
 }
 .S3_carousel-inner {
     width: 100%;
-    height: 250px;
+    height: 240px;
 
 }
 .S3_store{
@@ -79,7 +83,7 @@ a {
 
 .card-body {
     position: relative; /* 자식 요소의 위치를 기준으로 설정 */
-    height:280px;
+    height:270px;
 
 }
 .flex-grow-1 {
@@ -89,7 +93,11 @@ a {
 .S3_tag_box {
     position: absolute;
     bottom: 0; /* 카드 하단에 고정 */
-    z-index: 2; /* 카드 내용 위에 표시되도록 설정 */
+    z-index: 2; /* 카드 내용 위에 표시되도록 설정 */ 
+    width: 85%; /* 원하는 너비 */
+    overflow: hidden; /* 넘치는 내용 숨기기 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
+    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
 }
 
 /* 카드에 호버 효과 추가 */
@@ -111,65 +119,6 @@ a {
     z-index: 1;
 }
 
-
-/*인원수 박스*/
-.col-auto {
-    position: relative; /* 버튼의 위치를 기준으로 박스를 위치시킬 수 있도록 설정 */
-}
-
-/* 인원수 박스 스타일 */
-#rangeBox {
-    position: absolute; /* 박스를 버튼 위에 올려놓기 위해 사용 */
-    left: -120px; /* 버튼의 왼쪽에 맞추어 위치하도록 설정 */
-    z-index: 1000; /* 박스가 버튼 위에 표시되도록 설정 */
-    display: none; /* 기본적으로 숨김 */
-    top: 0px;
-}
-
-/* 박스가 보일 때 */
-#rangeBox.show {
-    display: block; /* 박스가 보이도록 설정 */
-}
-
-    /* Range 슬라이더 스타일 */
-    .custom-range {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 8px;
-        background: #ddd;
-        outline: none;
-        opacity: 0.7;
-        transition: opacity .15s ease-in-out;
-    }
-
-    .custom-range::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-
-        background: #333;
-        cursor: pointer;
-        border-radius: 50%;
-    }
-
-    .custom-range::-webkit-slider-runnable-track {
-        background: #ddd;
-    }
-
-    .custom-range::-moz-range-track {
-        background: #ddd;
-    }
-
-    /* 바가 채워진 부분 색깔 */
-    .custom-range::-webkit-slider-runnable-track {
-        background: linear-gradient(to right, #868686 0%, #868686 var(--value), #ddd var(--value), #ddd 100%);
-    }
-
-    .custom-range::-moz-range-track {
-        background: linear-gradient(to right, #868686 0%, #868686 var(--value), #ddd var(--value), #ddd 100%);
-    }
-    .ca_button{
-        border-radius: 0px 0px 4px 4px!important;
-    }
 
 @media (max-width: 1200px) {
     .S3_carousel-inner {

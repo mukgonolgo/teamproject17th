@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    // 추가적인 쿼리 메서드 정의 가능
+    /* 추가적인 쿼리 메서드 정의 가능
     Review findBySubject(String subject);
 
     Review findBySubjectAndContent(String subject, String content);
 
-    List<Review> findBySubjectLike(String subject);
+    List<Review> findBySubjectLike(String subject);*/
 }
