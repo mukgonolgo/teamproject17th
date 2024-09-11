@@ -15,37 +15,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class NoticeController {
     @Autowired
     private NoticeService noticeService;
-
     @GetMapping("/notices")
-    public String getNotices(Model model) {
+    public String getNotices(Model model, @RequestParam(value="page",defaultValue="1") int page, @RequestParam(value="kw",defaultValue="") String kw) {
         model.addAttribute("notices", noticeService.getAllNotices());
+        Page<Notice> paging = this.noticeService.getList(page, kw);
+		model.addAttribute("paging", paging);
+		model.addAttribute("kw", kw);
         return "notice/notices";
-    }
+    }  
 //    @GetMapping("/notices")
-//    public String getNotices(Model model, @RequestParam(defaultValue = "0") int page,
-//                              @RequestParam(required = false) String kw) {
-//        Page<Notice> noticesPage = noticeService.getList(page, kw);
-//        model.addAttribute("notices", noticesPage.getContent());
-//        model.addAttribute("page", noticesPage);
-//        model.addAttribute("notice", new Notice());
-//        model.addAttribute("kw", kw); // 키워드 추가
-//        return "notices";
-//    }
-    
+//    public String getNotices(Model model) {
+//        model.addAttribute("notices", noticeService.getAllNotices());
+//        return "notice/notices";
+//    }   
     @GetMapping("/add-notice")
     public String showAddNoticeForm() {
         return "notice/notice_form";
     }
 
     @PostMapping("/notices")
-    public String addnotice(@RequestParam(value="No_title") String No_title, @RequestParam(value="No_content") String No_content) {
-    	this.noticeService.saveNotice(No_title, No_content);
+    public String addnotice(@RequestParam(value="noticeTitle") String noticeTitle, @RequestParam(value="noticeContent") String noticeContent) {
+    	this.noticeService.saveNotice(noticeTitle, noticeContent);
         return "redirect:/notices";
     }
     
-    @PostMapping("/notices/{No_id}")
-    public String deleteNotice(Principal principal, @PathVariable("No_id") Long No_id) {
-    	Notice notice = this.noticeService.getNotice(No_id);
+    @PostMapping("/notices/{noticeId}")
+    public String deleteNotice(Principal principal, @PathVariable("noticeId") Long noticeId) {
+    	Notice notice = this.noticeService.getNotice(noticeId);
         noticeService.delete(notice);
         return "redirect:/notices"; 
     }
