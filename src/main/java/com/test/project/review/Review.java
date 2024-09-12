@@ -1,8 +1,14 @@
 package com.test.project.review;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.test.project.review.img.ReviewImage;
+import com.test.project.review.img.ReviewImageMap;
+import com.test.project.review.tag.ReviewTagMap;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,16 +39,26 @@ public class Review {
     @Column(columnDefinition = "TEXT", name = "review_content")
     private String content;
     
-    @Column(name = "image_url")
-    private String imageUrl;
-    
     @Column(name = "rating")
     private String rating;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
-
+    
+    //이미지
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewImageMap> reviewImageMap = new ArrayList<>();
+ // ReviewImageMap을 설정하는 메서드
+    public void setReviewImageMap(List<ReviewImageMap> reviewImageMap) {
+        this.reviewImageMap = reviewImageMap;
+    }
+    
+    // 해시태그
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderBy("orderIndex ASC") // 태그를 정렬된 순서로 가져오기
     private Set<ReviewTagMap> tagMaps = new HashSet<>();
-}
+
+	}
+    
+    
+

@@ -1,49 +1,67 @@
 let imageCount = 0;
 const maxImages = 5;
-
+const imageFiles = []; // 파일들을 저장할 배열
 function addImage(event) {
-    if (imageCount >= maxImages) {
+    const files = Array.from(event.target.files);
+
+    if (imageCount + files.length > maxImages) {
         alert("이미지는 최대 5개까지 추가할 수 있습니다.");
         return;
     }
 
-    const reader = new FileReader();
-    reader.onload = function () {
-        const imgContainer = document.createElement('div');
-        imgContainer.classList.add('img-container');
-
-        const img = document.createElement('img');
-        img.src = reader.result;
-        img.classList.add('uploaded-image');
-
-        // 이미지 삭제 시 커서를 포인터로 변경
-        img.style.cursor = 'pointer';
-
-        // 이미지 클릭 시 삭제되는 이벤트 추가
-        img.addEventListener('click', function () {
-            imgContainer.remove();
-            imageCount--;
-
-            // 이미지가 삭제되면 + 버튼 다시 표시
-            if (imageCount < maxImages) {
-                document.getElementById('add-icon').style.display = 'flex';
-            }
-        });
-
-        imgContainer.appendChild(img);
-
-        const iconContainer = document.querySelector('.icon-container');
-        iconContainer.appendChild(imgContainer); // 이미지가 오른쪽에 추가되도록 위치 조정
-
-        imageCount++;
-
+    files.forEach(file => {
         if (imageCount >= maxImages) {
-            document.getElementById('add-icon').style.display = 'none';
+            alert("이미지는 최대 5개까지 추가할 수 있습니다.");
+            return;
         }
-    };
-    reader.readAsDataURL(event.target.files[0]);
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const imgContainer = document.createElement('div');
+            imgContainer.classList.add('img-container');
+
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('uploaded-image');
+            img.style.cursor = 'pointer';
+
+            img.addEventListener('click', function () {
+                imgContainer.remove();
+                imageCount--;
+                const index = imageFiles.findIndex(f => f.name === file.name && f.size === file.size);
+                if (index > -1) {
+                    imageFiles.splice(index, 1); // 배열에서 파일 제거
+                }
+
+                if (imageCount < maxImages) {
+                    document.getElementById('add-icon').style.display = 'flex';
+                }
+            });
+
+            imgContainer.appendChild(img);
+
+            const iconContainer = document.querySelector('.icon-container');
+            iconContainer.appendChild(imgContainer);
+
+            imageCount++;
+            imageFiles.push(file); // 배열에 파일 추가
+
+            if (imageCount >= maxImages) {
+                document.getElementById('add-icon').style.display = 'none';
+            }
+
+            console.log("현재 이미지 파일 배열:", imageFiles.map(file => file.name));
+        };
+
+        reader.readAsDataURL(file);
+    });
 }
 
+imageFiles.forEach((file, index) => {
+    console.log(`파일 ${index}: ${file.name}`);
+});
+
+// Tag input handling
 let S3_tags_input = $("#S3_tags_input");
 let tagGroup = $("#tagGroup");
 let tagsArray = []; // 태그를 배열로 저장
@@ -109,4 +127,50 @@ new Vue({
             fillElement.style.width = this.ratingToPercent + '%';
         }
     }
-});
+});				
+
+
+
+document.getElementById('reviewForm').addEventListener('submit', function(event) {
+	    event.preventDefault();
+
+	    let formData = new FormData(this);
+	    
+	    // 파일 개수 로그 출력
+	    console.log("파일 개수:", formData.getAll('fileUpload').length);
+	    
+	    imageFiles.forEach((file) => {
+	        formData.append('fileUpload', file, file.name);
+	    });
+
+	    const tags = $("#S3_tagsOutput").val();
+	    const rating = document.getElementById('rating').value;
+
+	    formData.append('tags', tags);
+	    formData.append('rating', rating);
+
+	    fetch('/review_create', {
+	        method: 'POST',
+	        body: formData
+	    })
+	    .then(response => {
+	        if (!response.ok) {
+	            throw new Error('Network response was not ok ' + response.statusText);
+	        }
+	        return response.json();
+	    })
+	    .then(data => {
+	        console.log('성공:', data);
+	        // 리뷰 ID와 함께 리프레시 쿼리 파라미터를 추가
+	        window.location.href = `/review_detail/${data.reviewId}`;
+	    })
+	    .catch((error) => {
+	        console.error('오류:', error);
+	    })
+	    .finally(() => {
+	        imageFiles.length = 0;
+	        imageCount = 0;
+	        document.querySelectorAll('.img-container').forEach(container => container.remove());
+	        document.getElementById('add-icon').style.display = 'flex';
+	    });
+	});

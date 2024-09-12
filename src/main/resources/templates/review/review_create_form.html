@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html layout:decorate="~{layout}">
 <head>
     <link rel="stylesheet" href="/css/review_create_form.css" />
 </head>
 <body>
 <div layout:fragment="content">
-    <form action="/review_create" th:object="${Review}" method="post" enctype="multipart/form-data">
+    <form id="reviewForm" action="/review_create" method="post" enctype="multipart/form-data">
         <div class="S3_rw">
             <label for="title">제목</label>
             <input type="text" id="title" name="title" placeholder="제목을 입력하세요...">
@@ -15,8 +16,7 @@
                     <div class="icon" id="add-icon" onclick="document.getElementById('file-upload').click();">
                         <span id="file-icon" style="font-size: 50px; color: #d0d0d0;">+</span>
                     </div>
-             <input type="file" id="file-upload" name="fileUpload" accept="image/*" multiple onchange="addImage(event)" style="display: none;">
-
+                    <input type="file" id="file-upload" name="fileUpload" accept="image/*" onchange="addImage(event)" style="display: none;" multiple >
                 </div>
             </div>
 
@@ -29,15 +29,13 @@
                 <div id="tagGroup"></div>
                 <input type="text" id="S3_tags_input" name="tags_input" placeholder="#태그명">
                 <input type="hidden" id="S3_tagsOutput" name="tags_output">
-              
             </div>
 
             <!-- 별점 섹션 추가 -->
             <div id="app" class="star-rating-container">
                 <div class="star-ratings">
                     <div class="star-ratings-fill space-x-2 text-lg">
-                        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
-                            class="star">★</span><span class="star">★</span>
+                        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
                     </div>
                     <div class="star-ratings-base space-x-2 text-lg">
                         <span class="star" v-for="n in 5" @click="setRating(n)">★</span>
@@ -51,11 +49,13 @@
         </div>
     </form>
 
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="/js/review_create_form.js"></script>
 </div>
 <!-- content -->
+
 
 </body>
 </html>

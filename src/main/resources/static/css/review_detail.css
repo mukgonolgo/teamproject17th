@@ -79,7 +79,7 @@ margin-bottom: 0; /* 시간과 다음 요소 사이의 여백 제거 */
 }  
 /*오른쪽 리뷰 카드*/
 .S3_d_review_carousel-inner{
-    height:500px;
+    height:400px;
 }
 .S3_d_carousel-item{
     height: 100%;
