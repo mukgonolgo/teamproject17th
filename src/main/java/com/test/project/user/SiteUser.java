@@ -12,22 +12,29 @@ import lombok.Setter;
 @Setter
 @Entity
 public class SiteUser {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@Column(unique = true)
-	private String username;
-	
-	private String password;
-	
-	@Column(unique = true)
-	private String email;
-	
-	private String imageUrl; // 이미지 업로드 위치
-	
-	private String address; // 주소 추가
-	
-	private String phoneNumber; // 휴대폰 번호 추가
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
+    private String username; // 사용자 아이디
+
+    private String password; // 사용자 비밀번호
+
+    @Column(unique = true)
+    private String email; // 이메일 주소
+
+    private String imageUrl; // 프로필 이미지 경로
+
+    private String phoneNumber; // 휴대폰 번호
+
+    private String snsAgree; // SNS 수신 동의 (yes/no)
+
+    private String name; // 사용자 이름
+
+    // 주소 필드들 (우편번호, 기본 주소, 상세 주소로 분리)
+    private String postcode;
+    private String basicAddress;
+    private String detailAddress;
 }
