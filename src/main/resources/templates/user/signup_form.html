@@ -84,24 +84,25 @@
                             value="no">아니오</label>
                 </div>
 
-                <!-- 주소 필드 추가 -->
-                <div class="Log_SUF_form-group">
-                    <label><span class="Log_SUF_required">*</span>우편번호</label>
-                    <input type="text" id="postcode" class="Log_SUF_medium-input" placeholder="우편번호" readonly required>
-                    <button type="button" onclick="sample6_execDaumPostcode()">주소 찾기</button>
-                </div>
+				<!-- 우편번호 -->
+				<div class="Log_SUF_form-group">
+				    <label><span class="Log_SUF_required">*</span>우편번호</label>
+				    <input type="text" th:field="*{postcode}" id="postcode" class="Log_SUF_medium-input" readonly required>
+					<button type="button" class="Log_SUF_address-button" onclick="sample6_execDaumPostcode()">주소 찾기</button>
 
-                <div class="Log_SUF_form-group">
-                    <label><span class="Log_SUF_required">*</span>기본 주소</label>
-                    <input type="text" id="basicAddress" class="Log_SUF_large-input" placeholder="기본 주소" readonly required>
-                </div>
+				</div>
 
-                <div class="Log_SUF_form-group">
-                    <label><span class="Log_SUF_required">*</span>상세 주소</label>
-                    <input type="text" id="detailAddress" class="Log_SUF_large-input" placeholder="상세 주소" required>
-                </div>
+				<!-- 기본 주소 -->
+				<div class="Log_SUF_form-group">
+				    <label><span class="Log_SUF_required">*</span>기본 주소</label>
+				    <input type="text" th:field="*{basicAddress}" id="basicAddress" class="Log_SUF_large-input" readonly required>
+				</div>
 
-                <input type="hidden" th:field="*{address}" id="fullAddress">
+				<!-- 상세 주소 -->
+				<div class="Log_SUF_form-group">
+				    <label><span class="Log_SUF_required">*</span>상세 주소</label>
+				    <input type="text" th:field="*{detailAddress}" id="detailAddress" class="Log_SUF_large-input" required>
+				</div>
 
                 <div class="Log_SUF_form-group">
                     <label for="imageFile">사용자 프로필 등록(옵션)</label>

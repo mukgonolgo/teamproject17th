@@ -53,31 +53,32 @@ public class UserController {
 	// 회원가입 처리
 	@PostMapping("/signup")
 	public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult,
-			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-		if (bindingResult.hasErrors()) {
-			return "user/signup_form";
-		}
+	                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+	    if (bindingResult.hasErrors()) {
+	        return "user/signup_form";
+	    }
 
-		if (!userCreateForm.getPassword().equals(userCreateForm.getConfirmPassword())) {
-			bindingResult.rejectValue("confirmPassword", "passwordInCorrect", "2개의 패스워드가 서로 일치하지 않습니다.");
-			return "user/signup_form";
-		}
+	    if (!userCreateForm.getPassword().equals(userCreateForm.getConfirmPassword())) {
+	        bindingResult.rejectValue("confirmPassword", "passwordInCorrect", "2개의 패스워드가 서로 일치하지 않습니다.");
+	        return "user/signup_form";
+	    }
 
-		try {
-			userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
-					userCreateForm.getPassword(), userCreateForm.getAddress(), userCreateForm.getContact(),
-					userCreateForm.getSnsAgree(), imageFile, userCreateForm.getName());
-		} catch (DataIntegrityViolationException e) {
-			bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-			return "user/signup_form";
-		} catch (Exception e) {
-			bindingResult.reject("signupFailed", e.getMessage());
-			return "user/signup_form";
-		}
+	    try {
+	        userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
+	                           userCreateForm.getPassword(), userCreateForm.getPostcode(),
+	                           userCreateForm.getBasicAddress(), userCreateForm.getDetailAddress(),
+	                           userCreateForm.getContact(), userCreateForm.getSnsAgree(), imageFile, userCreateForm.getName());
+	    } catch (DataIntegrityViolationException e) {
+	        bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+	        return "user/signup_form";
+	    } catch (Exception e) {
+	        bindingResult.reject("signupFailed", e.getMessage());
+	        return "user/signup_form";
+	    }
 
-		// 회원가입 성공 후 sign_member 페이지로 리디렉션
-		return "redirect:/";
+	    return "redirect:/";
 	}
+
 
 	// 로그인 폼
 	@GetMapping("/login")
@@ -231,5 +232,69 @@ public class UserController {
 		model.addAttribute("userCreateForm", new UserCreateForm());
 		return "user/sign_member"; // sign_member.html을 반환
 	}
+	// 내 정보 수정 페이지 표시
+	@GetMapping("/profile")
+	public String showProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	    if (userDetails != null) {
+	        SiteUser user = userService.getUser(userDetails.getUsername());
+	        UserUpdateForm userUpdateForm = new UserUpdateForm();
+	        userUpdateForm.setName(user.getName());
+	        userUpdateForm.setEmail(user.getEmail());
+	        userUpdateForm.setPhoneNumber(user.getPhoneNumber());
+	        
+	     // 주소 관련 정보 설정
+	        userUpdateForm.setPostcode(user.getPostcode());  // 우편번호
+	        userUpdateForm.setBasicAddress(user.getBasicAddress());  // 기본 주소
+	        userUpdateForm.setDetailAddress(user.getDetailAddress());  // 상세 주소
+	        
+	        model.addAttribute("userUpdateForm", userUpdateForm);
+	    }
+	    return "user/profile";
+	}
+
+	// 내 정보 수정 처리
+	@PostMapping("/profile")
+	public String updateProfile(@Valid @ModelAttribute("userUpdateForm") UserUpdateForm userUpdateForm, 
+	                            BindingResult bindingResult, 
+	                            @AuthenticationPrincipal UserDetails userDetails, 
+	                            Model model) {
+	    if (bindingResult.hasErrors()) {
+	        return "user/profile";
+	    }
+
+	    try {
+	        userService.updateUserProfile(userDetails.getUsername(), userUpdateForm);
+	    } catch (Exception e) {
+	        bindingResult.reject("profileUpdateFailed", e.getMessage());
+	        return "user/profile";
+	    }
+
+	    return "redirect:/"; // 내 정보 수정 후 index.html로 리디렉션
+	}
+
+	// 비밀번호 확인 페이지
+	@GetMapping("/confirmPassword")
+	public String showConfirmPasswordPage() {
+	    return "user/confirm";  // 비밀번호 확인 페이지로 이동
+	}
+
+	// 비밀번호 확인 처리
+	@PostMapping("/confirmPassword")
+	public String confirmPassword(@RequestParam("password") String password, 
+	                              @AuthenticationPrincipal UserDetails userDetails, 
+	                              Model model) {
+	    SiteUser user = userService.getUser(userDetails.getUsername());
+
+	    // 비밀번호가 일치하는지 확인
+	    if (userService.checkPassword(password, user.getPassword())) {
+	        return "redirect:/user/profile";  // 비밀번호 일치 시 내 정보 수정 페이지로 이동
+	    } else {
+	        model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
+	        return "user/confirm";  // 비밀번호 불일치 시 다시 확인 페이지로 이동
+	    }
+	}
+
+
+
 
 }

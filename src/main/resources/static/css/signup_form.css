@@ -218,3 +218,12 @@ body {
 .Log_SUF_address-group button:hover {
     background-color: #45a049;
 }
+.Log_SUF_address-button {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin-left: 15px; /* 버튼을 살짝 오른쪽으로 이동 */
+}
+

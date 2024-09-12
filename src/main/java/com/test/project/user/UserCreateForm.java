@@ -25,15 +25,21 @@ public class UserCreateForm {
 
     @NotEmpty(message = "이메일을 입력하세요")
     @Email(message = "유효한 이메일 주소를 입력하세요")
-    private String emailDomain;  // 이메일 도메인 필드
+    private String emailDomain;
 
     @NotEmpty(message = "연락처를 입력하세요")
     private String contact;
 
-    @NotEmpty(message = "주소를 입력하세요")
-    private String address;
+    // 주소 필드들 (우편번호, 기본 주소, 상세 주소로 분리)
+    @NotEmpty(message = "우편번호를 입력하세요")
+    private String postcode;
 
-    private String profileImage;  // 프로필 이미지 필드
+    @NotEmpty(message = "기본 주소를 입력하세요")
+    private String basicAddress;
 
-    private String snsAgree;  // SNS 수신 동의
+    @NotEmpty(message = "상세 주소를 입력하세요")
+    private String detailAddress;
+
+    private String profileImage;
+    private String snsAgree;
 }
