@@ -3,7 +3,7 @@
 	<link rel="stylesheet" href="/css/notice/notice.css">
 	<div class="No container mt-10 mb-10">
 		<div class="No_notice text-center m-5">공지사항 작성</div>
-		<form th:action="@{/notices}" method="post">
+		<form th:action="@{/notices/create}" method="post">
 		      <div class="form-group">
 		           <label for="noticeTitle">제목</label>
 		           <input type="text" class="form-control No_add_title" id="noticeTitle" name="noticeTitle" required>

@@ -5,11 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.test.project.DataNotFoundException;
 import com.test.project.notice.Notice;
 import com.test.project.notice.NoticeRepository;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,4 +68,5 @@ public class NoticeService {
     public int getTotalCount() {
         return (int) noRepository.count(); // 전체 공지사항 수 반환
     }
+
 }

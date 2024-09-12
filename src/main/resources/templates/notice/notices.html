@@ -7,8 +7,9 @@
 	       <div class="search_box">
 	           <h5 class="mb-3 col-12">공지사항 검색</h5>
 	           <div class=" d-sm-flex justify-content-between align-items-center">
-	               <input type="text" class="form-control mb-3 col-12 col-sm-9" placeholder="검색어를 입력해 주세요.">
-	               <button class="col-12 mb-3 col-sm-2 btn btn-primary ">검색</button>
+
+				   <input id="search_kw" class="form-control mb-3 col-12 col-sm-9" type="search" placeholder="Search" aria-label="Search" th:value="${kw}">
+				   <button class="col-12 mb-3 col-sm-2 btn btn-primary" type="submit" id="btn_search">검색</button>
 	           </div>
 
 	       </div>
@@ -24,8 +25,8 @@
 							        [공지] 공지사항 입력해주세요
 							    </span>
 							    <div class="No_btn d-flex">
-									<img src="img/arrow_drop.svg" alt="">
-									<form action="#" th:action="@{/notices/{id}(id=${notice.noticeId})}" method="post">
+									<img src="/img/arrow_drop.svg" alt="dfdf">
+									<form action="#" th:action="@{/notices/delete/{id}(id=${notice.noticeId})}" method="post">
 									    <button class="btn" type="submit" ><i class="fa-solid fa-x" style="color: #e72323;"></i></a>
 									</form>
 								</div>
@@ -47,42 +48,53 @@
 		      </div>
 
 			  <nav th:if="${!paging.isEmpty()}">
-			    <ul class="pagination justify-content-center">
-			      <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-			        <!-- <a href="javascript:void(0)" 
-			        	 th:href="@{|?page=${paging.number-1}|}" class="page-link">
-			        	<span>이전</span>
-			        </a> -->
-			        <a href="javascript:void(0)" 
-			        	 th:data-page="${paging.number-1}" class="page-link">
-			        	<span>이전</span>
-			        </a>
-			      </li>
-			      <li 
-			  	    th:each="page: ${#numbers.sequence(0,paging.totalPages-1)}" 
-			  	    th:if="${page >= paging.number-2 and page <= paging.number+2}"
-			  	    th:classappend="${page == paging.number}? 'active'"
-			  	    class="page-item">
-			      		<a th:data-page="${page}" class="page-link" href="javascript:void(0)" th:text="${page}"></a>
-			      	<!-- th:each="page: ${#numbers.sequence(시작 번호,끝 번호)}를 넣으면 정해진 범위만큼 반복을 만들어내는 타임리프의 기능이다." 
-			      	#시작하는 문법: SpEL(통합 표현언어)와 타임리프 객체에 접근할 때, 또한 조건문에서도 사용하는 타임리프 문법이다. 예)#dates, #numbers, #strings, #lists, #request, #session, #local--></li>
-			      <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-			        <!-- <a href="javascript:void(0)" 
-			        	 th:href="@{|?page=${paging.number+1}|}" class="page-link">
-			        	<span>다음</span>
-			        </a> -->
-			        <a href="javascript:void(0)" 
-			        	  class="page-link" th:data-page="${paging.number+1}">
-			        	<span>다음</span>
-			        </a>
-			      </li>
-			    </ul>
+			      <ul class="pagination justify-content-center">
+			          <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+			              <a href="javascript:void(0)" th:data-page="${currentPage - 1}" class="page-link">
+			                  <span>이전</span>
+			              </a>
+			          </li>
+			          <li th:each="page: ${#numbers.sequence(1, paging.totalPages)}" 
+			              th:if="${page >= currentPage - 2 and page <= currentPage + 2}"
+			              th:classappend="${page == currentPage} ? 'active'"
+			              class="page-item">
+			              <a th:data-page="${page - 1}" class="page-link" th:text="${page}"></a>
+			          </li>
+			          <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+			              <a href="javascript:void(0)" class="page-link" th:data-page="${currentPage + 1}">
+			                  <span>다음</span>
+			              </a>
+			          </li>
+			      </ul>
 			  </nav>
+
+			  <form th:action="@{/notices/list}" method="get" id="searchForm">
+			  	<input type="hidden" id="kw" th:value="${kw}" name="kw">
+			  	<input type="hidden" id="page" th:value="${paging.number}" name="page"/>
+			  </form>
+			  
 			  <div style="display: flex; justify-content: flex-end; white-space: nowrap; ">
-			    <a th:href="@{/add-notice}"  style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">공지 작성</a>
+			    <a th:href="@{/notices/create}"  style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">공지 작성</a>
 			  </div>
 		     </div>
 
 </div>
-
+<script layout:fragment="script">
+	const page_elements = document.getElementsByClassName("page-link");
+	Array.from(page_elements).forEach(function(element) {
+	    element.addEventListener("click", function() {
+	        console.log("Page link clicked"); // 클릭 시 로그 확인
+	        document.getElementById("page").value = this.dataset.page;
+	        document.getElementById("searchForm").submit();
+	    });
+	});
+	
+	const btn_search = document.getElementById("btn_search");
+	btn_search.addEventListener("click",function(){
+		document.getElementById("kw").value= document.getElementById("search_kw").value;
+		document.getElementById("page").value=0;
+		//검색버튼 클릭시 페이징의 0부터 보여주기
+		document.getElementById("searchForm").submit();
+	})
+</script>
 </html>
