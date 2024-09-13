@@ -51,3 +51,4 @@ function removeItem(element) {
     const parentElement = element.parentElement;
     parentElement.remove(); // 부모 요소를 삭제
 }
+
