@@ -197,134 +197,54 @@
  </div>
  <!--순서 container-->
  <div class="container S1">
-     <section class="S1_s2 mt-5">
+     <section class="S1_s2 mt-5" id="premium-ad">
          <h3 class="S1_category">프리미엄 광고</h3>
          <div class="row">
-             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                 <!-- S1_s2_card -->
-                 <div class="card">
-                     <div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
-                         <div class="carousel-inner">
-                             <div class="carousel-item active">
-                                 <img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
-                             </div>
-                             <div class="carousel-item">
-                                 <img src="img/food/food1_2.jpg" class="card-img-top" alt="가게 이미지 2">
-                             </div>
-                         </div>
-                         <a class="carousel-control-prev" href="#ProRestaurant1" role="button" data-slide="prev" id="prevButton">
-                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                             <span class="sr-only">이전</span>
-                         </a>
-                         <a class="carousel-control-next" href="#ProRestaurant1" role="button" data-slide="next" id="nextButton">
-                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                             <span class="sr-only">다음</span>
-                         </a>
-                     </div>
-                     <div class="card-body">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <h5 class="card-title mb-0">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
-                             <div class="S1_s2_btnbox">
-                                 <button class="btn btn-primary btn-sm">
-                                     <i class="fas fa-thumbs-up"></i>
-                                 </button>
-                                 <button class="btn btn-danger btn-sm">
-                                     <i class="fas fa-heart"></i>
-                                 </button>
-                                 <button class="btn btn-success btn-sm">
-                                     <i class="fas fa-share"></i>
-                                 </button>
-                             </div>
-                         </div>
-                         <div class="d-flex justify-content-between align-items-center mt-2">
-                             <p class="card-text mb-0">위치: 가게 위치 1</p>
-                             <button class="btn btn-secondary btn-sm location-button"> 더 보기 </button>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             
-             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                 <div class="card">
-                     <div id="ProRestaurant2" class="carousel slide" data-ride="carousel">
-                         <div class="carousel-inner">
-                             <div class="carousel-item active">
-                                 <img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
-                             </div>
-                         </div>
-                         <a class="carousel-control-prev " href="#ProRestaurant2" role="button" data-slide="prev" id="prevButton">
-                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                             <span class="sr-only">이전</span>
-                         </a>
-                         <a class="carousel-control-next" href="#ProRestaurant2" role="button" data-slide="next" id="nextButton">
-                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                             <span class="sr-only">다음</span>
-                         </a>
-                     </div>
-                     <div class="card-body">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <h5 class="card-title mb-0">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
-                             <div class="S1_s2_btnbox">
-                                 <button class="btn btn-primary btn-sm">
-                                     <i class="fas fa-thumbs-up"></i>
-                                 </button>
-                                 <button class="btn btn-danger btn-sm">
-                                     <i class="fas fa-heart"></i>
-                                 </button>
-                                 <button class="btn btn-success btn-sm">
-                                     <i class="fas fa-share"></i>
-                                 </button>
-                             </div>
-                         </div>
-                         <div class="d-flex justify-content-between align-items-center mt-2">
-                             <p class="card-text mb-0">위치: 가게 위치 1</p>
-                             <button class="btn btn-secondary btn-sm location-button"> 더 보기 </button>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                 <!-- S1_s2_card -->
-                 <div class="card">
-                     <div id="carouselExample1" class="carousel slide" data-ride="carousel">
-                         <div class="carousel-inner">
-                             <div class="carousel-item active">
-                                 <img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
-                             </div>
-                             <div class="carousel-item">
-                                 <img src="img/food/food1_2.jpg" class="card-img-top" alt="가게 이미지 2">
-                             </div>
-                         </div>
+			<div class="col-lg-4 col-md-6 col-sm-12 mb-4"  th:each="store : ${store}" th:if="${store.storeAdvertisement}">>
+					                 <!-- S1_s2_card -->
+					                 <div class="card">
+					                     <div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+					                         <div class="carousel-inner">
+					                             <div class="carousel-item active">
+					                                 <img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
+					                             </div>
+					                         </div>
+					                     </div>
+					                     <div class="card-body">
+											<div class="storeicon d-flex align-items-center mb-2">
+												<i class="fa-solid fa-star" style="color: #FFD43B;"></i>
+												<small class="ml-1">4.5</small>
+											</div>
+					                         <div class="d-flex justify-content-between align-items-center">
+					                             <h5 class="card-title mb-3" th:text="${store.storeName}">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
+					                         </div>
+											 <div class="d-flex justify-content-between align-items-center mb-3">
+												<div class="d-flex  align-items-center">
+													<i class="fa-solid fa-location-dot"></i>
+													<small class="ml-1" th:text="${store.storeAddress}">수원시</small>
+												</div>
+											     <div class="d-flex storeicon align-items-center">
+													<i class="fa-regular fa-message"></i>
+													<small class="ml-1">0</small>
+											        <i class=" heart fas fa-heart ml-2"></i>
+													<small class="ml-1">0</small>
+											     </div>
+											 </div>
+											 <div class="ellipsis  align-items-center">
+											     <span class=" store_tag"># <small th:text="${store.storeTag}">한식</small></span>
 
-                     </div>
-                     <div class="card-body">
-                         <div class="d-flex justify-content-between align-items-center">
-                             <h5 class="card-title mb-0">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
-                             <div class="S1_s2_btnbox">
-                                 <button class="btn btn-primary btn-sm">
-                                     <i class="fas fa-thumbs-up"></i>
-                                 </button>
-                                 <button class="btn btn-danger btn-sm">
-                                     <i class="fas fa-heart"></i>
-                                 </button>
-                                 <button class="btn btn-success btn-sm">
-                                     <i class="fas fa-share"></i>
-                                 </button>
-                             </div>
-                         </div>
-                         <div class="d-flex justify-content-between align-items-center mt-2">
-                             <p class="card-text mb-0">위치: 가게 위치 1</p>
-                             <button class="btn btn-secondary btn-sm location-button"> 더 보기 </button>
-                         </div>
-                     </div>
-                 </div>
-             </div>
+											 </div>
+					                         <div class="d-flex justify-content-between align-items-center mt-2">		                           		                      
+					                         </div>
+					                     </div>
+					                 </div>
+					             </div>		             
          </div>
      </section>
      <section class="S1_s3 mt-4 mb-5">
-		<h3 class="S1_category">맛집 리스</h3>
+		<h3 class="S1_category">맛집 리스트</h3>
 		         <div class="row">
-		             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+		             <div class="col-lg-4 col-md-6 col-sm-12 mb-4"th:each="store:${store}">
 		                 <!-- S1_s2_card -->
 		                 <div class="card">
 		                     <div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
@@ -333,14 +253,6 @@
 		                                 <img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
 		                             </div>
 		                         </div>
-		                         <a class="carousel-control-prev" href="#ProRestaurant1" role="button" data-slide="prev" id="prevButton">
-		                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-		                             <span class="sr-only">이전</span>
-		                         </a>
-		                         <a class="carousel-control-next" href="#ProRestaurant1" role="button" data-slide="next" id="nextButton">
-		                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-		                             <span class="sr-only">다음</span>
-		                         </a>
 		                     </div>
 		                     <div class="card-body">
 								<div class="storeicon d-flex align-items-center mb-2">
@@ -348,12 +260,12 @@
 									<small class="ml-1">4.5</small>
 								</div>
 		                         <div class="d-flex justify-content-between align-items-center">
-		                             <h5 class="card-title mb-3">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
+		                             <h5 class="card-title mb-3" th:text="${store.storeName}">가게 이름이 너무 길어서 줄바꿈이 발생할 경우</h5>
 		                         </div>
 								 <div class="d-flex justify-content-between align-items-center mb-3">
 									<div class="d-flex  align-items-center">
 										<i class="fa-solid fa-location-dot"></i>
-										<small class="ml-1">수원시</small>
+										<small class="ml-1" th:text="${store.storeAddress}">수원시</small>
 									</div>
 								     <div class="d-flex storeicon align-items-center">
 										<i class="fa-regular fa-message"></i>
@@ -363,30 +275,27 @@
 								     </div>
 								 </div>
 								 <div class="ellipsis  align-items-center">
-								     <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
-									 <span class=" store_tag"># <small>한식</small></span>
+								     <span class=" store_tag"># <small th:text="${store.storeTag}">한식</small></span>
+
 								 </div>
-		                         <div class="d-flex justify-content-between align-items-center mt-2">
-		                             
-		                         
+		                         <div class="d-flex justify-content-between align-items-center mt-2">		                           		                      
 		                         </div>
 		                     </div>
 		                 </div>
-		             </div>
-		             
+		             </div>		             
 		         </div>
      </section>
  </div>
-
+ <script>
+     document.addEventListener("DOMContentLoaded", function() {
+         const premiumAdSection = document.getElementById('premium-ad');
+         const cards = premiumAdSection.getElementsByClassName('card');
+         
+         if (cards.length === 0) {
+             premiumAdSection.style.display = 'none';
+         }
+     });
+ </script>
 
  </div>
 </html>

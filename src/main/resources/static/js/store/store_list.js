@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             nextButton.style.display = 'none';
         }
     });
-	const button = document.querySelector('.heart');
+	const button = document.querySelectorAll('.heart');
 
 	button.addEventListener('click', () => {
 	    button.classList.toggle('active');
