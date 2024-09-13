@@ -15,6 +15,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,8 @@ import com.test.project.review.img.ReviewImageRepository;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.user.SiteUser;
+import com.test.project.user.UserRepository;
 
 @Service
 public class ReviewService {
@@ -36,14 +40,18 @@ public class ReviewService {
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewTagRepository reviewTagRepository;
     
+    private final UserRepository userRepository ;
+    
 
     @Autowired
     public ReviewService(ReviewRepository reviewRepository, 
                          ReviewImageRepository reviewImageRepository,
-                         ReviewTagRepository reviewTagRepository) {
+                         ReviewTagRepository reviewTagRepository,
+                         UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.reviewImageRepository = reviewImageRepository;
         this.reviewTagRepository = reviewTagRepository;
+        this.userRepository = userRepository;
     }
 
     // ID로 리뷰 조회
@@ -124,5 +132,29 @@ public class ReviewService {
         // 리뷰에 이미지 매핑 설정
         review.setReviewImageMap(reviewImageMaps);
         return reviewImageMaps;
+    }
+    
+    // 현재 로그인한 사용자의 ID를 가져오는 메서드
+    public Long getCurrentUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            SiteUser user = userRepository.findByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new DataNotFoundException("해당 사용자를 찾을 수 없습니다."));
+            return user.getId();
+        }
+        throw new IllegalStateException("로그인된 사용자가 없습니다.");
+    }
+    
+    // 사용자 ID로 리뷰 조회
+    public List<Review> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserId(userId);
+    }
+    
+ // 리뷰 ID로 사용자 ID를 가져오는 메서드
+    public Long getUserIdByReviewId(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .map(review -> review.getUser() != null ? review.getUser().getId() : null)
+                .orElse(null);
     }
 }

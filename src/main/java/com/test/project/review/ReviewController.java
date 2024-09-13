@@ -34,6 +34,8 @@ import com.test.project.review.img.ReviewImageRepository;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.user.SiteUser;
+import com.test.project.user.UserService;
 
 import jakarta.transaction.Transactional;
 
@@ -53,6 +55,10 @@ public class ReviewController {
 
     @Autowired
     private ReviewImageRepository reviewImageRepository;
+    
+    @Autowired
+    private UserService userService;
+    
 
     @GetMapping("/review")
     public String reviewPage(Model model) {
@@ -65,14 +71,49 @@ public class ReviewController {
     public String reviewDetail(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        // 리뷰 작성자의 사용자 ID 가져오기
+        Long userId = reviewService.getUserIdByReviewId(id);
+
+        // 사용자 정보 가져오기
+        SiteUser author = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 이미지 URL 로그 출력
+        System.out.println("Author Profile Image URL: " + author.getImageUrl());
+
+        // 모델에 데이터 추가
         model.addAttribute("review", review);
+        model.addAttribute("authorProfileImage", author.getImageUrl()); // 작성자 프로필 이미지
+        model.addAttribute("authorUsername", author.getUsername()); // 작성자 사용자명
+
         return "review/review_detail";
     }
 
-    @GetMapping("/review_feed")
+
+ /*   @GetMapping("/review_feed")
     public String reviewFeed() {
         return "review/review_feed";
+    }*/
+    
+    @GetMapping("/review_feed")
+    public String reviewFeed(@RequestParam("user_id") Long userId, Model model) {
+        // 사용자 ID로 사용자 정보 조회
+        SiteUser user = userService.getUserById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 사용자의 모든 리뷰 조회
+        List<Review> reviews = reviewService.getReviewsByUserId(userId);
+
+        // 모델에 데이터 추가
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("profileImage", user.getImageUrl()); // 프로필 이미지
+        model.addAttribute("username", user.getUsername()); // 사용자 이름
+        model.addAttribute("userId", user.getId()); // 사용자 ID 추가
+
+        return "review_feed"; // 반환할 뷰 이름
     }
+
 
     @GetMapping("/review_create_form")
     public String reviewCreateForm() {
@@ -130,12 +171,13 @@ public class ReviewController {
             @RequestParam("tags_output") List<String> tags,
             @RequestParam("rating") String rating) throws IOException {
 
-        // 파일 개수 로그 출력
-        System.out.println("파일 개수: " + fileUpload.size());
-
+        Long userId = reviewService.getCurrentUserId(); // 현재 사용자 ID 가져오기
+     // 사용자 객체 가져오기
+        SiteUser user = userService.getUserById(userId)
+            .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
         // 리뷰 정보 설정
         review.setCreateDate(LocalDateTime.now());
-        review.setRating(rating);
+        review.setUser(user); // SiteUser 객체 설정
 
         // 태그 처리
         reviewService.processTags(tags, review);
@@ -152,4 +194,6 @@ public class ReviewController {
 
         return ResponseEntity.ok(response);
     }
+
+
 }

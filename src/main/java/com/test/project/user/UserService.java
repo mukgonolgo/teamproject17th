@@ -148,10 +148,19 @@ public class UserService {
        // 사용자 정보 저장
        userRepository.save(user);
    }
+   //다른페이지에서도 네브바 프로필사진과 닉네임이 뜨게 하기 위해 작성 
+   public Optional<SiteUser> getUserByUsername(String username) {
+	    return userRepository.findByUsername(username);
+	}
 
 
    public boolean checkPassword(String rawPassword, String encodedPassword) {
       return passwordEncoder.matches(rawPassword, encodedPassword);
+   }
+   
+   // 유저 아이디 찾기
+   public Optional<SiteUser> getUserById(Long id) {
+      return userRepository.findById(id);
    }
 
 }

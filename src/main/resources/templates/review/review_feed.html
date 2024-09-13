@@ -7,7 +7,8 @@
    <div class="container ">
       <div class="row justify-content-center ">
         <div class="text-center mt-5">
-            <img src="/img/profile/1.jpg" alt="프로필사진" style="width: 150px;" class="rounded-circle my-3"><h3>닉네임(아이디)</h3>
+           <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/profile/default.jpg'}" alt="" class="rounded-circle" style="width: 150px;">
+           <h3 th:text="${username}" class="mt-2"></h3>
            <p class="lead mb-5">안녕하세요 맛집 찾는 게 취미입니다.</p>
            <a href="/review" class="text-dark">
             <p>다른 분들의 리뷰를 더 보고싶다면?</p>
@@ -25,56 +26,7 @@
                 <img src="img/food/food1_1.jpg" alt="" class="img-fluid S3_fe_img ">
             </a>
         </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box ">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-        <div class="col-lg-4 col-md-6 S3_fe_img_box">
-            <a href="">
-                <img src="img/food/food2_2.png" alt="" class="img-fluid S3_fe_img">
-            </a>
-        </div>
-        <!--col-4-->
-
+       <!-- col -->
 
       </div>
       <!--row-->

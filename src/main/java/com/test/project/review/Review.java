@@ -9,6 +9,7 @@ import java.util.Set;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.tag.ReviewTagMap;
+import com.test.project.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +18,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -45,6 +48,10 @@ public class Review {
     @Column(name = "create_date")
     private LocalDateTime createDate;
     
+    @ManyToOne
+    @JoinColumn(name = "user_id") // 외래키 칼럼의 이름을 지정
+    private SiteUser user; // SiteUser 엔티티를 참조하는 외래키
+    
     //이미지
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageMap> reviewImageMap = new ArrayList<>();
@@ -60,5 +67,6 @@ public class Review {
 
 	}
     
-    
+
+	
 

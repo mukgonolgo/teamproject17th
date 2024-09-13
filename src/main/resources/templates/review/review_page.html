@@ -230,13 +230,13 @@
 				<!-- 첫 번째 카드 -->
 				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
 					<div class="card S3_card h-100 custom-border mx-auto">
-						<a href="" class="text-dark">
-							<h5 class="d-flex align-items-center mt-3 ml-3 ">
-								<img src="/img/profile/1.jpg" alt="" class="rounded-circle"
-									style="width: 50px;"> <span
-									class="d-flex align-items-center mx-2">맛집헌터</span>
-							</h5>
-						</a>
+					<a href="" class="text-dark">
+	    <h5 class="d-flex align-items-center mt-3 ml-3">
+	        <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/profile/default.jpg'}" alt="" class="rounded-circle" style="width: 50px;">
+	        <span class="d-flex align-items-center mx-2" th:text="${username}">맛집헌터</span>
+	    </h5>
+	</a>
+
 						<div th:id="'S3_review_carouselExample' + ${review.id}"
 							class="carousel slide carousel-fade px-2" data-ride="carousel">
 							<div class="carousel-inner S3_carousel-inner">

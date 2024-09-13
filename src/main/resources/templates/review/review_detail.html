@@ -59,11 +59,19 @@
 			<!-- 리뷰 카드 -->
 			<div class="col-xl-8 col-sm-12 ">
 				<div class="card custom-border p-3">
-					<div class="d-flex align-items-center mx-3 my-2">
-						<img src="/img/profile/1.jpg" alt="" class="rounded-circle"
-							style="width: 50px;"> <span class="ml-3"><h4>맛집헌터</h4></span>
-						<i class="fa-solid fa-ellipsis-v ml-auto" style="color: #000000;"></i>
-					</div>
+			<a th:href="@{/review_feed}" class="text-dark" style="text-decoration: none;">
+			    <div class="d-flex align-items-center mx-3 my-2">
+			        <img th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/profile/default.jpg'}" alt="" class="rounded-circle" style="width: 50px;">
+			        <span class="ml-3">
+			            <h4 th:text="${authorUsername}"></h4>
+			        </span>
+			        <i class="fa-solid fa-ellipsis-v ml-auto" style="color: #000000;"></i>
+			    </div>
+			</a>
+
+
+
+
 					<div th:id="'S3_d_review_carouselExample' + ${review.id}" class="carousel slide">
 						<div class="carousel-inner S3_d_review_carousel-inner" >
 							<div class="carousel-item S3_d_carousel-item" th:each="imageMap, iterStat : ${review.reviewImageMap}" th:classappend="${iterStat.index == 0} ? ' active'">
