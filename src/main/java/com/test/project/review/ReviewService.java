@@ -65,7 +65,7 @@ public class ReviewService {
                 .orElseThrow(() -> new DataNotFoundException("Review not found"));
     }
 
-    // 모든 리뷰 조회
+    // 모든 리뷰와 사용자 정보 가져오기
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
@@ -157,4 +157,7 @@ public class ReviewService {
                 .map(review -> review.getUser() != null ? review.getUser().getId() : null)
                 .orElse(null);
     }
+    
+    
+    
 }

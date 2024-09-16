@@ -67,6 +67,8 @@ public class ReviewController {
         return "review/review_page";
     }
 
+
+    
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
@@ -79,9 +81,6 @@ public class ReviewController {
         SiteUser author = userService.getUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 이미지 URL 로그 출력
-        System.out.println("Author Profile Image URL: " + author.getImageUrl());
-
         // 모델에 데이터 추가
         model.addAttribute("review", review);
         model.addAttribute("authorProfileImage", author.getImageUrl()); // 작성자 프로필 이미지
@@ -89,6 +88,7 @@ public class ReviewController {
 
         return "review/review_detail";
     }
+
 
 
  /*   @GetMapping("/review_feed")
