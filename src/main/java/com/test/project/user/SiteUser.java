@@ -1,5 +1,6 @@
 package com.test.project.user;
 
+import groovy.transform.builder.Builder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,4 +38,6 @@ public class SiteUser {
     private String postcode;
     private String basicAddress;
     private String detailAddress;
+    
+ 
 }

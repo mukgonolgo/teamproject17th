@@ -68,7 +68,7 @@ public class ReviewController {
     }
 
 
-    
+  
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
