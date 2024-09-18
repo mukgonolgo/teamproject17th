@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function() {
     const reviewIdElement = document.querySelector("#reviewId");
     const commentContentElement = document.querySelector("#commentContent");
@@ -29,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <p>${comment.content}</p>
                             <p class="card-text">
                                 <small class="text-muted">${new Date(comment.createDate).toLocaleString()}</small>
-                                <span type="btuuon" class="btn badge badge-secondary ml-1 reply-button" data-comment-id="${comment.commentId}">답글달기</span>
+                                <span type="button" class="btn badge badge-secondary ml-1 reply-button" data-comment-id="${comment.commentId}">답글달기</span>
                             </p>
                         </div>
                     </div>`;
