@@ -14,8 +14,11 @@
 	<script src="/js/chat.js?v=1"></script> <!-- 기존 채팅 관련 JS 파일 포함 -->
 	<!--csrf 토큰-->
 	<meta name="csrf-token" content="${_csrf.token}">
-	<meta name="username" content="${username}" />
-	<meta name="user-id" content="${userID}" />
+	<meta name="username" content="${name}" />
+	<meta name="user-id" content="${id}" />
+
+	<meta name="current-username" content="${current_username}" />
+	<meta name="current-user-id" content="${current_userID}" />
 
 </head>
 <style>
@@ -100,19 +103,21 @@
 								</i>
 								</div>
 							</span>
-					
-							<span>채팅방 인원수<h1 id="roomName"></h1>
-								<p>Current Members: <span th:id="'currentMembers_' + ${eat_friends.roomID}" class="index">0</span></p>
-								<p>Max Members: <span th:id="'maxMembers_' + ${eat_friends.roomID}" class="index">0</span></p>
-								<h2 class="">Members</h2>
-								<div th:if="${chatRoom != null}">
-								    <ul>
-								        <li th:each="member : ${chatRoom.members}" th:text="${member}"></li>
-								    </ul>
-								</div>
-								<div th:if="${chatRoom == null}">
-								</span>
-								
+					<div>
+						<span>채팅방 인원수
+						    <h1 id="roomName" th:text="${chatRoom.name}"></h1> <!-- 채팅방 이름을 표시 -->
+						    <p>Current Members: 
+						        <span th:id="'currentMembers_' + ${chatRoom.roomId}" class="index" th:text="${chatRoom.chatcurrentMembers}">0</span>
+						    </p>
+						    <p>Max Members: 
+						        <span th:id="'maxMembers_' + ${chatRoom.roomId}" class="index" th:text="${chatRoom.chatmaxMembers}">0</span>
+						    </p>
+						    <h2>Members</h2>
+						    <ul th:id="'membersList_' + ${chatRoom.roomId}">
+						        <li th:each="member : ${chatRoom.members}" th:text="${member.username}"></li>
+						    </ul>
+						</span>
+								</div>		
 						</div>
 						<!-- 채팅 버튼 -->
 						<div class="d-flex justify-content-end p-2">

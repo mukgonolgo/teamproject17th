@@ -51,7 +51,9 @@ public class ChatRoom {
     @JoinTable(
         name = "chatroom_members",
         joinColumns = @JoinColumn(name = "chatroom_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
+        inverseJoinColumns = @JoinColumn(name = "user_name") // 변경된 부분
     )
     private Set<SiteUser> members = new HashSet<>();
+
+
 }

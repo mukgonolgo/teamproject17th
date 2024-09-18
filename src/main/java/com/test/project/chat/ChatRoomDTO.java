@@ -1,5 +1,7 @@
 package com.test.project.chat;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +19,5 @@ public class ChatRoomDTO {
     private String roomName;
     private int currentMembers;
     private int maxMembers;
-    
+    private List<MemberDTO> memberNames;
 }

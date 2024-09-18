@@ -9,14 +9,15 @@ import org.springframework.stereotype.Repository;
 
 import com.test.project.chat.ChatRoom;
 
+import io.lettuce.core.dynamic.annotation.Param;
+
 @Repository
 public interface SiteUserRepository extends JpaRepository<SiteUser, Long> {
     Optional<SiteUser> findById(Long id);
     Optional<SiteUser> findByUsername(String username);
     Optional<SiteUser> findByEmail(String email);
     
-    @Modifying
-    @Query("UPDATE SiteUser u SET u.chatRoom = :chatRoom WHERE u.id = :userId")
-    void updateChatRoom(Long userId, ChatRoom chatRoom);
+    @Query("SELECT new com.test.project.user.UserDTO(u.name) FROM SiteUser u WHERE u.id = :id")
+    UserDTO findUserNameById(@Param("id") Long id);
 
 }

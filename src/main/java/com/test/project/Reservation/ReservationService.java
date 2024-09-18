@@ -51,15 +51,15 @@ public class ReservationService {
     }
 
     // 예약 확인
-    public boolean isRoomReserved(String roomId, Long userId) {
-        SiteUser user = userService.getUserById(userId);
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
-
-        if (user == null || chatRoom == null) {
-            return false;
-        }
-
-        Optional<Reservation> reservation = reservationRepository.findByUserAndChatRoom(user, chatRoom);
-        return reservation.map(Reservation::isReserved).orElse(false);
-    }
+//    public boolean isRoomReserved(String roomId, Long userId) {
+//        SiteUser user = userService.getUserById(userId);
+//        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+//
+//        if (user == null || chatRoom == null) {
+//            return false;
+//        }
+//
+//        Optional<Reservation> reservation = reservationRepository.findByUserAndChatRoom(user, chatRoom);
+//        return reservation.map(Reservation::isReserved).orElse(false);
+//    }
 }

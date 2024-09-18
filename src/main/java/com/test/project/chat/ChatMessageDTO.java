@@ -22,5 +22,5 @@ public class ChatMessageDTO {
     private String senderEmail;
     private String message;
     private LocalDateTime sendDate;
-
+    private Long userCount;
 }

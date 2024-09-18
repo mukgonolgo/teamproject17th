@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.user.SiteUser;
+import com.test.project.user.SiteUserRepository;
+import com.test.project.user.UserDTO;
 import com.test.project.user.UserRepository;
 import com.test.project.user.UserService;
 
@@ -36,26 +38,33 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
+	
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
     private final UserService userService;
     private final ChatService chatService;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
- 
-
+    private final ChatRoomService chatRoomService;
+    private final SiteUserRepository SiteuserRepository;
     // 채팅 페이지 렌더링
     @GetMapping("/chat")
     public String getChatPage(Model model, @RequestParam(required = false) String id, Authentication authentication, HttpSession session) {
         // 사용자 정보 가져오기
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-        
+        String username = userDetails.getUsername();       
         SiteUser user = userService.getUser(username);
-        
+
+        SiteUser currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         if (user != null) {
             Long userId = user.getId(); // 유저 ID 가져오기
+        
+
             model.addAttribute("username", user.getUsername());
             model.addAttribute("userID", userId);
+            model.addAttribute("current_username", currentUser.getUsername());
+            model.addAttribute("current_userID", currentUser.getId());
+            
             logger.info("User found. Username: {}, User ID: {}", user.getUsername(), user.getId());
         } else {
             logger.warn("User not found. Username: {}", username);
@@ -71,8 +80,9 @@ public class ChatController {
         model.addAttribute("chatList", chatService.getChatList(id)); // 특정 채팅방의 채팅 리스트
         
         // 채팅 페이지 템플릿 반환
-        return "chat"; // chat.html 템플릿을 반환 (혹은 필요한 경우 "eat_friends"로 변경 가능)
+        return "eat_friends"; // chat.html 템플릿을 반환
     }
+
     // 모든 채팅 가져오기 (API)
     @GetMapping("/chat/all")
     @ResponseBody
@@ -80,9 +90,6 @@ public class ChatController {
         List<Chat> chatList = chatService.getAllChats(); // 모든 채팅 가져오기
         return chatList; // JSON 형식으로 반환
     }
-    
-
- 
 
     // 채팅 메시지 전송
     @MessageMapping("/chat/{roomId}")
@@ -135,6 +142,8 @@ public class ChatController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("roomId", chatRoom.getRoomId());
+            // 채팅방 생성 후 리다이렉션
+            response.put("redirectUrl", "/chat/room/" + roomId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
@@ -146,7 +155,7 @@ public class ChatController {
 
     // 채팅방 페이지 렌더링
     @GetMapping("/chat/room/{roomId}")
-    public String joinRoom(@PathVariable("roomId") String roomId, Model model, Authentication authentication, HttpSession session) {
+    public String joinRoom(@PathVariable("roomId") String roomId, Model model, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         SiteUser user = userService.getUser(username);
@@ -165,7 +174,7 @@ public class ChatController {
         List<Chat> chatList = chatService.getChatList(roomId); // 특정 채팅방의 채팅 리스트
         model.addAttribute("roomId", roomId);
         model.addAttribute("chatList", chatList);
-        return "room"; // Thymeleaf 템플릿 파일명
+        return "eat_friends"; // Thymeleaf 템플릿 파일명
     }
 
     // 채팅방의 데이터 제공 (채팅 목록 포함)
@@ -215,55 +224,61 @@ public class ChatController {
         }
     }
 
-    /*
-     * 채팅창 있는지 확인
-     * */
+    // 채팅방 존재 확인
     @GetMapping("/room/{roomId}/exists")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> checkRoomExists(@PathVariable("roomId") String roomId) {
-        boolean exists = chatService.getChatRoom(roomId) != null;
-        Map<String, Object> response = new HashMap<>();
-        response.put("exists", exists);
-        return ResponseEntity.ok(response);
-    }
-    
-    @PostMapping("/room/{roomId}/leave")
-    public ResponseEntity<Map<String, Object>> leaveChatRoom(@PathVariable("roomId") String roomId, @RequestBody Map<String, String> payload) {
-        String username = payload.get("username");
-
-        // 사용자와 채팅방의 관계를 관리하는 로직
-        boolean success = chatService.leaveRoom(roomId, username);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", success);
-        if (success) {
-            response.put("message", "User left the chat room successfully.");
-        } else {
-            response.put("message", "Failed to leave the chat room.");
-        }
-        return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/chatRoom/{roomId}")
-    public String getChatRoom(@PathVariable("roomId") String roomId, Model model) {
-        ChatRoom chatRoom = chatService.getChatRoomWithMembers(roomId);
-        model.addAttribute("chatRoom", chatRoom);
-        return "eat_friends";
-    }
-    @GetMapping("/chat/chat-room-status/{roomId}")
-    public ResponseEntity<ChatRoomDTO> getChatRoomStatus(@PathVariable("roomId") String roomId) {
         ChatRoom chatRoom = chatService.getChatRoom(roomId);
-        if (chatRoom == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        Map<String, Object> response = new HashMap<>();
+        response.put("exists", chatRoom != null);
+        return ResponseEntity.ok(response);
+    }
+
+    // 채팅방에서 나가기
+    @PostMapping("/room/{roomId}/leave")
+    public ResponseEntity<Map<String, Object>> leaveChatRoom(@PathVariable("roomId") String roomId, Authentication authentication) {
+        String username = authentication.getName();
+        SiteUser user = userService.getUser(username);
+
+        try {
+            boolean success = chatService.removeUserFromRoom(roomId, user);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", success);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error leaving chat room", e);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Error leaving chat room");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+    @GetMapping("/chat-room-status")
+    @ResponseBody
+    public ResponseEntity<List<ChatRoomDTO>> getChatRoomStatus() {
+        List<ChatRoomDTO> chatRooms = chatRoomService.getAllChatRooms(); // 서비스에서 DTO 리스트를 가져옵니다
+        return ResponseEntity.ok(chatRooms); // DTO 리스트를 JSON으로 반환합니다
+    }
+    
+    // 사용자 저장 API
+    @PostMapping("/api/chatrooms/join")
+    public ResponseEntity<?> joinChatRoom(@RequestBody ChatRoomJoinRequest request) {
+        try {
+            // 채팅방이 존재하는지 확인
+            ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
+                .orElseThrow(() -> new RuntimeException("채팅방을 찾을 수 없습니다"));
 
-        ChatRoomDTO chatRoomDTO = new ChatRoomDTO(
-                chatRoom.getRoomId(),
-                chatRoom.getName(),
-                chatRoom.getChatcurrentMembers(),
-                chatRoom.getChatmaxMembers()
-        );
+            // 사용자가 존재하는지 확인
+            SiteUser user = SiteuserRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
 
-        return ResponseEntity.ok(chatRoomDTO);
+            // 사용자 추가
+            chatRoom.getMembers().add(user);
+            chatRoomRepository.save(chatRoom);
+
+            return ResponseEntity.ok().body("채팅방에 성공적으로 참여했습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

@@ -20,3 +20,4 @@ over.addEventListener('mouseleave', function() {
     arrowImg.style.transform = 'rotate(0deg)';
     menus.forEach(menu => menu.classList.remove('expanded'));
 });
+

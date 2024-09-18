@@ -4,112 +4,227 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.test.project.DataNotFoundException;
 import com.test.project.chat.ChatRoom;
 import com.test.project.chat.ChatRoomRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
-    private final ChatRoomRepository chatRoomRepository; 
-	private static final String UPLOAD_DIR = "src/main/resources/static/img/user/";
+    private final UserRepository userRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
+    private final SiteUserRepository siteUserRepository;
+    private static final String UPLOAD_DIR = "src/main/resources/static/img/user/";
 
-	public SiteUser create(String username, String email, String password, String address, String phoneNumber,
-			MultipartFile imageFile) throws IOException {
-		SiteUser user = new SiteUser();
-		user.setUsername(username);
-		user.setEmail(email);
-		user.setAddress(address); // 주소 추가
-		user.setPhoneNumber(phoneNumber); // 휴대폰 번호 추가
-		user.setPassword(passwordEncoder.encode(password)); // 암호화된 비밀번호 설정
+    // 회원가입 로직
+    public SiteUser create(String username, String emailDomain, String password, String postcode, String basicAddress,
+                           String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name)
+            throws IOException {
 
-		// 회원 프로필 이미지 등록한다면 해당 이미지 이름도 DB 저장
-		if (!imageFile.isEmpty()) {
-			// 고유한 이미지 이름 생성
-			String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-			// 파일 저장 경로
-			Path filePath = Paths.get(UPLOAD_DIR, fileName);
-			// 디렉토리가 없으면 생성
-			Files.createDirectories(filePath.getParent());
-			// 파일 저장
-			Files.write(filePath, imageFile.getBytes());
-			// 사용자 엔티티에 이미지 경로 설정
-			user.setImageUrl("/img/user/" + fileName);
-		}
+        SiteUser user = new SiteUser();
+        user.setUsername(username);
+        user.setEmail(emailDomain);
+        user.setPostcode(postcode);
+        user.setBasicAddress(basicAddress);
+        user.setDetailAddress(detailAddress);
+        user.setPhoneNumber(phoneNumber);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setSnsAgree(snsAgree);
+        user.setName(name);
 
-		this.userRepository.save(user);
-		return user;
-	}
+        // 프로필 이미지 저장 로직
+        if (!imageFile.isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_DIR, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, imageFile.getBytes());
+            user.setImageUrl("/img/user/" + fileName);
+        }
 
-
-	
-	  // 사용자 ID로부터 사용자 정보 가져오기
-    public SiteUser getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        this.userRepository.save(user);
+        return user;
     }
 
-    // 사용자 이름으로 사용자 정보 가져오기
+    // 이메일 전송 로직
+    public void sendEmail(String toEmail, String subject, String content) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject(subject);
+        message.setText(content);
+        mailSender.send(message);
+    }
+
     public SiteUser getUser(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+        Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
+
+        if (siteUser.isPresent()) {
+            return siteUser.get();
+        } else {
+            throw new DataNotFoundException("해당 회원이 없습니다.");
+        }
     }
 
+    // 아이디 중복 확인 로직
+    public boolean isUsernameTaken(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
 
+    // 아이디 찾기 로직 (email 사용)
+    public String findIdByNameAndEmail(String name, String email) {
+        Optional<SiteUser> user = userRepository.findByNameAndEmail(name, email);
+        return user.map(SiteUser::getUsername).orElse(null);
+    }
 
-	public SiteUser findByUsername(String username) {
-		// 
-		 return userRepository.findByUsername(username).orElse(null);
-	}
+    // 비밀번호 찾기 로직 (이름과 아이디만 사용)
+    public boolean verifyUserForPasswordReset(String name, String username) {
+        Optional<SiteUser> user = userRepository.findByNameAndUsername(name, username);
+        return user.isPresent();
+    }
 
+    public void resetPassword(String username, String newPassword) {
+        System.out.println("비밀번호 재설정 요청된 아이디: " + username);
+        Optional<SiteUser> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            SiteUser siteUser = user.get();
+            siteUser.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(siteUser);
+        } else {
+            System.out.println("사용자 정보를 찾을 수 없습니다: " + username);
+            throw new DataNotFoundException("해당 회원이 없습니다.");
+        }
+    }
 
-	 @Transactional
-	    public void updateUserChatRoom(Long userId, String  roomId) {
-	        SiteUser user = userRepository.findById(userId)
-	                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-	        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-	                .orElseThrow(() -> new RuntimeException("ChatRoom not found with ID: " + roomId));
+    public String checkUserDetails(String name, String username) {
+        Optional<SiteUser> userOptional = userRepository.findByNameAndUsername(name, username);
 
-	        // 채팅방을 사용자의 채팅방 목록에 추가
-	        user.getChatRooms().add(chatRoom);
-	        userRepository.save(user);
-	    }
-	 
-	 @Transactional
-	    public void addChatRoomToUser(Long userId, String roomId) {
-	        SiteUser user = userRepository.findById(userId)
-	            .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!userOptional.isPresent()) {
+            return "사용자 정보가 일치하지 않습니다.";
+        }
 
-	        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-	            .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        return "일치하는 사용자를 찾았습니다.";
+    }
 
-	        user.getChatRooms().add(chatRoom);
-	        userRepository.save(user);
-	    }
+    // 사용자 프로필 업데이트 로직 (주소, 비밀번호 포함)
+    public void updateUserProfile(String username, UserUpdateForm form) throws IOException {
+        // 기존 사용자 정보 찾기
+        SiteUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
 
-	    @Transactional
-	    public void removeChatRoomFromUser(Long userId, String roomId) {
-	        SiteUser user = userRepository.findById(userId)
-	            .orElseThrow(() -> new RuntimeException("User not found"));
+        // 사용자 정보 업데이트
+        user.setName(form.getName());
+        user.setEmail(form.getEmail());
+        user.setPhoneNumber(form.getPhoneNumber());
 
-	        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-	            .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        // 주소 정보를 각각의 필드에 저장
+        user.setPostcode(form.getPostcode());         // 우편번호 저장
+        user.setBasicAddress(form.getBasicAddress()); // 기본 주소 저장
+        user.setDetailAddress(form.getDetailAddress()); // 상세 주소 저장
 
-	        user.getChatRooms().remove(chatRoom);
-	        userRepository.save(user);
-	    }
+        // 프로필 이미지 업데이트 로직
+        if (form.getProfileImage() != null && !form.getProfileImage().isEmpty()) {
+            String fileName = UUID.randomUUID().toString() + "_" + form.getProfileImage().getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_DIR, fileName);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, form.getProfileImage().getBytes());
+            user.setImageUrl("/img/user/" + fileName);
+        }
 
+        // 비밀번호 변경
+        if (form.getNewPassword() != null && form.getNewPassword().equals(form.getNewConfirmPassword())) {
+            user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        }
 
+        // 사용자 정보 저장
+        userRepository.save(user);
+    }
 
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public SiteUser findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
+    @Transactional
+    public void updateUserChatRoom(Long userId, String roomId) {
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("ChatRoom not found with ID: " + roomId));
+
+        // 채팅방을 사용자의 채팅방 목록에 추가
+        user.getChatRooms().add(chatRoom);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void addChatRoomToUser(Long userId, String roomId) {
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+
+        user.getChatRooms().add(chatRoom);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeChatRoomFromUser(Long userId, String roomId) {
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+
+        user.getChatRooms().remove(chatRoom);
+        userRepository.save(user);
+    }
+
+    public SiteUser getUserById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    @Transactional
+    public boolean removeUserFromChatRoom(String roomId, Long userId) {
+        // 채팅방과 사용자 조회
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Chat room not found"));
+        SiteUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 사용자와 채팅방 관계에서 제거
+        boolean removedFromRoom = chatRoom.getMembers().remove(user);
+        boolean removedFromUser = user.getChatRooms().remove(chatRoom);
+
+        if (removedFromRoom && removedFromUser) {
+            // 채팅방 및 사용자 정보 업데이트
+            chatRoom.setChatcurrentMembers(chatRoom.getChatcurrentMembers() - 1);
+            chatRoomRepository.save(chatRoom);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
+    public String getUserName(Long id) {
+        SiteUser user = siteUserRepository.findById(id).orElse(null);
+        return user != null ? user.getName() : null;
+    }
 }
