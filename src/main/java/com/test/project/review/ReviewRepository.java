@@ -17,4 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findBySubjectLike(String subject);*/
 	List<Review> findByUserId(Long userId);
+	
+    // 리뷰 ID로 리뷰를 찾는 메소드
+    Optional<Review> findById(Long id);
 }

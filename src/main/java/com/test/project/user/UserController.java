@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -294,6 +295,14 @@ public class UserController {
 	    }
 	}
 
+	@GetMapping("/check-login")
+	public ResponseEntity<String> checkLogin(@AuthenticationPrincipal SiteUser user) {
+	    if (user != null) {
+	        return ResponseEntity.ok("Logged in as: " + user.getUsername());
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+	    }
+	}
 
 
 

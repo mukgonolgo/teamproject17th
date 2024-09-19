@@ -56,6 +56,36 @@
                     icon.classList.add("fa-eye");  // 눈 뜬 아이콘으로 변경
                 }
             });
+            
+            //로그인시 아이디 저장
+            // 로그인 함수 예시
+function login() {
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
+
+    fetch("/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("로그인 실패");
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 로그인 성공 시 사용자 ID 저장
+        localStorage.setItem('userId', data.userId); // 데이터에 사용자 ID가 포함되어 있다고 가정
+        // 추가 로직 (예: 페이지 리다이렉트)
+    })
+    .catch(error => {
+        console.error("로그인 중 오류 발생:", error);
+    });
+}
+
         </script>
     </body>
 </html>

@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageRepository;
+import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
@@ -51,10 +52,9 @@ public class ReviewController {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private ReviewTagRepository reviewTagRepository;
+    private ReviewLikeService reviewLikeService;
+    
 
-    @Autowired
-    private ReviewImageRepository reviewImageRepository;
     
     @Autowired
     private UserService userService;
@@ -67,28 +67,32 @@ public class ReviewController {
         return "review/review_page";
     }
 
+
+  
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
-        // 리뷰 작성자의 사용자 ID 가져오기
-        Long userId = reviewService.getUserIdByReviewId(id);
+        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+        boolean likedByUser = reviewLikeService.isLikedByUser(id, userId);  // 사용자가 좋아요를 눌렀는지 여부 확인
+        Long likeCount = reviewLikeService.countLikes(id);  // 리뷰의 좋아요 수
 
         // 사용자 정보 가져오기
-        SiteUser author = userService.getUserById(userId)
+        SiteUser author = userService.getUserById(review.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // 이미지 URL 로그 출력
-        System.out.println("Author Profile Image URL: " + author.getImageUrl());
 
         // 모델에 데이터 추가
         model.addAttribute("review", review);
-        model.addAttribute("authorProfileImage", author.getImageUrl()); // 작성자 프로필 이미지
-        model.addAttribute("authorUsername", author.getUsername()); // 작성자 사용자명
+        model.addAttribute("likedByUser", likedByUser);  // 좋아요 여부
+        model.addAttribute("likeCount", likeCount);  // 좋아요 수
+        model.addAttribute("authorProfileImage", author.getImageUrl());  // 작성자 프로필 이미지
+        model.addAttribute("authorUsername", author.getUsername());  // 작성자 사용자명
 
         return "review/review_detail";
     }
+
+
 
 
  /*   @GetMapping("/review_feed")
@@ -191,6 +195,31 @@ public class ReviewController {
         Map<String, Object> response = new HashMap<>();
         response.put("reviewId", review.getId());
         response.put("imageUrls", reviewImageMaps.stream().map(map -> map.getReviewImage().getFilepath()).collect(Collectors.toList()));
+
+        return ResponseEntity.ok(response);
+    }
+
+    
+    
+    //좋아요
+    @PostMapping("/review/{id}/like")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> likeReview(@PathVariable Long id) {
+        Long userId = reviewService.getCurrentUserId(); // 현재 사용자 ID 가져오기
+
+        // 좋아요 또는 좋아요 취소 처리
+        reviewLikeService.likeReview(id, userId);
+
+        // 리뷰의 현재 좋아요 수
+        Long likeCount = reviewLikeService.countLikes(id);
+
+        // 사용자가 해당 리뷰에 좋아요를 눌렀는지 여부
+        boolean likedByUser = reviewLikeService.isLikedByUser(id, userId);
+
+        // 응답 데이터 설정
+        Map<String, Object> response = new HashMap<>();
+        response.put("likeCount", likeCount);
+        response.put("likedByUser", likedByUser);
 
         return ResponseEntity.ok(response);
     }

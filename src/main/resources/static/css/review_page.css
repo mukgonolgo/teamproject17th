@@ -38,9 +38,7 @@ a {
     text-align: left; /* 텍스트를 왼쪽으로 정렬 */
    
 }
-.likes{
-  margin-top: -15px  !important;   
-}
+
 .col-8, .col-4 ,.col-12{
 	padding: 0px;
 	margin: 0px;
@@ -138,3 +136,10 @@ a {
 
 }
 
+/*탭버튼*/
+.tap_btn{
+	cursor: pointer;
+}
+.S3_btn_box{
+	margin-top: -50px !important;
+}

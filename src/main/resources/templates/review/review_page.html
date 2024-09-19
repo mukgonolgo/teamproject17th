@@ -13,8 +13,8 @@
 <link rel="stylesheet" href="/css/category.css">
 <!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
 <script src="js/review_page_category.js"></script>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content">
 	<!-- 검색란 -->
@@ -220,6 +220,9 @@
 	<!--순서 container-->
 
 
+
+
+
 	<!--card-->
 	<div class="section3 mt-5">
 		<div class="container my-5 ">
@@ -227,21 +230,26 @@
 				이번주 <span class="text-danger">🔥HOT한</span> 리뷰
 			</h3>
 			<div class="row">
-				<!-- 첫 번째 카드 -->
-				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
-					<div class="card S3_card h-100 custom-border mx-auto">
-					<a href="" class="text-dark">
-	    <h5 class="d-flex align-items-center mt-3 ml-3">
-	        <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/profile/default.jpg'}" alt="" class="rounded-circle" style="width: 50px;">
-	        <span class="d-flex align-items-center mx-2" th:text="${username}">맛집헌터</span>
-	    </h5>
-	</a>
+			  <!-- 리뷰 카드 -->
+            <div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
+                <div class="card S3_card h-100 custom-border mx-auto">
+                    <a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3">
+                            <!-- 리뷰 작성자 프로필 이미지 -->
+                            <img
+                                th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}"
+                                alt="" class="rounded-circle" style="width: 50px;">
+                            <!-- 리뷰 작성자 사용자명 -->
+                            <span class="d-flex align-items-center mx-2" th:text="${review.user.username}">맛집헌터</span>
+                        </h5>
+                    </a>
 
 						<div th:id="'S3_review_carouselExample' + ${review.id}"
 							class="carousel slide carousel-fade px-2" data-ride="carousel">
 							<div class="carousel-inner S3_carousel-inner">
 								<a th:href="@{/review_detail/{id}(id=${review.id})}">
-									<div class="carousel-item S3_carousel-item" th:each="imageMap, iterStat : ${review.reviewImageMap}"
+									<div class="carousel-item S3_carousel-item"
+										th:each="imageMap, iterStat : ${review.reviewImageMap}"
 										th:classappend="${iterStat.index == 0} ? ' active'">
 										<img th:src="@{${imageMap.reviewImage.filepath}}"
 											alt="Review detail Image"
@@ -268,19 +276,31 @@
 
 						<div class="card-body d-flex flex-column">
 							<div class="row p-3 S3_text-box ">
-								<!-- 리뷰제목 -->
+								<!-- 리뷰 제목 -->
 								<div class="col-8 mx-0">
 									<a th:href="@{/review_detail/{id}(id=${review.id})}"
 										class="text-dark">
 										<h5 class="card-title S3_card-title" th:text="${review.title}"></h5>
 									</a>
 								</div>
-								<!-- 좋아요 -->
-								<div class="col-4 text-end text-right likes">
-									<span class="text-dark mx-1"><img
-										src="/img/icon/heart-regular.svg" alt="like"
-										style="width: 20px" class="img-fluid mr-1" />566</span>
+
+								<!-- 댓글과 좋아요가 한 줄에 배치된 부분 -->
+								<div
+									class="col-4 text-right d-flex justify-content-end" style="margin-top:-35px;">
+									<!-- 댓글 -->
+									<div class="d-flex align-items-center ">
+										<img src="/img/icon/chat.png" alt="comment"
+											style="width: 20px;" /> <span
+											class="text-dark mx-1">566</span>
+									</div>
+
+									<!-- 좋아요 -->
+									<div class="d-flex align-items-center ml-1">
+										<img src="/img/icon/heart-regular.svg" alt="like"
+											style="width: 20px;"  class="tap_btn" /> <span class="text-dark mx-1">566</span>
+									</div>
 								</div>
+
 
 								<!-- 식당정보 -->
 								<p class="col-12 S3_store mb-2">
@@ -335,7 +355,7 @@
 		<!--container-->
 	</div>
 	<!-- section -->
-	
+
 	<script>
 document.addEventListener('DOMContentLoaded', function() {
     const carouselItems = document.querySelectorAll('.carousel-item');

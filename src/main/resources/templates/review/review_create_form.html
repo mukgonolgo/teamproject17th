@@ -2,6 +2,9 @@
 <html layout:decorate="~{layout}">
 <head>
     <link rel="stylesheet" href="/css/review_create_form.css" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
 
 </head>
 <body>
