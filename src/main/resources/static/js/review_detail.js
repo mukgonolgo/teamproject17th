@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             comments.forEach(comment => {
                 const commentHtml = `
+				<hr />
                     <div class="comment">
                         <img src="${comment.userImageUrl || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-3 S3_d_profile-img" style="width: 50px;">
                         <div class="comment-content">
@@ -74,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const commentsList = document.querySelector(".comments-list");
             const newCommentHtml = `
+			<hr />
                 <div class="comment">
                     <img src="${data.userImageUrl || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-3 S3_d_profile-img" style="width: 50px;">
                     <div class="comment-content">
@@ -94,4 +96,30 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Error occurred:", error);
         });
     });
+});
+
+/*공유 모달창 기능*/
+document.getElementById('shareBtn').addEventListener('click', function() {
+    const modal = document.getElementById('shareModal');
+    const shareUrl = window.location.href; // 현재 페이지 URL 가져오기
+    document.getElementById('shareUrl').value = shareUrl; // 주소 입력란에 넣기
+
+    // SNS 공유 링크 설정
+    document.getElementById('facebookShare').href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+    document.getElementById('twitterShare').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=Check this out!`;
+
+    modal.style.display = 'block'; // 모달창 보이기
+});
+
+// 모달창 닫기 버튼 기능
+document.querySelector('.closeBtn').addEventListener('click', function() {
+    document.getElementById('shareModal').style.display = 'none';
+});
+
+// 주소 복사 기능
+document.getElementById('copyBtn').addEventListener('click', function() {
+    const copyText = document.getElementById('shareUrl');
+    copyText.select();
+    document.execCommand('copy'); // 주소 복사
+    alert('주소가 복사되었습니다!');
 });

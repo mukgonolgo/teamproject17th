@@ -25,6 +25,7 @@ import com.test.project.DataNotFoundException;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageRepository;
+import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
@@ -39,6 +40,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewImageRepository reviewImageRepository;
     private final ReviewTagRepository reviewTagRepository;
+    private final ReviewLikeService reviewLikeService;
+   
     
     private final UserRepository userRepository ;
     
@@ -47,11 +50,13 @@ public class ReviewService {
     public ReviewService(ReviewRepository reviewRepository, 
                          ReviewImageRepository reviewImageRepository,
                          ReviewTagRepository reviewTagRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         ReviewLikeService reviewLikeService) {
         this.reviewRepository = reviewRepository;
         this.reviewImageRepository = reviewImageRepository;
         this.reviewTagRepository = reviewTagRepository;
         this.userRepository = userRepository;
+        this.reviewLikeService = reviewLikeService;
     }
 
     // ID로 리뷰 조회
@@ -164,6 +169,24 @@ public class ReviewService {
     public Review findById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id));
+    }
+    
+    
+    
+    // 모든 리뷰와 해당 리뷰의 좋아요 수 및 사용자의 좋아요 여부를 반환하는 메서드
+    public List<Review> getAllReviewsWithLikes(Long currentUserId) {
+        List<Review> reviews = reviewRepository.findAll();
+
+        // 각 리뷰에 대해 좋아요 수와 좋아요 상태를 계산
+        reviews.forEach(review -> {
+            Long likeCount = reviewLikeService.countLikes(review.getId());
+            boolean likedByUser = reviewLikeService.isLikedByUser(review.getId(), currentUserId);
+
+            review.setLikeCount(likeCount);
+            review.setLikedByUser(likedByUser);
+        });
+
+        return reviews;
     }
     
 }

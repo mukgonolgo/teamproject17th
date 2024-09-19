@@ -53,9 +53,7 @@ public class ReviewCommentController {
         ReviewComment newComment = reviewCommentService.addComment(content, user, review);
         return ResponseEntity.ok(newComment);
     }
-    
- 
-    
+
     
     @PostMapping("/reviews/{reviewId}/comments/{parentId}/reply")
     public ResponseEntity<ReviewComment> createReply(

@@ -5,11 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.test.project.review.Review;
 
+import io.lettuce.core.dynamic.annotation.Param;
+
 import java.util.List;
 
 public interface ReviewCommentRepository extends JpaRepository<ReviewComment, Long> {
-
-
+	
+	
     // 특정 리뷰에 속한 댓글의 개수를 반환하는 메소드
     long countByReview(Review review);
 	  // 부모 댓글을 기준으로 대댓글의 개수를 반환

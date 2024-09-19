@@ -1,11 +1,18 @@
 package com.test.project.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.test.project.review.like.ReviewLike;
+
 import groovy.transform.builder.Builder;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +41,9 @@ public class SiteUser {
 
     private String name; // 사용자 이름
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ReviewLike> likes = new ArrayList<>();
+    
     // 주소 필드들 (우편번호, 기본 주소, 상세 주소로 분리)
     private String postcode;
     private String basicAddress;

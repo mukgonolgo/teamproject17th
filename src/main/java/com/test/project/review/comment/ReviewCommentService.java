@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;  // 트랜잭�
 import com.test.project.DataNotFoundException;
 import com.test.project.review.Review;
 import com.test.project.review.ReviewRepository;
+import com.test.project.review.ReviewService;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 
@@ -64,4 +65,6 @@ public class ReviewCommentService {
     public void deleteComment(Long commentId) {
         reviewCommentRepository.deleteById(commentId);
     }
+
+    
 }

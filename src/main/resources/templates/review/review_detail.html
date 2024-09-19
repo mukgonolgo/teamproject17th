@@ -66,19 +66,21 @@
 			<!-- 리뷰 카드 -->
 			<div class="col-xl-8 col-sm-12 ">
 				<div class="card custom-border p-3">
-					<a th:href="@{/review_feed}" class="text-dark"
-						style="text-decoration: none;">
-						<div class="d-flex align-items-center mx-3 my-2">
-							<img
-								th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
-								alt="" class="rounded-circle"
-								style="width: 50px; height: 50px; object-fit: cover;"> <span
-								class="ml-3">
+					<div class="d-flex align-items-center mx-3 my-2">
+						<a th:href="@{/review_feed}"
+							class="text-dark d-flex align-items-center"
+							style="text-decoration: none;"> <img
+							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
+							alt="" class="rounded-circle"
+							style="width: 50px; height: 50px; object-fit: cover;"> <span
+							class="ml-3">
 								<h4 th:text="${authorUsername}"></h4>
-							</span> <i class="fa-solid fa-ellipsis-v ml-auto"
-								style="color: #000000;"></i>
-						</div>
-					</a>
+
+						</span>
+						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
+							style="color: #000000;"></i>
+					</div>
+
 
 
 
@@ -113,18 +115,73 @@
 								<h5 class="card-title S3_card-title" th:text="${review.title}"></h5>
 
 							</div>
-							<div class="col-3 text-right">
-								<i class="fa-solid fa-heart" style="color: #f02424;"></i><span
-									class="text-dark mx-1">566</span> <i
-									class="fa-solid fa-share-nodes mx-2"></i> <i
-									class="fa-regular fa-bookmark"></i>
+							<div
+								class="col-3 text-right d-flex justify-content-end align-items-center mb-2">
+
+								<!-- 댓글 -->
+								<img src="/img/icon/chat.png" alt="" style="width: 20px"
+									class="tap_btn" /> <span class="text-dark mx-1"></span>
+
+								<!-- 좋아요 -->
+								<div id="like-container">
+									<i id="like-btn" class="fa-regular fa-heart tap_btn"></i> 
+									<span id="like-count" th:text="${likeCount}">0</span>
+								</div>
+
+
+								<!-- 공유버튼 -->
+								<img id="shareBtn" src="/img/icon/share-nodes-solid.svg"
+									alt="share" style="width: 15px" class="tap_btn mx-2" />
+
+
+
 							</div>
 						</div>
 
+						<!-- 모달창 -->
+						<div id="shareModal" class="modal" style="display: none;">
+							<div class="modal-content">
+								<span class="closeBtn text-right">&times;</span>
+
+								<!-- SNS 공유 버튼들을 감싸는 div -->
+								<div class="sns-share d-flex justify-content-center"
+									style="gap: 20px;">
+									<!-- 페이스북 공유 버튼 -->
+									<a href="" id="facebookShare" target="_blank"> <img
+										src="/img/icon/sns/f_black.png" alt="페이스북 공유"
+										style="width: 50px;" />
+									</a>
+
+									<!-- 트위터 공유 버튼 -->
+									<a href="" id="twitterShare" target="_blank"> <img
+										src="/img/icon/sns/x_black.png" alt="트위터 공유"
+										style="width: 50px;" />
+									</a>
+								</div>
+
+								<p>공유할 주소:</p>
+
+								<!-- 인풋창과 복사 버튼 -->
+								<div class="input-group mb-3">
+									<input type="text" class="form-control" id="shareUrl"
+										value="https://youtu.be/CyzW4FxtHVM?feature=shared" readonly>
+									<div class="input-group-append">
+										<!-- 복사 버튼 이미지 -->
+										<button class="btn btn-dark" id="copyBtn" type="button"
+											style="display: flex; align-items: center;">복사</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
 						<p>
-							<small>⭐⭐⭐⭐⭐</small> <small class="text-muted"><i
-								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span
-								class="font-weight-bold">수원역 근처</span> 돼지냠냠</small>
+							<small>⭐⭐⭐⭐⭐</small><a href="" style="text-decoration: none;">
+								<small class="text-muted"><i
+									class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span
+									class="font-weight-bold">수원역 근처</span> 돼지냠냠</small>
+							</a>
 						</p>
 
 						<!-- 내용  -->
@@ -201,9 +258,11 @@
 						</div>
 
 
-<div class="comments-list">
-    <!-- 기존 댓글들이 여기에 추가됩니다 -->
-</div>
+
+						<div class="comments-list">
+
+							<!-- 기존 댓글들이 여기에 추가됩니다 -->
+						</div>
 
 						<!-- 댓글 작성 버튼은 로그인한 사용자만 볼 수 있도록 설정 -->
 						<div class="comment-input mt-4"
@@ -219,8 +278,8 @@
 									th:value="${review.id}" />
 
 								<div class="d-flex align-items-center mt-3">
-									<textarea class="form-control ml-2" id="commentContent" name="commentContent" rows="3"
-										placeholder="댓글을 작성하세요..."></textarea>
+									<textarea class="form-control ml-2" id="commentContent"
+										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
 								</div>
 								<div class="btn-container mt-2 text-right">
 									<button type="button" id="submitComment"
@@ -249,7 +308,14 @@
 
 	</div>
 	<!-- container -->
+	
+	
+	<script th:inline="javascript">
+		var likedByUser = /*[[${likedByUser}]]*/ false;  // 서버에서 받은 값 설정
+		var reviewId = /*[[${review.id}]]*/ 0;  // 현재 리뷰 ID 설정
+	</script>
 	<script src="/js/review_detail.js"></script>
+	<script src="/js/reviewLike.js"></script>
 </div>
 <!-- content -->
 </html>
