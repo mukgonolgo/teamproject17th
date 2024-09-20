@@ -17,6 +17,8 @@ import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +70,14 @@ public class ReviewController {
     }
 
 
-  
+    @GetMapping("/reviews")
+    public String getReviews(Model model) {
+        List<Review> reviews = reviewService.getAllReviews();
+        model.addAttribute("reviews", reviews);
+        return "reviews";
+    }
+
+
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
@@ -208,7 +217,7 @@ public class ReviewController {
         Long userId = reviewService.getCurrentUserId(); // 현재 사용자 ID 가져오기
 
         // 좋아요 또는 좋아요 취소 처리
-        reviewLikeService.likeReview(id, userId);
+        reviewLikeService.toggleLike(id, userId);
 
         // 리뷰의 현재 좋아요 수
         Long likeCount = reviewLikeService.countLikes(id);

@@ -11,8 +11,11 @@
 <!-- 커스텀 CSS 추가 -->
 <link rel="stylesheet" href="/css/review_page.css">
 <link rel="stylesheet" href="/css/category.css">
+
 <!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
 <script src="js/review_page_category.js"></script>
+
+
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
@@ -230,19 +233,22 @@
 				이번주 <span class="text-danger">🔥HOT한</span> 리뷰
 			</h3>
 			<div class="row">
-			  <!-- 리뷰 카드 -->
-            <div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
-                <div class="card S3_card h-100 custom-border mx-auto">
-                    <a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
-                        <h5 class="d-flex align-items-center mt-3 ml-3">
-                            <!-- 리뷰 작성자 프로필 이미지 -->
-                            <img
-                                th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}"
-                                alt="" class="rounded-circle" style="width: 50px;">
-                            <!-- 리뷰 작성자 사용자명 -->
-                            <span class="d-flex align-items-center mx-2" th:text="${review.user.username}">맛집헌터</span>
-                        </h5>
-                    </a>
+				<!-- 리뷰 카드 -->
+				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
+					<div class="card S3_card h-100 custom-border mx-auto">
+						<a th:href="@{/review_detail/{id}(id=${review.id})}"
+							class="text-dark">
+							<h5 class="d-flex align-items-center mt-3 ml-3 mb-2">
+								<!-- 리뷰 작성자 프로필 이미지 -->
+								<img
+									th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}"
+									alt="user_img" class="rounded-circle"
+									style="width: 50px; height: 50px">
+								<!-- 리뷰 작성자 사용자명 -->
+								<span class="d-flex align-items-center mx-2"
+									th:text="${review.user.username}"></span>
+							</h5>
+						</a>
 
 						<div th:id="'S3_review_carouselExample' + ${review.id}"
 							class="carousel slide carousel-fade px-2" data-ride="carousel">
@@ -285,20 +291,27 @@
 								</div>
 
 								<!-- 댓글과 좋아요가 한 줄에 배치된 부분 -->
-								<div
-									class="col-4 text-right d-flex justify-content-end" style="margin-top:-35px;">
+								<div class="col-4 text-right d-flex justify-content-end"
+									style="margin-top: -35px;">
 									<!-- 댓글 -->
 									<div class="d-flex align-items-center ">
 										<img src="/img/icon/chat.png" alt="comment"
-											style="width: 20px;" /> <span
-											class="text-dark mx-1">566</span>
+											style="width: 20px;" /> <span class="text-dark mx-1">566</span>
 									</div>
 
 									<!-- 좋아요 -->
-									<div class="d-flex align-items-center ml-1">
-										<img src="/img/icon/heart-regular.svg" alt="like"
-											style="width: 20px;"  class="tap_btn" /> <span class="text-dark mx-1">566</span>
-									</div>
+		
+	<div class="d-flex align-items-center">
+    <i th:id="'like-btn-' + ${review.id}"
+       th:classappend="${review.likedByUser} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+       class="tap_btn"
+       th:onclick="'toggleLike(' + ${review.id} + ')'"></i>
+    <span th:id="'like-count-' + ${review.id}" th:text="${review.likeCount}"></span>
+</div>
+
+
+								
+
 								</div>
 
 
@@ -312,7 +325,7 @@
 								<!-- 리뷰내용 -->
 								<p class="card-text S3_card-text mt-auto col-12 mb-2"
 									th:text="${review.content}"></p>
-
+		
 
 								<!-- 리뷰태그 -->
 								<div class="mb-3 S3_tag_box ml-1">
@@ -356,17 +369,8 @@
 	</div>
 	<!-- section -->
 
-	<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const carouselItems = document.querySelectorAll('.carousel-item');
-    const prevButton = document.querySelector('.carousel-control-prev');
-    const nextButton = document.querySelector('.carousel-control-next');
 
-    if (carouselItems.length <= 1) {
-        if (prevButton) prevButton.style.display = 'none';
-        if (nextButton) nextButton.style.display = 'none';
-    }
-});
-</script>
+	<script src="/js/review_page_like.js"></script>
+
 </div>
 </html>

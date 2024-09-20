@@ -15,7 +15,7 @@ public class ReviewLikeController {
 	    // 사용자가 특정 리뷰에 좋아요를 누르거나 취소하는 API
 	    @PostMapping("/reviews/{reviewId}/like/{userId}")
 	    public ResponseEntity<String> likeReview(@PathVariable Long reviewId, @PathVariable Long userId) {
-	        reviewLikeService.likeReview(reviewId, userId);
+	        reviewLikeService.toggleLike(reviewId, userId);
 	        return ResponseEntity.ok("좋아요 상태가 변경되었습니다.");
 	    }
 

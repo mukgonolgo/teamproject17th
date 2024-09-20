@@ -24,6 +24,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -76,5 +77,29 @@ public class Review {
     //좋아요 기능
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewLike> likes = new ArrayList<>();
+    
+    // @Transient를 사용하여 데이터베이스에 저장하지 않음 (임시 필드)
+    @Transient
+    private boolean likedByUser;  // 사용자가 좋아요를 눌렀는지 여부
+
+    @Transient
+    private Long likeCount;  // 좋아요 수
+
+    // Getter 및 Setter 추가
+    public boolean isLikedByUser() {
+        return likedByUser;
+    }
+
+    public void setLikedByUser(boolean likedByUser) {
+        this.likedByUser = likedByUser;
+    }
+
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
 
 }
