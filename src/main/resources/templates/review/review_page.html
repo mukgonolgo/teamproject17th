@@ -232,7 +232,7 @@
 			<h3 class="mt-5">
 				이번주 <span class="text-danger">🔥HOT한</span> 리뷰
 			</h3>
-			<div class="row">
+			<div class="row S3_review_card">
 				<!-- 리뷰 카드 -->
 				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
 					<div class="card S3_card h-100 custom-border mx-auto">
@@ -300,18 +300,17 @@
 									</div>
 
 									<!-- 좋아요 -->
-		
-	<div class="d-flex align-items-center">
-    <i th:id="'like-btn-' + ${review.id}"
-       th:classappend="${review.likedByUser} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
-       class="tap_btn"
-       th:onclick="'toggleLike(' + ${review.id} + ')'"></i>
-    <span th:id="'like-count-' + ${review.id}" th:text="${review.likeCount}"></span>
-</div>
-
-
-								
-
+									<div class="d-flex align-items-center like_box">
+										<!-- 리뷰 ID를 동적으로 설정 -->
+										<input type="hidden" class="review-id" th:value="${review.id}">
+										<!-- likedByUser 상태를 동적으로 설정 -->
+										<input type="hidden" class="liked-by-user"		
+											th:value="${likeStatusMap[review.id].liked}"> 
+			
+											 
+											<i th:id="'like-btn-' + ${review.id}" class="tap_btn like_btn fa-regular fa-heart"></i>
+										  <span class="like-count" th:text="${likeStatusMap[review.id].likeCount}">0</span>
+									</div>
 								</div>
 
 
@@ -325,7 +324,7 @@
 								<!-- 리뷰내용 -->
 								<p class="card-text S3_card-text mt-auto col-12 mb-2"
 									th:text="${review.content}"></p>
-		
+				
 
 								<!-- 리뷰태그 -->
 								<div class="mb-3 S3_tag_box ml-1">
@@ -370,7 +369,7 @@
 	<!-- section -->
 
 
-	<script src="/js/review_page_like.js"></script>
+	<script src="/js/review_page_like2.js"></script>
 
 </div>
 </html>

@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageRepository;
+import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
@@ -61,19 +62,50 @@ public class ReviewController {
     @Autowired
     private UserService userService;
     
-
     @GetMapping("/review")
     public String reviewPage(Model model) {
-        List<Review> reviewPage = reviewService.getAllReviews();
-        model.addAttribute("reviewPage", reviewPage);
-        return "review/review_page";
+        List<Review> reviewPage = reviewService.getAllReviews();  // 리뷰 목록 가져오기
+        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+        
+        // Map을 사용하여 리뷰 ID와 LikeStatusDto를 연결
+        Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
+
+        for (Review review : reviewPage) {
+            Long reviewId = review.getId();  // 각 리뷰의 ID 가져오기
+
+            // 각 리뷰에 대해 좋아요 상태와 좋아요 수를 가져옴
+            boolean likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);
+            Long likeCount = reviewLikeService.countLikes(reviewId);
+
+            // LikeStatusDto에 좋아요 상태와 좋아요 수 저장
+            LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
+
+            // 각 리뷰 ID별로 LikeStatusDto를 Map에 저장
+            likeStatusMap.put(reviewId, likeStatusDto);
+        }
+
+        // 모델에 리뷰 페이지와 좋아요 상태 맵 추가
+        model.addAttribute("reviewPage", reviewPage);  // 리뷰 리스트
+        model.addAttribute("likeStatusMap", likeStatusMap);  // 리뷰별 좋아요 정보
+
+        return "review/review_page";  // 리뷰 페이지로 이동
     }
 
 
+
+
     @GetMapping("/reviews")
-    public String getReviews(Model model) {
+    public String getReviews(@PathVariable("id") Long id,Model model) {
         List<Review> reviews = reviewService.getAllReviews();
         model.addAttribute("reviews", reviews);
+        
+        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+        boolean likedByUser = reviewLikeService.isLikedByUser(id, userId);  // 사용자가 좋아요를 눌렀는지 여부 확인
+        Long likeCount = reviewLikeService.countLikes(id);  // 리뷰의 좋아요 수
+        
+        model.addAttribute("likedByUser", likedByUser);  // 좋아요 여부
+        model.addAttribute("likeCount", likeCount);  // 좋아요 수
+        
         return "reviews";
     }
 
