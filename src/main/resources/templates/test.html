@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html layout:decorate="~{layout}">
 <div layout:fragment="content">
 	<div class="container mt-5">
@@ -15,3 +16,19 @@
 </div>
 </html>
 
+=======
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Image Gallery</title>
+</head>
+<body>
+    <h1>Image Gallery</h1>
+    <ul>
+        <li th:each="image : ${images}">
+            <img th:src="${image.url}" alt="Image" style="width:200px; height:auto; margin:10px;">
+        </li>
+    </ul>
+</body>
+</html>
+>>>>>>> refs/remotes/origin/develop

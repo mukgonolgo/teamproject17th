@@ -32,9 +32,12 @@ public class Store {
 
     @Column(length = 50)
     private String storeName;
-
     @Column(columnDefinition = "TEXT")
-    private String storeAddress;    
+    private String postcode;
+    @Column(columnDefinition = "TEXT")
+    private String basicAddress;    
+    @Column(columnDefinition = "TEXT")
+    private String detaildetilAddress;   
 
     private double storeLatitude;
     private double storeLongitude;
@@ -46,10 +49,14 @@ public class Store {
 
     private boolean storeAdvertisement; //광고여부
 
-    private String storeTag;    
-    
+    private String kategorieGroup;    
+    private String storeTagGroups;   
     private String storeNumber;    
-
+    
+    private String StoreStarttime;
+    
+    private String StoreEndTime;
+    
     @ManyToOne
     private SiteUser review;
 

@@ -8,23 +8,20 @@ img, svg {
     vertical-align: middle;
 }
 
-a, body, center, div, figure,
-footer, form, h1, h2, h3,
+body, center, div, figure,
+footer, form,
 header, html, img, li, mark, menu, nav,
 object, section, ul,
 var, video {
     margin: 0;
     padding: 0;
-    border: 0;
-    font: inherit;
-    vertical-align: top;
-    text-decoration: none;
+
     list-style-type: none;
 }
 .Fu{
     position: relative;
     width: 100%;
-    background: #252524;
+    background: #181818;
     z-index: 0;
     padding-top: 11vw;
     padding-bottom: 25vw;
@@ -136,7 +133,7 @@ var, video {
     color: #FFFFFF;
     cursor: pointer;
     z-index: 10;
-    background-color: #252524;
+    background-color: #181818;
     font-family: proxima-nova;
     font-weight: 800;
     font-style: normal;
@@ -160,7 +157,7 @@ var, video {
     overflow: hidden;
     color: white;
     border-bottom: 2px solid #FFFFFF;
-    background-color: #252524;
+    background-color: #181818;
     max-height: 0vw;
 }
 .Fu1_c2_a2_a{
@@ -190,7 +187,7 @@ var, video {
 
 .Fu2{
     display: grid;
-    
+
     position: relative;
     margin: 0 auto;
     padding: 0 5.5vw;
@@ -254,7 +251,7 @@ var, video {
         max-width: 1280px;
     }
     .Fu1_b{
-        
+
         display: flex;;
         flex-direction: row;
         right: 0;
@@ -352,7 +349,7 @@ var, video {
     }
 
 
-    
+
 
 }
 @media (min-width: 1024px) and (max-width: 1280px) {
@@ -462,7 +459,7 @@ var, video {
     }
 
 
-    
+
 }
 @media (min-width: 720px) and (max-width: 1024px) {
     .Fu{
@@ -478,7 +475,7 @@ var, video {
         max-width: 100vw;
     }
     .Fu1_b{
-        
+
         display: flex;;
         flex-direction: row;
         right: 0;
@@ -573,6 +570,4 @@ var, video {
         font-size: 14px;
         line-height: 1.6;
     }
-
-
 }

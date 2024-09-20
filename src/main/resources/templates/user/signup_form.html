@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>회원가입</title>
+    <!-- 분리된 CSS 파일 추가 -->
+    <link rel="stylesheet" type="text/css" href="/css/signup_form.css">
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+
+<body>
+    <div class="Log_SUF_container">
+        <div class="Log_SUF_form-header">
+            <h1>회원가입</h1>
+            <div class="Log_SUF_optional">* 표시는 필수 입력 항목입니다.</div>
+        </div>
+        <div class="Log_SUF_form-box">
+            <form th:action="@{/user/signup}" th:object="${userCreateForm}" method="post" enctype="multipart/form-data">
+
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>성명</label>
+                    <input type="text" th:field="*{name}" class="Log_SUF_small-input" required>
+                </div>
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>아이디</label>
+                    <input type="text" th:field="*{username}" id="username" class="Log_SUF_medium-input" required>
+                    <input type="button" value="중복 아이디 검사" onclick="checkUsername()">
+                </div>
+                <div class="Log_SUF_form-group">
+                    <span id="usernameCheckResult" style="color: red; font-size: 12px;"></span>
+                </div>
+
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>패스워드</label>
+                    <input type="password" th:field="*{password}" class="Log_SUF_medium-input" required>
+                </div>
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>패스워드 확인</label>
+                    <input type="password" th:field="*{confirmPassword}" class="Log_SUF_medium-input" required>
+                </div>
+
+                <!-- 이메일 인증 추가 부분 -->
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>이메일</label>
+                    <div class="Log_SUF_email-container">
+                        <input type="text" id="emailLocalPart" class="Log_SUF_medium-input" placeholder="이메일 입력" required>
+                        <span class="Log_SUF_email-at">@</span>
+                        <select id="emailDomainPart" class="Log_SUF_medium-input" required>
+                            <option value="">------------</option>
+                            <option value="naver.com">naver.com</option>
+                            <option value="daum.net">daum.net</option>
+                            <option value="gmail.com">gmail.com</option>
+                        </select>
+                    </div>
+                    <input type="hidden" th:field="*{emailDomain}" id="emailFull">
+                    <input type="button" value="인증 이메일 발송" onclick="sendEmail()">
+                </div>
+
+                <!-- 인증번호 입력 필드 추가 -->
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>인증번호</label>
+                    <input type="text" id="authNum" class="Log_SUF_medium-input" placeholder="인증번호 입력" required>
+                    <input type="button" value="인증번호 확인" onclick="checkAuthNum()">
+                </div>
+
+                <div class="Log_SUF_form-group Log_SUF_email-info">
+                    회원가입 완료 시 인증메일이 발송되오니 정확한 메일 주소를 기재해 주세요!!
+                </div>
+                <!-- 이메일 인증 추가 끝 -->
+
+                <div class="Log_SUF_form-group">
+                    <label><span class="Log_SUF_required">*</span>연락처<br />('-' 빼고 기입해주세요)</label>
+                    <input type="tel" th:field="*{contact}" class="Log_SUF_medium-input" required>
+                </div>
+
+                <div class="Log_SUF_form-group">
+                    <label>SNS 수신 동의</label>
+                    <label><input type="radio" th:field="*{snsAgree}" value="yes">예</label>
+                    <label style="margin-left: -110px;"><input type="radio" th:field="*{snsAgree}"
+                            value="no">아니오</label>
+                </div>
+
+            <!-- 우편번호 -->
+            <div class="Log_SUF_form-group">
+                <label><span class="Log_SUF_required">*</span>우편번호</label>
+                <input type="text" th:field="*{postcode}" id="postcode" class="Log_SUF_medium-input" readonly required>
+               <button type="button" class="Log_SUF_address-button" onclick="sample6_execDaumPostcode()">주소 찾기</button>
+
+            </div>
+
+            <!-- 기본 주소 -->
+            <div class="Log_SUF_form-group">
+                <label><span class="Log_SUF_required">*</span>기본 주소</label>
+                <input type="text" th:field="*{basicAddress}" id="basicAddress" class="Log_SUF_large-input" readonly required>
+            </div>
+
+            <!-- 상세 주소 -->
+            <div class="Log_SUF_form-group">
+                <label><span class="Log_SUF_required">*</span>상세 주소</label>
+                <input type="text" th:field="*{detailAddress}" id="detailAddress" class="Log_SUF_large-input" required>
+            </div>
+
+                <div class="Log_SUF_form-group">
+                    <label for="imageFile">사용자 프로필 등록(옵션)</label>
+                    <input type="file" class="form-control" id="imageFile" name="imageFile">
+                    <small id="fileHelp" class="form-text text-muted">사용자 프로필을 등록해주세요.</small>
+                </div>
+
+                <div class="Log_SUF_form-group">
+                    <button type="submit" class="btn btn-primary">가입 신청</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="Log_SUF_profile-image">
+        먹고 놀고
+    </div>
+
+</body>
+
+<script>
+   // 이메일 인증 AJAX 호출
+   function sendEmail() {
+       var emailLocalPart = document.getElementById("emailLocalPart").value;
+       var emailDomainPart = document.getElementById("emailDomainPart").value;
+       var fullEmail = emailLocalPart + "@" + emailDomainPart;
+
+       // CSRF 토큰 가져오기
+       var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+       var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+       var xhr = new XMLHttpRequest();
+       xhr.open("POST", "/signup/email", true);  // EmailController의 경로
+       xhr.setRequestHeader("Content-Type", "application/json");
+       xhr.setRequestHeader(csrfHeader, csrfToken);  // CSRF 토큰을 헤더에 추가
+
+       xhr.onreadystatechange = function() {
+           if (xhr.readyState === 4) {  // 요청이 완료된 상태
+               if (xhr.status === 200) {  // 서버로부터 성공적인 응답을 받은 경우
+                   alert("인증 이메일이 발송되었습니다.");
+               } else {  // 이메일 전송에 실패한 경우
+                   alert("이메일 전송에 실패했습니다. 다시 시도해 주세요.");
+               }
+           }
+       };
+
+       xhr.send(JSON.stringify({ email: fullEmail }));
+   }
+
+   // 인증번호 확인 AJAX 호출
+   function checkAuthNum() {
+       var emailLocalPart = document.getElementById("emailLocalPart").value;
+       var emailDomainPart = document.getElementById("emailDomainPart").value;
+       var fullEmail = emailLocalPart + "@" + emailDomainPart;
+       var authNum = document.getElementById("authNum").value;
+
+       // CSRF 토큰 가져오기
+       var csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+       var csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+       var xhr = new XMLHttpRequest();
+       xhr.open("POST", "/signup/emailAuth", true);  // EmailController의 경로
+       xhr.setRequestHeader("Content-Type", "application/json");
+       xhr.setRequestHeader(csrfHeader, csrfToken);  // CSRF 토큰을 헤더에 추가
+
+       xhr.onreadystatechange = function() {
+           if (xhr.readyState === 4) {  // 요청이 완료된 상태
+               if (xhr.status === 200) {  // 서버로부터 성공적인 응답을 받은 경우
+                   alert("이메일 인증에 성공하였습니다.");
+               } else {  // 인증번호 확인 실패
+                   alert("이메일 인증에 실패하였습니다.");
+               }
+           }
+       };
+
+       xhr.send(JSON.stringify({ email: fullEmail, authNum: authNum }));
+   }
+
+   function checkUsername() {
+       var username = document.getElementById("username").value;
+
+       if (username.trim() === "") {
+           document.getElementById("usernameCheckResult").innerText = "아이디를 입력하세요.";
+           return;
+       }
+
+       var xhr = new XMLHttpRequest();
+       xhr.open("GET", "/user/checkUsername?username=" + encodeURIComponent(username), true);
+
+       // CSRF 토큰 추가
+       xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="_csrf"]').getAttribute('content'));
+
+       xhr.onreadystatechange = function () {
+           if (xhr.readyState === 4 && xhr.status === 200) {
+               var response = JSON.parse(xhr.responseText);
+               if (response.isTaken) {
+                   document.getElementById("usernameCheckResult").innerText = "이미 사용 중인 아이디입니다.";
+               } else {
+                   document.getElementById("usernameCheckResult").innerText = "사용 가능한 아이디입니다.";
+               }
+           }
+       };
+       xhr.send();
+   }
+
+   function sample6_execDaumPostcode() {
+       new daum.Postcode({
+           oncomplete: function (data) {
+               document.getElementById('postcode').value = data.zonecode;
+               document.getElementById('basicAddress').value = data.roadAddress || data.jibunAddress;
+           }
+       }).open();
+   }
+
+   document.querySelector('form').addEventListener('submit', function(event) {
+       var emailLocalPart = document.getElementById('emailLocalPart').value;
+       var emailDomainPart = document.getElementById('emailDomainPart').value;
+
+       if (emailLocalPart && emailDomainPart) {
+           document.getElementById('emailFull').value = emailLocalPart + '@' + emailDomainPart;
+       } else {
+           alert('이메일을 완성해 주세요.');
+           event.preventDefault();
+       }
+   });
+
+   document.querySelector('form').addEventListener('submit', function(event) {
+       var postcode = document.getElementById('postcode').value;
+       var basicAddress = document.getElementById('basicAddress').value;
+       var detailAddress = document.getElementById('detailAddress').value;
+
+       if (postcode && basicAddress && detailAddress) {
+           document.getElementById('fullAddress').value = postcode + " " + basicAddress + " " + detailAddress;
+       } else {
+           alert('주소를 완성해 주세요.');
+           event.preventDefault();
+       }
+   });
+</script>
+
+</html>

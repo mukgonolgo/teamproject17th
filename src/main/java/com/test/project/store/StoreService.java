@@ -50,4 +50,27 @@ public class StoreService {
     public int getTotalCount() {
         return (int) storeRepository.count(); // 전체 공지사항 수 반환
     }
+    public void saveStore(String storeName,
+    					  String storeAddress,
+    					  double storeLatitude, 
+    					  double storeLongitude,
+    					  String storeContent,
+    					  String storeTag,
+    					  String StoreStarttime,
+    					  String StoreEndTime,
+    					  boolean storeAdvertisement) {
+        Store store = new Store();
+        store.setStoreName(storeName);
+        store.setStoreAddress(storeAddress);
+        store.setStoreLatitude(storeLatitude);
+        store.setStoreLongitude(storeLongitude);
+        store.setStoreContent(storeContent);
+        store.setStoreTag(storeTag);
+        store.setStoreStarttime(StoreStarttime);
+        store.setStoreEndTime(StoreEndTime);
+        store.setStoreAdvertisement(storeAdvertisement);
+        store.setCreateDate(LocalDateTime.now()); // 현재 시간으로 설정
+
+        storeRepository.save(store); // 데이터 저장
+    }
 }

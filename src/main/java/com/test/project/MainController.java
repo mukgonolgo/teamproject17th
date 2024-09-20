@@ -26,7 +26,7 @@ public class MainController {
 			model.addAttribute("profileImage",user.getImageUrl());
 			model.addAttribute("username",user.getUsername());
 		}
-		return "index";
+		return "store/store_detail";
 	}
 	
 	
