@@ -1,6 +1,7 @@
 
 <html layout:decorate="~{layout}">
 	<div layout:fragment="content">
+		<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 	    <style>
 			.S1_d_cr {
@@ -178,7 +179,7 @@
 	</head>
 	<body>
 		
-	    <form id="storeForm" th:action="@{/store/create}" method="post" enctype="multipart/form-data">
+	    <form id="storeForm" th:action="@{/store/create}" method="post">
 			
 
 	        <input type="hidden" name="_csrf.parameterName" value="${_csrf.token}" />
@@ -319,7 +320,7 @@
 
 	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	    <script src="/js/review_create_form.js"></script>
-		<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 	    <script>
 	        const startTimeInput = document.getElementById('startTime');
 	        const endTimeInput = document.getElementById('endTime');

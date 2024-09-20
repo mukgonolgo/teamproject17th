@@ -46,20 +46,25 @@ public class StoreController {
     @PostMapping("/store/create")
     public String createStore(
             @RequestParam(value = "storeName") String storeName,
-            @RequestParam(value = "storeAddress") String storeAddress,
+            @RequestParam(value = "postcode") String postcode,
+            @RequestParam(value = "basicAddress") String basicAddress,
+            @RequestParam(value = "basicAddress") String detilAddress,
             @RequestParam(value = "storeLatitude") double storeLatitude,
             @RequestParam(value = "storeLongitude") double storeLongitude,
     		@RequestParam(value = "storeContent") String storeContent,
-    		@RequestParam(value = "storeTag") String storeTag,
+    		@RequestParam(value = "kategorieGroup") String kategorieGroup,
+    		@RequestParam(value = "storeTagGroups") String storeTagGroups,
+    		@RequestParam(value = "storeNumber") String storeNumber,
     		@RequestParam(value = "StoreStarttime") String StoreStarttime,
     		@RequestParam(value = "StoreEndTime") String StoreEndTime,
     		@RequestParam(value = "storeAdvertisement") boolean storeAdvertisement){
 
 
         // StoreService의 saveStore 메서드 호출
-        storeService.saveStore(storeName, storeAddress, storeLatitude, storeLongitude,storeContent,storeTag,StoreStarttime,StoreEndTime,storeAdvertisement);
+        storeService.saveStore(storeName,postcode,basicAddress,detilAddress,storeLatitude,storeLatitude,storeContent
+        	,kategorieGroup,storeTagGroups,storeNumber,StoreStarttime,StoreEndTime	);
 
-        return "redirect:/stores"; // 저장 후 이동할 경로
+        return "redirect:/stores/store_detail"; // 저장 후 이동할 경로
     }
 
 

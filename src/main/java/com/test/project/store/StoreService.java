@@ -50,25 +50,31 @@ public class StoreService {
     public int getTotalCount() {
         return (int) storeRepository.count(); // 전체 공지사항 수 반환
     }
-    public void saveStore(String storeName,
-    					  String storeAddress,
+    public void saveStore(String storeName,//식당이름
+    		              String postcode,
+    		              String basicAddress,//
+    		              String detilAddress,
     					  double storeLatitude, 
     					  double storeLongitude,
     					  String storeContent,
-    					  String storeTag,
+    					  String kategorieGroup,
+    					  String storeTagGroups,
+    					  String storeNumber,
     					  String StoreStarttime,
-    					  String StoreEndTime,
-    					  boolean storeAdvertisement) {
+    					  String StoreEndTime) {
         Store store = new Store();
         store.setStoreName(storeName);
-        store.setStoreAddress(storeAddress);
+        store.setPostcode(postcode);
+        store.setBasicAddress(basicAddress);
+        store.setDetilAddress(detilAddress);
         store.setStoreLatitude(storeLatitude);
-        store.setStoreLongitude(storeLongitude);
+        store.setStoreLongitude(storeLatitude);
         store.setStoreContent(storeContent);
-        store.setStoreTag(storeTag);
+        store.setKategorieGroup(kategorieGroup);
+        store.setStoreTagGroups(storeTagGroups);
+        store.setStoreNumber(storeNumber);
         store.setStoreStarttime(StoreStarttime);
         store.setStoreEndTime(StoreEndTime);
-        store.setStoreAdvertisement(storeAdvertisement);
         store.setCreateDate(LocalDateTime.now()); // 현재 시간으로 설정
 
         storeRepository.save(store); // 데이터 저장
