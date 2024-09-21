@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.test.project.DataNotFoundException;
 import com.test.project.review.Review;
 import com.test.project.review.ReviewService;
 import com.test.project.user.SiteUser;
@@ -13,6 +14,7 @@ import com.test.project.user.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,9 @@ public class ReviewCommentController {
 
     @Autowired
     private ReviewCommentService reviewCommentService;
+    
+    @Autowired
+    private ReviewCommentRepository reviewCommentRepository;
 
     @Autowired
     private ReviewService reviewService;
@@ -67,6 +72,53 @@ public class ReviewCommentController {
         return ResponseEntity.ok(commentResponse);
     }
 
+    // 댓글 수정
+    @PutMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> updateComment(
+            @PathVariable("commentId") Long commentId,
+            @RequestParam("content") String content) {
+
+        // 현재 로그인한 사용자 확인
+        Long userId = reviewService.getCurrentUserId();
+        boolean isUpdated = reviewCommentService.updateComment(commentId, content, userId);
+
+        if (isUpdated) {
+            // 수정된 댓글 데이터 반환
+            ReviewComment updatedComment = reviewCommentRepository.findById(commentId)
+                .orElseThrow(() -> new DataNotFoundException("댓글을 찾을 수 없습니다."));
+            
+            CommentResponse response = new CommentResponse();
+            response.setCommentId(updatedComment.getCommentId());
+            response.setContent(updatedComment.getContent());
+            response.setCreateDate(updatedComment.getCreateDate());
+            response.setUpdatedAt(updatedComment.getUpdatedAt());
+            response.setUserId(updatedComment.getUser().getId());
+            response.setUsername(updatedComment.getUser().getUsername());
+            response.setUserImage(updatedComment.getUser().getImageUrl());
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 수정 권한이 없는 경우
+        }
+    }
+
+
+
+    // 댓글 삭제
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
+        // 현재 로그인한 사용자 확인
+        Long userId = reviewService.getCurrentUserId();
+
+        // 댓글 삭제 요청을 서비스에 위임
+        boolean isDeleted = reviewCommentService.deleteComment(commentId, userId);
+
+        if (isDeleted) {
+            return ResponseEntity.ok().build(); // 성공적으로 삭제된 경우
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 삭제 권한이 없는 경우
+        }
+    }
 
     
     @PostMapping("/reviews/{reviewId}/comments/{parentId}/reply")
@@ -97,13 +149,13 @@ public class ReviewCommentController {
     }
 
 
-
-
     // 특정 리뷰에 대한 댓글 목록을 조회하는 엔드포인트
     @GetMapping("/reviews/{reviewId}")
     public ResponseEntity<List<CommentResponse>> getCommentsForReview(@PathVariable Long reviewId) {
         List<CommentResponse> comments = reviewCommentService.getCommentsForReview(reviewId);
         return ResponseEntity.ok(comments);  // 로그인 여부와 상관없이 댓글 반환
     }
+    
+
 
 }

@@ -11,6 +11,7 @@
 </head>
 <div layout:fragment="content">
 <input type="hidden" id="isAuthenticated" th:value="${#authorization.expression('isAuthenticated()') ? 'true' : 'false'}" />
+<input type="hidden" id="loggedInUserId" th:value="${loggedInUserId}" />
 
 	<div class="container my-5">
 		<div class="row justify-content-center">
@@ -208,56 +209,6 @@
 						</div>
 						<!-- 태그 -->
 
-						<div th:each="comment : ${comments}">
-							<!-- 기존 댓글 내용 -->
-							<div class="comment">
-								<img
-									th:src="${comment.user != null ? comment.user.imageUrl : '/img/default-profile.png'}"
-									alt="프로필 사진" class="rounded-circle mt-3 S3_d_profile-img"
-									style="width: 50px;">
-								<div class="comment-content">
-									<div class="d-flex align-items-center">
-										<span class="font-weight-bold mr-2">[[${comment.user.username}]]</span>
-									</div>
-									<p th:text="comment.content"></p>
-									<p class="card-text">
-										<small class="text-muted"
-											th:text="${#dates.format(comment.createDate, 'yyyy-MM-dd HH:mm')}"></small>
-										<span class="badge badge-secondary ml-1 reply-button"
-											data-comment-id="[[${comment.commentId}]]">답글달기</span>
-									</p>
-								</div>
-							</div>
-
-							<!-- 대댓글 섹션 -->
-							<div class="reply-section">
-								<div th:each="reply : ${comment.replies}">
-									<div class="reply">
-										<div class="reply-content">
-											<div class="d-flex align-items-start">
-												<img
-													th:src="${reply.user != null ? reply.user.imageUrl : '/img/default-profile.png'}"
-													alt="프로필 사진" class="rounded-circle mt-3 S3_d_profile-img"
-													style="width: 50px;">
-
-
-												<div class="ml-3">
-													<span class="font-weight-bold">[[${reply.user.username}]]</span>
-													<p>[[${reply.content}]]</p>
-													<p class="card-text">
-														<small class="text-muted">[[${#dates.format(reply.createDate,
-															'yyyy-MM-dd HH:mm')}]]</small> <span
-															class="badge badge-secondary ml-1 reply-button"
-															data-reply-id="[[${reply.commentId}]]">답글달기</span>
-													</p>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
 						<div class="comments-list">
 
 							<!-- 기존 댓글들이 여기에 추가됩니다 -->
@@ -275,6 +226,7 @@
 								<input type="hidden" id="reviewId" name="reviewId"
 									th:value="${review.id}" />
 
+
 								<div class="d-flex align-items-center mt-3">
 									<textarea class="form-control ml-2" id="commentContent" 
 										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
@@ -285,8 +237,6 @@
 								</div>
 							</form>
 						</div>
-
-
 
 					</div>
 					<!--card-body-->

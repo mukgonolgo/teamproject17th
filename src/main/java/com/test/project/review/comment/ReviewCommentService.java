@@ -39,6 +39,43 @@ public class ReviewCommentService {
         comment.setGroups((int)reviewCommentRepository.countByReview(review) + 1); // 새로운 그룹 생성
         return reviewCommentRepository.save(comment); // DB에 댓글 저장
     }
+    
+    
+    //댓글 수정
+    @Transactional
+    public boolean updateComment(Long commentId, String content, Long userId) {
+        ReviewComment comment = reviewCommentRepository.findById(commentId)
+            .orElseThrow(() -> new DataNotFoundException("댓글을 찾을 수 없습니다."));
+
+        // 현재 로그인한 사용자가 댓글 작성자인지 확인
+        if (comment.getUser().getId().equals(userId)) {
+            comment.setContent(content); // 새로운 내용으로 수정
+            comment.setUpdatedAt(LocalDateTime.now()); // 수정 시간 업데이트
+            reviewCommentRepository.save(comment); // 수정된 댓글 저장
+            return true; // 수정 성공
+        } else {
+            return false; // 수정 실패
+        }
+    }
+
+
+    
+    //댓글 삭제
+    @Transactional
+    public boolean deleteComment(Long commentId, Long userId) {
+        ReviewComment comment = reviewCommentRepository.findById(commentId)
+            .orElseThrow(() -> new DataNotFoundException("댓글을 찾을 수 없습니다."));
+
+        // 현재 로그인한 사용자가 댓글 작성자인지 확인
+        if (comment.getUser().getId().equals(userId)) {
+            reviewCommentRepository.delete(comment);
+            return true; // 삭제 성공
+        } else {
+            // 댓글 작성자가 아니면 삭제 권한이 없음을 반환
+            return false; // 삭제 실패
+        }
+    }
+    
 
     // 대댓글 추가 (이미 구현한 메소드)
     public ReviewComment addReply(Long parentId, String content, SiteUser user) {
@@ -62,10 +99,8 @@ public class ReviewCommentService {
         return reviewCommentRepository.findByReviewOrderByGroupsAscOrdersAsc(review);
     }
 
-    // 댓글 삭제
-    public void deleteComment(Long commentId) {
-        reviewCommentRepository.deleteById(commentId);
-    }
+   
+
 
     // 특정 리뷰에 대한 댓글 목록과 유저 정보를 가져오는 메서드
     public List<CommentResponse> getCommentsForReview(Long reviewId) {
@@ -76,6 +111,7 @@ public class ReviewCommentService {
         return comments.stream().map(comment -> {
             CommentResponse response = new CommentResponse();
             response.setCommentId(comment.getCommentId());
+            response.setUpdatedAt(comment.getUpdatedAt()); // 수정 시간 설정
             response.setContent(comment.getContent());
             response.setCreateDate(comment.getCreateDate());
 
@@ -89,5 +125,6 @@ public class ReviewCommentService {
         }).collect(Collectors.toList());
     }
    
-    
+
+
 }

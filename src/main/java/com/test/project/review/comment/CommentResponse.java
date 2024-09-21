@@ -11,9 +11,9 @@ public class CommentResponse {
     private Long commentId;
     private String content;
     private LocalDateTime createDate;
+    private LocalDateTime updatedAt;
     private Long userId;
     private String username;
     private String userImage;
 
-    // Getters and Setters 생략
 }

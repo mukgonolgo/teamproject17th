@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.test.project.review.comment.CommentResponse;
+import com.test.project.review.comment.ReviewComment;
+import com.test.project.review.comment.ReviewCommentService;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageRepository;
@@ -49,6 +52,9 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+    
+    @Autowired
+    private ReviewCommentService reviewcommentService;
 
     @Autowired
     private ReviewRepository reviewRepository;
@@ -86,22 +92,35 @@ public class ReviewController {
         return "review/review_page";  // 리뷰 페이지로 이동
     }
 
-    // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
+ // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
+ // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
     @GetMapping("/review_detail/{id}")
-    public String reviewDetail(@PathVariable("id") Long id, Model model) {
+    public String reviewDetail(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Review review = reviewService.findReviewById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
-        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+        Long userId = null;
+        if (userDetails != null) {
+            // 로그인한 사용자의 정보를 가져옴
+            SiteUser user = userService.getUserByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            userId = user.getId();
+            model.addAttribute("loggedInUserId", userId); // 로그인한 사용자의 ID를 모델에 추가
+        }
 
+        // 좋아요 정보 처리
         boolean likedByUser = false;
         if (userId != null) {
             likedByUser = reviewLikeService.isLikedByUser(id, userId);  // 로그인한 경우 좋아요 상태 확인
         }
         Long likeCount = reviewLikeService.countLikes(id);  // 리뷰의 좋아요 수
 
+        // 작성자 정보
         SiteUser author = userService.getUserById(review.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // 댓글 목록 조회
+        List<CommentResponse> comments = reviewcommentService.getCommentsForReview(id);  // 댓글 조회 서비스 호출
 
         // 리뷰와 관련된 데이터를 모델에 추가
         model.addAttribute("review", review);
@@ -109,9 +128,11 @@ public class ReviewController {
         model.addAttribute("likeCount", likeCount);  // 좋아요 수
         model.addAttribute("authorProfileImage", author.getImageUrl());  // 작성자의 프로필 이미지
         model.addAttribute("authorUsername", author.getUsername());  // 작성자의 사용자명
+        model.addAttribute("comments", comments);  // 댓글 리스트를 모델에 추가
 
         return "review/review_detail";  // 리뷰 상세 페이지로 이동
     }
+
 
     // 특정 사용자의 리뷰 피드를 반환하는 메서드
     @GetMapping("/review_feed")
@@ -227,5 +248,7 @@ public class ReviewController {
 
         return ResponseEntity.ok(response);  // JSON 응답 반환
     }
+
+  
 
 }
