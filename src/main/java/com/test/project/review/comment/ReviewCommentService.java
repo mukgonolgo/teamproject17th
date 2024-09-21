@@ -2,6 +2,7 @@ package com.test.project.review.comment;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,27 @@ public class ReviewCommentService {
         reviewCommentRepository.deleteById(commentId);
     }
 
+    // 특정 리뷰에 대한 댓글 목록과 유저 정보를 가져오는 메서드
+    public List<CommentResponse> getCommentsForReview(Long reviewId) {
+        // 리뷰에 해당하는 모든 댓글을 조회
+        List<ReviewComment> comments = reviewCommentRepository.findByReviewId(reviewId);
+
+        // 각 댓글을 CommentResponse로 변환
+        return comments.stream().map(comment -> {
+            CommentResponse response = new CommentResponse();
+            response.setCommentId(comment.getCommentId());
+            response.setContent(comment.getContent());
+            response.setCreateDate(comment.getCreateDate());
+
+            // 유저 정보 설정
+            SiteUser user = comment.getUser();  // 댓글 작성자 정보 가져오기
+            response.setUserId(user.getId());
+            response.setUsername(user.getUsername());
+            response.setUserImage(user.getImageUrl());
+
+            return response;
+        }).collect(Collectors.toList());
+    }
+   
     
 }

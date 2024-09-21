@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -304,6 +305,16 @@ public class UserController {
 	    }
 	}
 
+	 @GetMapping("/{userId}")
+	    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
+	        Optional<SiteUser> user = userService.getUserById(userId);
+
+	        if (user.isPresent()) {
+	            return ResponseEntity.ok(user.get()); // 유저 정보가 있을 경우 반환
+	        } else {
+	            return ResponseEntity.status(404).body("유저를 찾을 수 없습니다."); // 유저가 없을 경우 404 에러 반환
+	        }
+	    }
 
 
 }

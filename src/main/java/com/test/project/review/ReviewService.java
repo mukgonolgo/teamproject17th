@@ -148,7 +148,7 @@ public class ReviewService {
                     .orElseThrow(() -> new DataNotFoundException("해당 사용자를 찾을 수 없습니다."));
             return user.getId();
         }
-        throw new IllegalStateException("로그인된 사용자가 없습니다.");
+        return null;  // 로그인되지 않은 경우 null 반환
     }
     
     // 사용자 ID로 리뷰 조회
@@ -173,20 +173,21 @@ public class ReviewService {
     
     
     
-    // 모든 리뷰와 해당 리뷰의 좋아요 수 및 사용자의 좋아요 여부를 반환하는 메서드
-    public List<Review> getAllReviewsWithLikes(Long currentUserId) {
-        List<Review> reviews = reviewRepository.findAll();
+ // 모든 리뷰와 해당 리뷰의 좋아요 수 및 사용자의 좋아요 여부를 반환하는 메서드
+    public List<ReviewDto> getAllReviewsWithLikes(Long currentUserId) {
+        List<Review> reviews = reviewRepository.findAll();  // 모든 리뷰 가져오기
+        List<ReviewDto> reviewDtos = new ArrayList<>();
 
-        // 각 리뷰에 대해 좋아요 수와 좋아요 상태를 계산
-        reviews.forEach(review -> {
-            Long likeCount = reviewLikeService.countLikes(review.getId());
-            boolean likedByUser = reviewLikeService.isLikedByUser(review.getId(), currentUserId);
+        // 각 리뷰에 대해 좋아요 정보 추가
+        for (Review review : reviews) {
+            Long likeCount = reviewLikeService.countLikes(review.getId());  // 좋아요 수 가져오기
+            boolean likedByUser = reviewLikeService.isLikedByUser(review.getId(), currentUserId);  // 사용자가 좋아요 눌렀는지 확인
+            ReviewDto reviewDto = new ReviewDto(review);  // Review를 ReviewDto로 변환
+            reviewDto.setLikeCount(likeCount);
+            reviewDto.setLikedByUser(likedByUser);
+            reviewDtos.add(reviewDto);
+        }
 
-            review.setLikeCount(likeCount);
-            review.setLikedByUser(likedByUser);
-        });
-
-        return reviews;
+        return reviewDtos;
     }
-    
 }

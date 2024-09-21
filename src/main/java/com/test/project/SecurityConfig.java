@@ -22,7 +22,8 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http
 	        .authorizeHttpRequests(requests -> requests
-	            .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/**")).authenticated() // 댓글 작성 엔드포인트 인증 필요
+	        	.requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/{reviewId}")).permitAll()  // 댓글 조회는 모두 허용
+	            .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/**")).authenticated()  // 댓글 작성/수정 등은 인증 필요
 	            .anyRequest().permitAll()) // 그 외의 요청은 모두 허용
 	        .csrf(csrf -> csrf
 	            .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))

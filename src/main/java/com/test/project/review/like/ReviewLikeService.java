@@ -65,17 +65,5 @@ public class ReviewLikeService {
                 .anyMatch(like -> like.getUser().equals(user)));
     }
 
-    // 특정 리뷰의 상세 정보를 가져오는 메서드 (좋아요 정보 포함)
-    public ReviewDto getReviewDetails(Long reviewId, SiteUser currentUser) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
-
-        // 좋아요 수 및 사용자가 좋아요를 눌렀는지 여부를 업데이트
-        review.setLikeCount((long) review.getLikes().size());
-        review.setLikedByUser(review.getLikes().stream()
-                .anyMatch(like -> like.getUser().equals(currentUser)));
-
-        // 다른 로직들 진행 후 DTO로 변환해서 반환
-        return new ReviewDto(review);
-    }
+  
 }

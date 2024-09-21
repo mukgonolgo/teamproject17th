@@ -29,8 +29,10 @@ public class ReviewCommentController {
     @Autowired
     private UserService userService;
 
+    
+    //댓글작성
     @PostMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewComment> createComment(
+    public ResponseEntity<CommentResponse> createComment(
             @PathVariable("reviewId") Long reviewId,
             @RequestParam("content") String content) {
 
@@ -50,9 +52,21 @@ public class ReviewCommentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+        // 댓글 저장
         ReviewComment newComment = reviewCommentService.addComment(content, user, review);
-        return ResponseEntity.ok(newComment);
+
+        // 댓글과 사용자 정보를 포함한 응답 생성
+        CommentResponse commentResponse = new CommentResponse();
+        commentResponse.setCommentId(newComment.getCommentId());
+        commentResponse.setContent(newComment.getContent());
+        commentResponse.setCreateDate(newComment.getCreateDate());
+        commentResponse.setUserId(user.getId());
+        commentResponse.setUsername(user.getUsername());
+        commentResponse.setUserImage(user.getImageUrl());  // 프로필 이미지 설정
+
+        return ResponseEntity.ok(commentResponse);
     }
+
 
     
     @PostMapping("/reviews/{reviewId}/comments/{parentId}/reply")
@@ -85,28 +99,11 @@ public class ReviewCommentController {
 
 
 
-
-    // 리뷰에 속한 댓글 목록 조회
+    // 특정 리뷰에 대한 댓글 목록을 조회하는 엔드포인트
     @GetMapping("/reviews/{reviewId}")
-    public ResponseEntity<List<ReviewComment>> getComments(@PathVariable("reviewId") Long reviewId) {
-        // 리뷰 조회
-        Review review = reviewService.findById(reviewId);
-        if (review == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        // 해당 리뷰에 속한 댓글 목록 조회
-        List<ReviewComment> comments = reviewCommentService.getCommentsByReview(review);
-        return ResponseEntity.ok(comments);
+    public ResponseEntity<List<CommentResponse>> getCommentsForReview(@PathVariable Long reviewId) {
+        List<CommentResponse> comments = reviewCommentService.getCommentsForReview(reviewId);
+        return ResponseEntity.ok(comments);  // 로그인 여부와 상관없이 댓글 반환
     }
-
-    // 댓글 삭제
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId) {
-        reviewCommentService.deleteComment(commentId);
-        return ResponseEntity.noContent().build();
-    }
-    
- 
 
 }

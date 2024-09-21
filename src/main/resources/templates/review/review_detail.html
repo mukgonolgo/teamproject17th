@@ -10,6 +10,7 @@
 
 </head>
 <div layout:fragment="content">
+<input type="hidden" id="isAuthenticated" th:value="${#authorization.expression('isAuthenticated()') ? 'true' : 'false'}" />
 
 	<div class="container my-5">
 		<div class="row justify-content-center">
@@ -257,17 +258,14 @@
 							</div>
 						</div>
 
-
-
 						<div class="comments-list">
 
 							<!-- 기존 댓글들이 여기에 추가됩니다 -->
 						</div>
 
 						<!-- 댓글 작성 버튼은 로그인한 사용자만 볼 수 있도록 설정 -->
-						<div class="comment-input mt-4"
-							th:if="${#authorization.expression('isAuthenticated()')}">
-							<form id="commentForm"
+						<div class="comment-input mt-4">
+							<form id="commentForm"						
 								th:action="@{/comments/reviews/{reviewId}(reviewId=${review.id})}"
 								method="post">
 								<input type="hidden" th:name="${_csrf.parameterName}"
@@ -278,7 +276,7 @@
 									th:value="${review.id}" />
 
 								<div class="d-flex align-items-center mt-3">
-									<textarea class="form-control ml-2" id="commentContent"
+									<textarea class="form-control ml-2" id="commentContent" 
 										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
 								</div>
 								<div class="btn-container mt-2 text-right">
@@ -288,13 +286,6 @@
 							</form>
 						</div>
 
-
-						<!-- 로그인되지 않은 경우 댓글 작성 권한 제한 -->
-						<div th:if="${!#authorization.expression('isAuthenticated()')}">
-							<p>
-								댓글을 작성하려면 <a href="/login">로그인</a>하세요.
-							</p>
-						</div>
 
 
 					</div>
@@ -314,6 +305,7 @@
 		var likedByUser = /*[[${likedByUser}]]*/ false;  // 서버에서 받은 값 설정
 		var reviewId = /*[[${review.id}]]*/ 0;  // 현재 리뷰 ID 설정
 	</script>
+	
 	<script src="/js/review_detail.js"></script>
 	<script src="/js/reviewLike.js"></script>
 </div>
