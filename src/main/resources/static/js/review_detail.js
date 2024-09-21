@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 로그인 여부 및 로그인한 사용자 ID 확인
     const isAuthenticated = document.getElementById("isAuthenticated").value === 'true';
     const loggedInUserId = document.getElementById("loggedInUserId").value;
+    const authorId = document.getElementById("authorId").value; // 리뷰 작성자 ID 가져오기
 
     if (!reviewIdElement || !commentContentElement) {
         console.error("필수 요소가 누락되었습니다.");
@@ -35,6 +36,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? new Date(comment.updatedAt).toLocaleString()
                 : new Date(comment.createDate).toLocaleString();
 
+            // 댓글 작성자와 리뷰 작성자가 같을 경우 '작성자' 표시
+            const isAuthor = comment.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
+
             const actionButtons = isAuthenticated && loggedInUserId == comment.userId ? `
                 <span type="button" class="btn badge badge-primary edit-button" data-comment-id="${comment.commentId}">수정</span>
                 <span type="button" class="btn badge badge-danger delete-button" data-comment-id="${comment.commentId}">삭제</span>
@@ -45,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="comment">
                     <img src="${comment.userImage || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-2" style="width: 50px;height: 50px;">
                     <div class="comment-content">
-                        <span class="font-weight-bold mr-2">${comment.username}</span>
+                        <span class="font-weight-bold">${comment.username}</span> ${isAuthor}
                         <p>${comment.content}</p>
                         <p class="card-text">
                             <small class="text-muted">${displayDate}</small>

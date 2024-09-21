@@ -12,6 +12,8 @@
 <div layout:fragment="content">
 <input type="hidden" id="isAuthenticated" th:value="${#authorization.expression('isAuthenticated()') ? 'true' : 'false'}" />
 <input type="hidden" id="loggedInUserId" th:value="${loggedInUserId}" />
+<input type="hidden" id="authorId" th:value="${review.user.id}" />
+
 
 	<div class="container my-5">
 		<div class="row justify-content-center">
