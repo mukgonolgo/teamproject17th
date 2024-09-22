@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +25,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -50,16 +54,17 @@ public class UserController {
 		return "user/signup_form";
 	}
 
-	// 회원가입 처리
+	// UserController의 signup 메서드에서 오류가 있을 때, 오류 메시지를 모델에 추가
 	@PostMapping("/signup")
 	public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult,
-	                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+	                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) {
 	    if (bindingResult.hasErrors()) {
+	        // 오류 처리...
 	        return "user/signup_form";
 	    }
 
 	    if (!userCreateForm.getPassword().equals(userCreateForm.getConfirmPassword())) {
-	        bindingResult.rejectValue("confirmPassword", "passwordInCorrect", "2개의 패스워드가 서로 일치하지 않습니다.");
+	        model.addAttribute("errorMessage", "패스워드를 일치시켜 주세요.");
 	        return "user/signup_form";
 	    }
 
@@ -67,17 +72,22 @@ public class UserController {
 	        userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
 	                           userCreateForm.getPassword(), userCreateForm.getPostcode(),
 	                           userCreateForm.getBasicAddress(), userCreateForm.getDetailAddress(),
-	                           userCreateForm.getContact(), userCreateForm.getSnsAgree(), imageFile, userCreateForm.getName());
+	                           userCreateForm.getContact(), userCreateForm.getSnsAgree(), imageFile,
+	                           userCreateForm.getName(), userCreateForm.getNickname(), userCreateForm.getUserType());
 	    } catch (DataIntegrityViolationException e) {
-	        bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+	        model.addAttribute("errorMessage", "이미 등록된 사용자입니다.");
 	        return "user/signup_form";
 	    } catch (Exception e) {
-	        bindingResult.reject("signupFailed", e.getMessage());
+	        model.addAttribute("errorMessage", e.getMessage());
 	        return "user/signup_form";
 	    }
 
 	    return "redirect:/";
 	}
+
+
+
+
 
 
 	// 로그인 폼
@@ -294,7 +304,96 @@ public class UserController {
 	    }
 	}
 
+	
+	// 닉네임 중복 체크
+	@GetMapping("/checkNickname")
+	@ResponseBody
+	public String checkNickname(@RequestParam("nickname") String nickname) {
+	    try {
+	        boolean isTaken = userService.isNicknameTaken(nickname);
+	        return "{\"isTaken\": " + isTaken + "}";
+	    } catch (Exception e) {
+	        return "{\"error\": \"서버 오류가 발생했습니다.\"}";
+	    }
+	}
+	
+	@GetMapping("/list")
+	public String showUserList(Model model) {
+	    List<SiteUser> userList = userService.findAllUsers(); // 모든 사용자 정보 가져오기
+	    model.addAttribute("userList", userList);
+	    return "user/user_list"; // user_list.html 페이지로 이동
+	}
+	
+	@PostMapping("/approve")
+	public String approveUser(@RequestParam("userId") Long userId, @RequestParam("approvalStatus") int approvalStatus) {
+	    Optional<SiteUser> userOptional = userRepository.findById(userId);
+	    if (userOptional.isPresent()) {
+	        SiteUser user = userOptional.get();
+	        user.setApprovalStatus(approvalStatus);  // 승인 또는 보류 상태 업데이트
+	        userRepository.save(user);
+	    }
+	    return "redirect:/user/list";  // 회원 리스트로 리디렉션
+	}
 
 
 
-}
+	@GetMapping("/somePage")
+	public String somePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	    if (userDetails != null) {
+	        SiteUser user = userService.getUser(userDetails.getUsername());
+	        model.addAttribute("approvalStatus", user.getApprovalStatus());
+	        model.addAttribute("profileImage", user.getImageUrl());
+	    }
+	    return "some_template";
+	}
+	@PostMapping("/hold")
+	public String holdUser(@RequestParam("userId") Long userId) {
+	    Optional<SiteUser> userOptional = userRepository.findById(userId);
+	    if (userOptional.isPresent()) {
+	        SiteUser user = userOptional.get();
+	        user.setApprovalStatus(4);  // 보류 상태로 업데이트
+	        userRepository.save(user);
+	    }
+	    return "redirect:/user/list";  // 회원 리스트로 리디렉션
+	}
+
+	
+	// 재심사 요청 처리 (POST)
+	@PostMapping("/reapply")
+	public String reapplyForApproval(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+	    try {
+	        // 사용자 상태를 승인 대기로 변경
+	        SiteUser user = userService.getUser(userDetails.getUsername());
+	        user.setApprovalStatus(2);  // 승인 대기 상태로 변경
+	        userRepository.save(user);
+
+	        // 사용자 세션을 갱신하여 새로운 승인 상태 반영
+	        CustomUserDetails updatedUserDetails = new CustomUserDetails(user, userDetails.getAuthorities());  // SiteUser와 기존 권한을 사용하여 새로운 CustomUserDetails 생성
+	        UsernamePasswordAuthenticationToken authentication = 
+	            new UsernamePasswordAuthenticationToken(updatedUserDetails, null, updatedUserDetails.getAuthorities());
+	        
+	        SecurityContextHolder.getContext().setAuthentication(authentication);  // 세션 갱신
+
+	        // 성공 메시지 추가
+	        model.addAttribute("successMessage", "재심사 요청이 성공적으로 처리되었습니다.");
+	    } catch (Exception e) {
+	        // 오류 발생 시 메시지 추가
+	        model.addAttribute("errorMessage", "재심사 요청 중 오류가 발생했습니다.");
+	        return "user/profile";  // 오류 발생 시 프로필 페이지로 돌아감
+	    }
+
+	    // 재심사 요청 후 index.html로 리디렉션
+	    return "redirect:/";
+	}
+
+
+	}
+
+
+
+
+
+
+
+
+

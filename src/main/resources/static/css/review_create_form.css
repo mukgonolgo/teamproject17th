@@ -1,0 +1,206 @@
+  body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .S3_rw {
+            background-color: #ffffff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 14px;
+            color: #333333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select,
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 150px;
+            resize: none;
+        }
+
+
+
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: rgb(255, 223, 228);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: rgb(128, 128, 128);
+        }
+
+        .product-info {
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-info input {
+            flex: 1;
+        }
+
+        /* 카테고리 크기 조절 */
+        select {
+            max-width: 300px;
+        }
+
+        /* 커스텀 파일 선택 스타일 */
+        .file-upload {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            /* 이미지와 + 버튼 사이의 간격 조절 */
+        }
+
+        .icon {
+            width: 100px;
+            height: 100px;
+            background-color: #fafafa;
+            border: 2px dashed #d0d0d0;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .uploaded-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .img-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        /* 태그 스타일 */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid rgb(192, 192, 192);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            min-height: 40px;
+            /* 고정된 높이 대신 최소 높이를 설정 */
+        }
+
+        #S3_tags_input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 80px;
+            /* 최소 너비를 줄였습니다. */
+            width: auto;
+            /* 너비를 자동으로 조정되게 설정 */
+            margin-top: 15px;
+        }
+
+        .badge {
+            background-color: pink;
+            color: rgb(0, 0, 0);
+            border-radius: 20px;
+            padding: 5px 10px;
+            margin-left: 10px;
+            margin-bottom: 5px;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .badge svg {
+            margin-left: 5px;
+        }
+
+        /* 별점 스타일 */
+        .star-ratings {
+            color: #aaa9a9;
+            position: relative;
+            unicode-bidi: bidi-override;
+            width: max-content;
+            font-size: 30px;
+            /* 별 크기 조정 */
+            -webkit-text-fill-color: transparent;
+            -webkit-text-stroke-width: 1.3px;
+            -webkit-text-stroke-color: #2b2a29;
+            cursor: pointer;
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .star-ratings-fill {
+            color: #fff58c;
+            padding: 0;
+            position: absolute;
+            z-index: 1;
+            display: flex;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            -webkit-text-fill-color: gold;
+            pointer-events: none;
+            width: 0%;
+            /* 초기값 */
+        }
+
+        .star-ratings-base {
+            z-index: 0;
+            padding: 0;
+            display: flex;
+            width: 100%;
+        }
+
+        .star {
+            flex: 1;
+            /* 각 별이 동일한 크기를 가지도록 설정 */
+            text-align: center;
+        }
+
+        .star-rating-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .selected-rating {
+            margin-left: 20px;
+            font-size: 16px;
+            color: #333;
+        }

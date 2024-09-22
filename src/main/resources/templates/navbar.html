@@ -1,0 +1,86 @@
+<nav class="navbar navbar-expand-lg navbar-dark container-fluid p-2 cs-bg-black mb-5" th:fragment="navBarFragment">
+    <div class="container">
+        <a class="navbar-brand" href="/"><img src="/img/logo/logo (3).png" alt="logo"><span class="sr-only">먹고놀고</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav navbar-center">
+                <li class="nav-item active mx-2">
+                    <a class="nav-link" href="#">맛집찾기</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="/review">이용후기</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="/eat">밥친구찾기</a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="#">공지사항</a>
+                </li>
+                <li class="nav-item mx-2 d-flex d-lg-none">
+                    <a class="nav-link" href="/user/login">로그인</a>
+                </li>
+                <li class="nav-item mx-2 d-flex d-lg-none">
+                    <a class="nav-link" href="/user/signup">회원가입</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-md-auto d-none d-lg-flex" sec:authorize="isAnonymous()">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/user/login}">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/user/signup}">회원가입</a>
+                </li>
+            </ul>
+			<ul class="navbar-nav ml-md-auto d-none d-lg-flex" sec:authorize="isAuthenticated()">
+			    <li class="nav-item mt-1">
+			        <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" width="40" class="rounded-circle"/>
+			    </li>
+
+			    <!-- 관리자 -->
+			    <li class="nav-item d-flex align-items-center" sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
+			        <span class="nav-link" th:text="'admin 님'"></span>
+			        <a class="nav-link" th:href="@{/user/list}">회원 리스트</a>
+			        <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+			    </li>
+
+			    <!-- 승인 대기 중인 사업자 -->
+			    <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 2">
+			        <span class="nav-link" th:text="${username}+' 님 (승인 대기 중)'"></span>
+			        <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+			        <a class="nav-link" th:href="@{/user/somePage}">대기 중인 기능</a>
+			    </li>
+
+			    <!-- 승인받은 사업자 -->
+			    <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 3">
+			        <span class="nav-link" th:text="${username}+' 님 (승인된 사업자)'"></span>
+			        <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+			        <a class="nav-link" th:href="@{/user/businessDashboard}">사업자 대시보드</a>
+			    </li>
+
+				<!-- 보류 중인 사업자 -->
+				<li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 4">
+				    <span class="nav-link" th:text="${username}+' 님 (보류 중)'"></span>
+				    <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+				    <a class="nav-link" th:href="@{/user/confirmPassword}">내 정보 수정</a>
+				    <form th:action="@{/user/reapply}" method="post" style="display:inline;">
+				        <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> <!-- CSRF 토큰 추가 -->
+				        <button type="submit" class="nav-link btn btn-link" style="display:inline;">재심사 요청</button>
+				    </form>
+				</li>
+
+
+
+			    <!-- 일반 사용자 (관리자, 승인 대기 중, 승인된 사업자, 보류 중인 사업자가 아닌 경우) -->
+			    <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 1">
+			        <span class="nav-link" th:text="${username}+' 님'"></span>
+			        <a class="nav-link" th:href="@{/user/logout}">로그아웃</a>
+			        <a class="nav-link" th:href="@{/user/confirmPassword}">내 정보 수정</a>
+			    </li>
+			</ul>
+
+
+        </div>
+    </div>
+</nav>

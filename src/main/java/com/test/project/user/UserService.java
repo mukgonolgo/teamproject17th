@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,8 +29,8 @@ public class UserService {
 
 	// 회원가입 로직
 	public SiteUser create(String username, String emailDomain, String password, String postcode, String basicAddress,
-			String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name)
-			throws IOException {
+			String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name,
+			String nickname,String userType) throws IOException {
 
 		SiteUser user = new SiteUser();
 		user.setUsername(username);
@@ -41,6 +42,15 @@ public class UserService {
 		user.setPassword(passwordEncoder.encode(password));
 		user.setSnsAgree(snsAgree);
 		user.setName(name);
+		user.setNickname(nickname); // 닉네임 저장
+		user.setUserType(userType); // userType 저장
+		
+		 // userType에 따른 approvalStatus 설정
+	    if (userType.equals("일반회원")) {
+	        user.setApprovalStatus(1); // 일반회원
+	    } else if (userType.equals("사업자")) {
+	        user.setApprovalStatus(2); // 승인 대기 중인 사업자
+	    }
 
 // 프로필 이미지 저장 로직
 		if (!imageFile.isEmpty()) {
@@ -51,7 +61,7 @@ public class UserService {
 			user.setImageUrl("/img/user/" + fileName);
 		}
 
-		this.userRepository.save(user);
+		this.userRepository.save(user); // DB에 사용자 정보 저장
 		return user;
 	}
 
@@ -114,44 +124,52 @@ public class UserService {
 		return "일치하는 사용자를 찾았습니다.";
 	}
 
-	// 사용자 프로필 업데이트 로직 (주소, 비밀번호 포함)
+	
 	// 사용자 프로필 업데이트 로직 (주소, 비밀번호 포함)
 	public void updateUserProfile(String username, UserUpdateForm form) throws IOException {
-	    // 기존 사용자 정보 찾기
-	    SiteUser user = userRepository.findByUsername(username)
-	            .orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
+		// 기존 사용자 정보 찾기
+		SiteUser user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new DataNotFoundException("사용자를 찾을 수 없습니다."));
 
-	    // 사용자 정보 업데이트
-	    user.setName(form.getName());
-	    user.setEmail(form.getEmail());
-	    user.setPhoneNumber(form.getPhoneNumber());
+		// 사용자 정보 업데이트
+		user.setName(form.getName());
+		user.setEmail(form.getEmail());
+		user.setPhoneNumber(form.getPhoneNumber());
 
-	    // 주소 정보를 각각의 필드에 저장
-	    user.setPostcode(form.getPostcode());         // 우편번호 저장
-	    user.setBasicAddress(form.getBasicAddress()); // 기본 주소 저장
-	    user.setDetailAddress(form.getDetailAddress()); // 상세 주소 저장
+		// 주소 정보를 각각의 필드에 저장
+		user.setPostcode(form.getPostcode()); // 우편번호 저장
+		user.setBasicAddress(form.getBasicAddress()); // 기본 주소 저장
+		user.setDetailAddress(form.getDetailAddress()); // 상세 주소 저장
 
-	    // 프로필 이미지 업데이트 로직
-	    if (form.getProfileImage() != null && !form.getProfileImage().isEmpty()) {
-	        String fileName = UUID.randomUUID().toString() + "_" + form.getProfileImage().getOriginalFilename();
-	        Path filePath = Paths.get(UPLOAD_DIR, fileName);
-	        Files.createDirectories(filePath.getParent());
-	        Files.write(filePath, form.getProfileImage().getBytes());
-	        user.setImageUrl("/img/user/" + fileName);
-	    }
+		// 프로필 이미지 업데이트 로직
+		if (form.getProfileImage() != null && !form.getProfileImage().isEmpty()) {
+			String fileName = UUID.randomUUID().toString() + "_" + form.getProfileImage().getOriginalFilename();
+			Path filePath = Paths.get(UPLOAD_DIR, fileName);
+			Files.createDirectories(filePath.getParent());
+			Files.write(filePath, form.getProfileImage().getBytes());
+			user.setImageUrl("/img/user/" + fileName);
+		}
 
-	    // 비밀번호 변경
-	    if (form.getNewPassword() != null && form.getNewPassword().equals(form.getNewConfirmPassword())) {
-	        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
-	    }
+		// 비밀번호 변경
+		if (form.getNewPassword() != null && form.getNewPassword().equals(form.getNewConfirmPassword())) {
+			user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+		}
 
-	    // 사용자 정보 저장
-	    userRepository.save(user);
+		// 사용자 정보 저장
+		userRepository.save(user);
 	}
-
 
 	public boolean checkPassword(String rawPassword, String encodedPassword) {
 		return passwordEncoder.matches(rawPassword, encodedPassword);
+	}
+
+// 닉네임 중복 확인 로직
+	public boolean isNicknameTaken(String nickname) {
+		return userRepository.findByNickname(nickname).isPresent();
+	}
+	
+	public List<SiteUser> findAllUsers() {
+	    return userRepository.findAll(); // DB에서 모든 사용자 조회
 	}
 
 }
