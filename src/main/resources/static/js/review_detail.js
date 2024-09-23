@@ -18,6 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
+
+	// 로그인 상태에 따라 댓글 입력 폼 활성화/비활성화
+	if (isAuthenticated) {
+	    commentContentElement.removeAttribute("disabled");
+	    submitButton.removeAttribute("disabled");
+	    commentContentElement.placeholder = "댓글을 입력하세요";
+	} else {
+	    commentContentElement.setAttribute("disabled", true);
+	    submitButton.setAttribute("disabled", true);
+	    commentContentElement.placeholder = "로그인 후 댓글을 작성할 수 있습니다.";
+	}
+
     const reviewId = reviewIdElement.value;
 
     // 댓글 목록 가져오기
@@ -250,4 +262,42 @@ document.addEventListener("DOMContentLoaded", function () {
         document.execCommand('copy');
         alert('주소가 복사되었습니다!');
     });
+});
+
+
+/*별점 처리 */
+document.addEventListener("DOMContentLoaded", function () {
+    const starContainers = document.querySelectorAll(".starRating"); // class로 선택
+
+    starContainers.forEach(starContainer => {
+        const reviewId = starContainer.getAttribute("data-review-id"); // 리뷰 ID 가져오기
+
+        fetch(`/api/review/${reviewId}`)  // 각 리뷰의 별점 데이터를 서버에서 가져옴
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received rating data for review:", reviewId, data); // 별점 데이터 확인
+                renderStars(data.rating, starContainer);  // 별점 렌더링
+            })
+            .catch(error => console.error("Error fetching rating for review:", reviewId, error));
+    });
+
+    function renderStars(rating, container) {
+        let starHtml = "";
+        const fullStars = Math.floor(rating); // 소수점 제거한 별점 수
+        const halfStar = rating % 1 >= 0.5; // 반 별 처리
+        const totalStars = 5;
+
+        for (let i = 0; i < fullStars; i++) {
+            starHtml += '<i class="fa-solid fa-star" style="color: #ffdd00;"></i>';
+        }
+        if (halfStar) {
+            starHtml += '<i class="fa-solid fa-star-half" style="color: #ffdd00;"></i>';
+        }
+        for (let i = fullStars + (halfStar ? 1 : 0); i < totalStars; i++) {
+            starHtml += '<i class="fa-solid fa-star" style="color: #e0e0e0;"></i>';
+        }
+
+        container.innerHTML = starHtml;  // 별점 HTML을 삽입
+        console.log('Star HTML:', starHtml); // 확인용 콘솔 출력
+    }
 });

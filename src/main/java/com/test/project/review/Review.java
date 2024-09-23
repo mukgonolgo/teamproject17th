@@ -51,6 +51,9 @@ public class Review {
     @Column(name = "create_date")  // 리뷰 생성일
     private LocalDateTime createDate;
     
+    @Column(name = "updated_At")  // 리뷰 수정일
+    private LocalDateTime updatedAt;
+    
     @ManyToOne
     @JoinColumn(name = "user_id")  // 외래키를 "user_id"로 설정
     private SiteUser user;  // 작성자 (SiteUser와 연관)

@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -225,6 +227,7 @@ public class ReviewController {
         reviewRepository.save(review);  // 리뷰 저장
 
         Map<String, Object> response = new HashMap<>();
+        
         response.put("reviewId", review.getId());
         response.put("imageUrls", reviewImageMaps.stream().map(map -> map.getReviewImage().getFilepath()).collect(Collectors.toList()));
 
@@ -250,5 +253,23 @@ public class ReviewController {
     }
 
   
+    //별점 데이터 가져오기
+    @GetMapping("/api/review/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getReviewDetails(@PathVariable("id") Long id) {
+        Review review = reviewService.getReview(id);
+        if (review == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("rating", review.getRating()); // 별점 정보
+        response.put("title", review.getTitle());
+        response.put("content", review.getContent());
+
+        return ResponseEntity.ok(response); // JSON으로 응답
+    }
+   
+
 
 }

@@ -190,4 +190,13 @@ public class ReviewService {
 
         return reviewDtos;
     }
+    
+    //리뷰삭제
+    public void deleteReview(Long id) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+
+        reviewRepository.delete(review);
+    }
+
 }
