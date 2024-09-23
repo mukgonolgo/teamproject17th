@@ -148,7 +148,7 @@ public class ReviewService {
                     .orElseThrow(() -> new DataNotFoundException("해당 사용자를 찾을 수 없습니다."));
             return user.getId();
         }
-        throw new IllegalStateException("로그인된 사용자가 없습니다.");
+        return null;  // 로그인되지 않은 경우 null 반환
     }
     
     // 사용자 ID로 리뷰 조회
