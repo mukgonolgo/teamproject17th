@@ -10,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.test.project.DataNotFoundException;
@@ -27,6 +30,7 @@ public class BoardService {
 	private final AnswerRepository answerRepository;
 	private final UserService userService;
 	
+	
 	public Page<Board> getBoard(Pageable pageable) {
 	return boardRepository.findAll(pageable);
 	
@@ -37,12 +41,13 @@ public class BoardService {
 	}
 
 	
-	public void create(String tag,String image, String content, String title, SiteUser user, Principal principal) {
+	public void create(String tag,String image, String content, String title, SiteUser user, Principal principal, boolean is_private) {
 		   if (user == null) {
 		        System.out.println("User is null!");
 		    } else {
 		        System.out.println("User: " + user.getUsername());
 		    }
+		   
 		   
 		   SiteUser siteUser = this.userService.getUser(principal.getName());
 		Board b = new Board();
@@ -53,8 +58,9 @@ public class BoardService {
 		b.setBoardTitle(title);
 		b.setUser(user);
 		b.setUsername(user.getUsername()); // 여기에 추가
-
+		b.setPrivate(is_private);
 		boardRepository.save(b);
+		System.out.println("****************비밀글 확인(서비스)" + is_private +"************************");
 		//id는 자동
 	}
 	
@@ -111,5 +117,17 @@ public class BoardService {
 	public List<Board> findByTag(String boardTag) {
 		return boardRepository.findByBoardTag(boardTag);
 	}
+	
+	public boolean isAdmin(Principal principal) {
+		if(principal==null) {
+			return false;
+		}
+		
+		UserDetails userDetails = (UserDetails) ((Authentication) principal).getPrincipal();
+		return userDetails.getAuthorities().stream()
+				.anyMatch(GrantedAuthority -> GrantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+		
+	}
+
 	
 }

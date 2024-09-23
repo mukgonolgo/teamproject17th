@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,8 +45,13 @@ public class AnswerController {
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{AnswerId}")
-	public String createAnswer(Model model, @PathVariable("AnswerId") Long id, @Valid AnswerForm answerForm,
-			BindingResult bindingResult, Principal principal, @AuthenticationPrincipal UserDetails userDetails) {
+	public String createAnswer(Model model,
+			@PathVariable("AnswerId") Long id,
+			@Valid AnswerForm answerForm,
+			BindingResult bindingResult,
+			Principal principal,
+			@AuthenticationPrincipal UserDetails userDetails
+			) {
 		// 현재 로그인 한 사용자의 정보를 알려면 스프링 시큐리티가 제공하는 Principal(본인) 객체를 사용해야 한다.Principal의
 		// getName()를 이용하면 현재 로그인한 사용자ID를 알 수 있다.
 		Board board = this.boardService.findById(id);

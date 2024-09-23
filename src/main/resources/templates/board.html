@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="/css/Board.css" />
 </head>
 
 <body>
@@ -15,45 +16,49 @@
             <div class="jumbotron">
                 <h2 class="display-4">게시판 목록</h2>
             </div>
-            <form id="searchForm" method="get" th:action="@{/board/{id}(id=${id})}">
-                <input type="hidden" id="page" name="page" value="1">
-				<div>
-				    <label>
-				        <input type="radio" name="searchType" value="title" th:checked="${searchType == 'title'}"> 제목
-				    </label>
-				    <label>
-				        <input type="radio" name="searchType" value="content" th:checked="${searchType == 'content'}"> 본문
-				    </label>
-				    <label>
-				        <input type="radio" name="searchType" value="username" th:checked="${searchType == 'username'}"> 글쓴이
-				    </label>
-				</div>
-                <input type="text" id="search_kw" name="kw" placeholder="검색" th:value="${kw}"> <!-- search_kw로 ID 변경 -->
-                <button type="submit" id="btn_search">Search</button> <!-- type을 'submit'으로 유지 -->
-            </form>
-	<span class="float-right">
-		<a href="#" class="badge badge-primary" data-tag="">전체</a>
-		<a href="#" class="badge badge-primary" data-tag="일반">일반</a>
-		<a href="#" class="badge badge-secondary" data-tag="질문">질문</a>
-		<a href="#" class="badge badge-success" data-tag="친구찾기">친구찾기</a>
-		<a href="#" class="badge badge-danger" data-tag="예시">예시</a>
+			<form id="searchForm" method="get" th:action="@{/board/{id}(id=${id})}">
+					    <input type="hidden" id="page" name="page" value="1">
+					    <div>
+					        <label>
+					            <input type="radio" name="searchType" value="title" th:checked="${searchType == 'title'}"> 제목
+					        </label>
+					        <label>
+					            <input type="radio" name="searchType" value="content" th:checked="${searchType == 'content'}"> 본문
+					        </label>
+					        <label>
+					            <input type="radio" name="searchType" value="username" th:checked="${searchType == 'username'}"> 글쓴이
+					        </label>
+					    </div>
+						<span class="search_box">
+						    <input type="text" id="search_kw" name="kw" placeholder="검색어 입력" th:value="${kw}" class="search_kw" style="flex: 1; margin-right: 5px;">
+						    <button type="submit" id="btn_search" class="search_btn"><i class="ri-search-line"></i></button>
+						</span>
+						</form>
+					</form>
+	<span class="">
+		<a href="#" class="badge badge-primary board_tag"  data-tag="">전체</a>
+		<a href="#" class="badge badge-primary board_tag" data-tag="일반"><i class="ri-message-3-line"></i>일반</a>
+		<a href="#" class="badge badge-secondary board_tag" data-tag="질문"> <i class="ri-question-mark"></i>질문</a>
+		<a href="#" class="badge badge-success board_tag" data-tag="친구찾기"> <i class="ri-search-2-line"></i>친구찾기</a>			
 	</span>
-            <table class="table table-striped" id="posts-table">
-                <thead class="table-warning">
-                    <tr class="text-center">
-                        <th>번호</th>
-                        <th>제목</th>
+            <table class="board_table" id="posts-table">
+                
+                    <tr class="board_header ">
+                        <th class="board_num">번호</th>
+                        <th class="board_title">제목</th>
                         <th>글쓴이</th>
                         <th>작성일시</th>
+						
                     </tr>
-                </thead>
+                
                 <tbody>
-                    <tr th:each="board, loop : ${board}">
+                    <tr th:each="board, loop : ${board}" class="board_text" >
+						
                         <td th:text="${boardPage.getTotalElements() - (boardPage.number * boardPage.size) - loop.index}"></td>
                         <td>
-                            <a th:href="@{|/board_detail/${board.boardId}|}" th:text="${board.boardTitle}" class="text-warning"></a>
-                            <span th:if="${#lists.size(board.answerList) > 0}" 
-                                  th:text="${#lists.size(board.answerList)}" class="badge badge-pill badge-info ml-2"></span>
+                            <a th:href="@{|/board_detail/${board.boardId}|}" class="text-warning"
+							th:text="${board.isPrivate() && board.username != principal.username ? '비밀글입니다.' : board.boardTitle}"></a> 							              
+								  <span class="badge badge-pill badge-info ml-2" th:text="${board.answerList != null ? board.answerList.size() : 0}"></span>
                         </td>
                         <td>
                             <span th:if="${board.username != null}" th:text="${board.username}"></span>
@@ -66,7 +71,7 @@
 			<table class="table table-striped" id="posts-container">
 		
 			</table>
-			
+			<a class="float-right button button-primary" th:href="@{/boardwrite/{id}(id=${userId})}"><button type="button" class="btn btn-primary">게시글 작성</button></a>
 			
             <!-- 페이지네이션 -->
 			<nav th:if="${!board.isEmpty()}">
@@ -87,6 +92,8 @@
 			        </li>
 			    </ul>
 			</nav>
+			
+		
         </div>
 		</div>
 		<script layout:fragment="script">
@@ -141,9 +148,10 @@
 						           // thead 부분을 추가
 						           postsTable.innerHTML = `
 						               <thead class="table-warning">
-						                   <tr class="text-center">
-						                       <th>번호</th>
-						                       <th>제목</th>
+						                   <tr class="board_header board_text">
+						                       <th class="board_num">번호</th>
+						                       <th class="board_title">제목</th>
+											   
 						                       <th>글쓴이</th>
 						                       <th>작성일시</th>
 						                   </tr>

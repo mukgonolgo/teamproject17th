@@ -60,4 +60,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Answer> answerList;
+   
+    
+    private boolean isPrivate; //비밀글 여부
 }

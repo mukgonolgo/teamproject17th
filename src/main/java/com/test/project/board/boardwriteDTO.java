@@ -20,5 +20,6 @@ public class boardwriteDTO {
 	@NotEmpty(message="본문을 입력해주세요")
 	private String content;
 	
-	
+    private boolean is_Private = false;
+    
 }

@@ -5,6 +5,7 @@ package com.test.project.board;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,10 +58,16 @@ public class BoardController {
 			@RequestParam(value = "size", defaultValue = "5") int size,	       
 	        @RequestParam(value="kw",defaultValue="") String kw,
 	        @RequestParam(value="searchType", defaultValue="") String SearchType,
-			Model model){
+			Model model,
+			Principal principal){
 		
 			Pageable pageable = PageRequest.of(page-1, size);
 			Page<Board> boardPage = boardService.getBoard(pageable);
+		    List<Board> visiblePosts = boardPage.getContent().stream()
+		            .filter(post -> !post.isPrivate() || 
+		                            post.getUsername().equals(principal.getName()) || 
+		                            boardService.isAdmin(principal))
+		            .collect(Collectors.toList());
 			
 			if(kw != null && !kw.isEmpty()) {
 				if(SearchType.equalsIgnoreCase("title")) {
@@ -77,6 +84,7 @@ public class BoardController {
 				
 			}
 			setUserAttributes(model, userDetails);
+			model.addAttribute("posts",visiblePosts);
 			model.addAttribute("kw", kw);
 		    model.addAttribute("boardPage", boardPage);
 			model.addAttribute("board", boardPage.getContent());
@@ -86,6 +94,8 @@ public class BoardController {
 		return "board";
 	}
 	
+
+
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/boardwrite/{id}")
 	public String boardwrite(
@@ -104,7 +114,8 @@ public class BoardController {
 			BindingResult bindingResult,
 			Principal principal,
 			@AuthenticationPrincipal UserDetails userDetails,
-			Model model
+			Model model,
+			@RequestParam ("is_Private") boolean is_private
 			) {
 		if(bindingResult.hasErrors()) {
 			 bindingResult.getAllErrors().forEach(error -> {
@@ -114,18 +125,26 @@ public class BoardController {
 		}
 		setUserAttributes(model, userDetails);
 		SiteUser siteuser = this.userService.getUser(principal.getName());
+		  boolean isPrivate = boardwriteDTO.is_Private(); 
+		  System.out.println("비밀글 설정확인"+ is_private);
+		  System.out.println("******************************************************************************");
 		this.boardService.create
 		(
 		boardwriteDTO.getTag(),
 		boardwriteDTO.getImageFile(),	
 		boardwriteDTO.getTitle(),
 		boardwriteDTO.getContent(),
-		siteuser, principal
+		siteuser,
+		principal,
+		boardwriteDTO.is_Private()
+		
 		
 		//SiteUser의 username만 가져오는중 다른코드와의 관계는 X
 		);
-	
+		 System.out.println("비밀글 설정확인(컨트로럴2)"+ is_private);
+		  System.out.println("******************************************************************************");
 		
+		  System.out.println("DTO의 is_Private 값: " + boardwriteDTO.is_Private());
 		return "redirect:/board/{id}";
 		
 		
