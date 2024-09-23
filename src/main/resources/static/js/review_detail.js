@@ -301,3 +301,26 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('Star HTML:', starHtml); // 확인용 콘솔 출력
     }
 });
+document.getElementById('deleteReviewButton').addEventListener('click', function() {
+    const reviewId = document.getElementById('reviewId').value;  // 리뷰 ID 가져오기
+
+    if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+        fetch(`/api/review/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content')
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('리뷰가 성공적으로 삭제되었습니다.');
+                window.location.href = '/review';  // 삭제 후 리뷰 목록 페이지로 이동
+            } else {
+                alert('리뷰 삭제 중 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('삭제 중 오류가 발생했습니다:', error);
+        });
+    }
+});

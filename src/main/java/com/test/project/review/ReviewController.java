@@ -270,6 +270,28 @@ public class ReviewController {
         return ResponseEntity.ok(response); // JSON으로 응답
     }
    
+    @DeleteMapping("/api/review/{id}")
+    public ResponseEntity<String> deleteReview(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        
+        String currentUserId = userDetails.getUsername();  // 현재 사용자의 이름 가져오기
+        Review review = reviewService.getReview(id);
+
+        if (review == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Review not found");
+        }
+
+        if (!review.getUser().getUsername().equals(currentUserId)) {  // 사용자 확인
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this review.");
+        }
+
+        reviewService.deleteReview(id);  // 리뷰 삭제 수행
+        return ResponseEntity.ok("Review deleted successfully");
+    }
+
+
 
 
 }

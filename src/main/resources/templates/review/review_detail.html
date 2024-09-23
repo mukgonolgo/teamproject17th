@@ -223,9 +223,7 @@
 									<a th:href="@{/review_edit/{id}(id=${review.id})}"
 										class="text-secondary"><small>수정</small></a>
 									<!-- 리뷰 삭제 버튼 -->
-									<a th:href="@{/review_delete/{id}(id=${review.id})}"
-										class="text-secondary"
-										onclick="return confirm('정말 삭제하시겠습니까?');"><small>삭제</small></a>
+									<button id="deleteReviewButton" data-review-id="${review.id}" class="btn btn-danger">삭제</button>
 								</div>
 
 
