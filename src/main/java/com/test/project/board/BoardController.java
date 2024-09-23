@@ -196,22 +196,24 @@ public class BoardController {
 
 	@GetMapping("/posts")
 	@ResponseBody
-	public ResponseEntity<List<Board>> getPostsByTag(@RequestParam(value="boardTag") String boardTag) {
-		 System.out.println("Received boardTag: " + boardTag);
-	    if (boardTag == null || boardTag.trim().isEmpty()) {
-	        return ResponseEntity.badRequest().body(Collections.emptyList());
+	public ResponseEntity<List<Board>> getPostsByTag(
+	        @RequestParam(value="boardTag", defaultValue = "") String boardTag,
+	        @RequestParam(value ="page", defaultValue = "1") int page,
+	        @RequestParam(value = "size", defaultValue = "5") int size
+	) {
+	    System.out.println("Received boardTag: " + boardTag);
+	    Pageable pageable = PageRequest.of(page - 1, size);
+	    
+	    if (boardTag.trim().isEmpty()) {
+	        // boardTag가 빈 문자열일 경우 모든 게시글을 반환
+	        List<Board> allBoards = boardService.getBoard(pageable).getContent(); // Page를 List로 변환
+	        return ResponseEntity.ok(allBoards);
+	    } else {
+	        List<Board> boards = boardService.findByTag(boardTag);
+	        return ResponseEntity.ok(boards);
 	    }
-	    
-	    List<Board> boards = boardService.findByTag(boardTag);
-	    
-	    if (boards.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-	    }
-	    
-	    return ResponseEntity.ok(boards);
 	}
-	
-    }
+}
  	
 
 

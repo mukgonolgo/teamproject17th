@@ -38,7 +38,7 @@
 		<a href="#" class="badge badge-success" data-tag="친구찾기">친구찾기</a>
 		<a href="#" class="badge badge-danger" data-tag="예시">예시</a>
 	</span>
-            <table class="table table-striped">
+            <table class="table table-striped" id="posts-table">
                 <thead class="table-warning">
                     <tr class="text-center">
                         <th>번호</th>
@@ -62,7 +62,12 @@
                     </tr>
                 </tbody>
             </table>
-			<div id="posts-container"></div>
+			
+			<table class="table table-striped" id="posts-container">
+		
+			</table>
+			
+			
             <!-- 페이지네이션 -->
 			<nav th:if="${!board.isEmpty()}">
 			    <ul class="pagination justify-content-center">
@@ -83,77 +88,123 @@
 			    </ul>
 			</nav>
         </div>
+		</div>
+		<script layout:fragment="script">
+		    document.addEventListener("DOMContentLoaded", function() {
+		        // 검색 버튼 클릭 이벤트
+		        const btn_search = document.getElementById("btn_search");
+		        btn_search.addEventListener("click", function(e) {
+		            e.preventDefault(); // 기본 폼 제출 방지
+		            document.getElementById("page").value = 1; // 첫 페이지로 초기화
+		            document.getElementById("searchForm").submit();
+		        });
 
-        <script layout:fragment="script">
-            document.addEventListener("DOMContentLoaded", function() {
-                const page_elements = document.getElementsByClassName("page-link");
-                Array.from(page_elements).forEach(function(element) {
-                    element.addEventListener("click", function() {
-						const pageIndex = parseInt(this.textContent) - 1;
-                        document.getElementById("page").value = this.dataset.page;
-                        document.getElementById("searchForm").submit();
-                    });
-                });
+		        // 태그 클릭 이벤트 설정
+		        document.querySelectorAll('.badge').forEach(badge => {
+		            badge.addEventListener('click', function(e) {
+		                e.preventDefault(); // 기본 링크 클릭 동작 방지
+		                const tag = this.getAttribute('data-tag');
+		                console.log("Fetching posts for tag:", tag);
+		                
+		                // 활성화된 태그 표시
+		                document.querySelectorAll('.badge').forEach(b => b.classList.remove('active'));
+		                this.classList.add('active');
+	
+						if (tag === "") { // 전체 태그의 data-tag는 빈 문자열로 설정
+						          // 다른 태그들 초기화
+						          document.querySelectorAll('.badge').forEach(b => b.classList.remove('active'));
+						      }
+							  
+		                // 초기 페이지 요청
+		                fetchPostsForPage(tag, 1); // 첫 번째 페이지 요청
+		            });
+		        });
+		    });
 
-                const btn_search = document.getElementById("btn_search");
-                btn_search.addEventListener("click", function() {
-                    document.getElementById("kw").value = document.getElementById("search_kw").value; // 수정
-                    document.getElementById("page").value = 1;
-                    document.getElementById("searchForm").submit();
-                });
-           
-			
-				document.querySelectorAll('.badge').forEach(badge => {
-				    badge.addEventListener('click', function(e) {
-				        e.preventDefault();
-				        const tag = this.getAttribute('data-tag');
-				        console.log("Fetching posts for tag:", tag);
+			function fetchPostsForPage(tag, page) {
+				const boardTag = tag === "" ? "" : tag; // 전체 태그 클릭 시 빈 문자열 사용				   
+			    fetch(`/posts?boardTag=${tag}&page=${page}`)
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error('Network response was not ok');
+			            }
+			            return response.json();
+			        })
+			        .then(data => {
+			            const filteredData = data.filter(board => 
+			                board.boardTitle && 
+			                board.username && 
+			                board.boardCreateDate
+			            );
+						const postsTable = document.getElementById('posts-table');
+						           postsTable.innerHTML = ''; // 기존 게시글 지우기
+						           // thead 부분을 추가
+						           postsTable.innerHTML = `
+						               <thead class="table-warning">
+						                   <tr class="text-center">
+						                       <th>번호</th>
+						                       <th>제목</th>
+						                       <th>글쓴이</th>
+						                       <th>작성일시</th>
+						                   </tr>
+						               </thead>
+						               <tbody></tbody>
+						           `;
 
-				        fetch(`/posts?boardTag=${tag}`)
-				            .then(response => response.json())
-				            .then(data => {
-				                console.log("data=", data);
-				                
-				                // 빈 배열인지 확인
-				                if (Array.isArray(data) && data.length === 0) {
-				                    console.log('No posts found for this tag.');
-				                    const postsContainer = document.getElementById('posts-container');
-				                    postsContainer.innerHTML = '<p>No posts available for this tag.</p>'; // 메시지 추가
-				                    return;
-				                }
+			            const startIndex = (page - 1) * 5;
+			            const paginatedData = filteredData.slice(startIndex, startIndex + 5);
+	
+			            paginatedData.forEach((board, index) => {
+			                const row = document.createElement('tr');
+			                row.innerHTML = `
+							
+			                    <td>${startIndex + index + 1}</td>
+			                    <td>
+			                        <a href="/board_detail/${board.boardId}" class="text-warning">${board.boardTitle}</a>
+			                        <span class="badge badge-pill badge-info ml-2">${board.answerList ? board.answerList.length : 0}</span>
+			                    </td>
+			                    <td>${board.username}</td>
+			                    <td>${new Date(board.boardCreateDate).toLocaleDateString()}</td>
+			                `;
+			                postsTable.appendChild(row);
+			            });
 
-				                // 게시글 데이터를 필터링
-				                const filteredData = data.filter(board => board.boardTitle && board.username);
+			            updatePagination(filteredData.length);
+			        })
+					.then(text => console.log(text))
+			        .catch(error => {
+			            console.error('Error:', error);
+			            const postsTable = document.getElementById('posts-table');
+			            postsTable.innerHTML = '<tr><td colspan="4">Error loading posts. Please try again.</td></tr>';
+			            updatePagination(0);
+			        });
+			}
 
-				                // 게시글 컨테이너 초기화
-				                const postsContainer = document.getElementById('posts-container');
-				                postsContainer.innerHTML = ''; // 기존 게시글 지우기
-				                
-				                // JSON 데이터 구조 확인
-				                //console.log(JSON.stringify(filteredData, null, 2)); 잘못된 부분을 시각적으로 확인
 
-				                filteredData.forEach(board => {
-				                    const postElement = document.createElement('div');
-				                    postElement.innerHTML = `
-				                        <h5>${board.boardTitle}</h5>
-				                        <p>작성자: ${board.username}</p>
-				                        <p>작성일: ${new Date(board.boardCreateDate).toLocaleDateString()}</p>
-				                    `;
-				                    postsContainer.appendChild(postElement);
-				                });
+		    // 페이지네이션 업데이트 함수
+			function updatePagination(totalPosts) {
+			    const paginationContainer = document.querySelector('.pagination');
+			    paginationContainer.innerHTML = ''; // 기존 페이지네이션 초기화
 
-				                // 게시글이 없을 경우 메시지 출력
-				                if (filteredData.length === 0) {
-				                    postsContainer.innerHTML = '<p>No valid posts available for this tag.</p>';
-				                }
-				            })
-				            .catch(error => console.error('Error:', error));
-				    });
-				});
+			    const totalPages = Math.ceil(totalPosts / 5);
+			    for (let i = 1; i <= totalPages; i++) {
+			        const li = document.createElement('li');
+			        li.className = 'page-item';
+			        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
 
-				});
-        </script>
-    </div>
+			        li.querySelector('.page-link').addEventListener('click', function(e) {
+			            e.preventDefault();
+			            const tag = document.querySelector('.badge.active').getAttribute('data-tag');
+			            fetchPostsForPage(tag, i); // 선택한 페이지의 게시글 요청
+			        });
+
+			        paginationContainer.appendChild(li);
+			    }
+			}
+
+		</script>
+
+    
 </body>
 
 </html>
