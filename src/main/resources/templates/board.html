@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.min.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="jumbotron">
+                <h2 class="display-4">게시판 목록</h2>
+            </div>
+            <form id="searchForm" method="get" th:action="@{/board/{id}(id=${id})}">
+                <input type="hidden" id="page" name="page" value="1">
+				<div>
+				    <label>
+				        <input type="radio" name="searchType" value="title" th:checked="${searchType == 'title'}"> 제목
+				    </label>
+				    <label>
+				        <input type="radio" name="searchType" value="content" th:checked="${searchType == 'content'}"> 본문
+				    </label>
+				    <label>
+				        <input type="radio" name="searchType" value="username" th:checked="${searchType == 'username'}"> 글쓴이
+				    </label>
+				</div>
+                <input type="text" id="search_kw" name="kw" placeholder="검색" th:value="${kw}"> <!-- search_kw로 ID 변경 -->
+                <button type="submit" id="btn_search">Search</button> <!-- type을 'submit'으로 유지 -->
+            </form>
+	<span class="float-right">
+		<a href="#" class="badge badge-primary" data-tag="">전체</a>
+		<a href="#" class="badge badge-primary" data-tag="일반">일반</a>
+		<a href="#" class="badge badge-secondary" data-tag="질문">질문</a>
+		<a href="#" class="badge badge-success" data-tag="친구찾기">친구찾기</a>
+		<a href="#" class="badge badge-danger" data-tag="예시">예시</a>
+	</span>
+            <table class="table table-striped">
+                <thead class="table-warning">
+                    <tr class="text-center">
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>글쓴이</th>
+                        <th>작성일시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="board, loop : ${board}">
+                        <td th:text="${boardPage.getTotalElements() - (boardPage.number * boardPage.size) - loop.index}"></td>
+                        <td>
+                            <a th:href="@{|/board_detail/${board.boardId}|}" th:text="${board.boardTitle}" class="text-warning"></a>
+                            <span th:if="${#lists.size(board.answerList) > 0}" 
+                                  th:text="${#lists.size(board.answerList)}" class="badge badge-pill badge-info ml-2"></span>
+                        </td>
+                        <td>
+                            <span th:if="${board.username != null}" th:text="${board.username}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(board.boardCreateDate, 'yyyy-MM-dd')}"></td>
+                    </tr>
+                </tbody>
+            </table>
+			<div id="posts-container"></div>
+            <!-- 페이지네이션 -->
+			<nav th:if="${!board.isEmpty()}">
+			    <ul class="pagination justify-content-center">
+			        <li class="page-item" th:classappend="${!boardPage.hasPrevious()} ? 'disabled'">
+			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number}, kw=${kw})}" class="page-link">
+			                <span>이전</span>
+			            </a>
+			        </li>
+			        <li th:each="page: ${#numbers.sequence(1, boardPage.totalPages)}"
+			            th:classappend="${page == boardPage.number + 1} ? 'active'" class="page-item">
+			            <a th:href="@{/board/{id}(id=${id}, page=${page}, kw=${kw})}" class="page-link" th:text="${page}"></a>
+			        </li>
+			        <li class="page-item" th:classappend="${!boardPage.hasNext()} ? 'disabled'">
+			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number + 2}, kw=${kw})}" class="page-link">
+			                <span>다음</span>
+			            </a>
+			        </li>
+			    </ul>
+			</nav>
+        </div>
+
+        <script layout:fragment="script">
+            document.addEventListener("DOMContentLoaded", function() {
+                const page_elements = document.getElementsByClassName("page-link");
+                Array.from(page_elements).forEach(function(element) {
+                    element.addEventListener("click", function() {
+						const pageIndex = parseInt(this.textContent) - 1;
+                        document.getElementById("page").value = this.dataset.page;
+                        document.getElementById("searchForm").submit();
+                    });
+                });
+
+                const btn_search = document.getElementById("btn_search");
+                btn_search.addEventListener("click", function() {
+                    document.getElementById("kw").value = document.getElementById("search_kw").value; // 수정
+                    document.getElementById("page").value = 1;
+                    document.getElementById("searchForm").submit();
+                });
+           
+			
+				document.querySelectorAll('.badge').forEach(badge => {
+				    badge.addEventListener('click', function(e) {
+				        e.preventDefault();
+				        const tag = this.getAttribute('data-tag');
+				        console.log("Fetching posts for tag:", tag);
+
+				        fetch(`/posts?boardTag=${tag}`)
+				            .then(response => response.json())
+				            .then(data => {
+				                console.log("data=", data);
+				                
+				                // 빈 배열인지 확인
+				                if (Array.isArray(data) && data.length === 0) {
+				                    console.log('No posts found for this tag.');
+				                    const postsContainer = document.getElementById('posts-container');
+				                    postsContainer.innerHTML = '<p>No posts available for this tag.</p>'; // 메시지 추가
+				                    return;
+				                }
+
+				                // 게시글 데이터를 필터링
+				                const filteredData = data.filter(board => board.boardTitle && board.username);
+
+				                // 게시글 컨테이너 초기화
+				                const postsContainer = document.getElementById('posts-container');
+				                postsContainer.innerHTML = ''; // 기존 게시글 지우기
+				                
+				                // JSON 데이터 구조 확인
+				                //console.log(JSON.stringify(filteredData, null, 2)); 잘못된 부분을 시각적으로 확인
+
+				                filteredData.forEach(board => {
+				                    const postElement = document.createElement('div');
+				                    postElement.innerHTML = `
+				                        <h5>${board.boardTitle}</h5>
+				                        <p>작성자: ${board.username}</p>
+				                        <p>작성일: ${new Date(board.boardCreateDate).toLocaleDateString()}</p>
+				                    `;
+				                    postsContainer.appendChild(postElement);
+				                });
+
+				                // 게시글이 없을 경우 메시지 출력
+				                if (filteredData.length === 0) {
+				                    postsContainer.innerHTML = '<p>No valid posts available for this tag.</p>';
+				                }
+				            })
+				            .catch(error => console.error('Error:', error));
+				    });
+				});
+
+				});
+        </script>
+    </div>
+</body>
+
+</html>

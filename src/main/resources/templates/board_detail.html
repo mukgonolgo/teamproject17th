@@ -1,0 +1,220 @@
+<html layout:decorate="~{layout}">
+<head>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</head>
+<div layout:fragment="content">
+    <div class="container">
+
+        <div class="jumbotron">
+            <div class="display-4">
+                <span class="small">질문제목 :</span> 
+                <span th:text="${board.boardTitle}"></span>
+            </div>
+        </div>
+		
+		<div><span th:text="${board.boardTag}"></span></div>
+		
+        <div class="card bg-warning">
+            <div class="card-body">
+                <span class="small">질문내용  : </span>
+                <span class="card-title text-white">
+                    <span th:text="${board.boardContent}"></span>
+                </span>
+                <button id="editQuestionBtn" th:data-board-id="${board.boardId}" class="btn btn-success mt-2" sec:authorize="isAuthenticated()" 
+                    th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}">
+                    질문 수정
+                </button>
+                <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}" class="delete btn btn-danger mt-2" 
+                   sec:authorize="isAuthenticated()" 
+                   th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}">질문 삭제</a>  
+            </div>
+
+			
+        </div>
+		
+        <!-- 질문수정모달-->
+        <div class="modal" id="editQuestionModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="editQuestionForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title">질문 수정</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="editQuestionContent" class="form-control" name="content" rows="4"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                            <button type="submit" class="btn btn-primary">저장</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+		
+        <h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom my-3 py-2"></h4>
+
+        <div>
+            <ul class="list-unstyled">
+                <div class="card bg-light my-3" th:each="answer : ${board.answerList}">
+                    <div th:id="|answer_${answer.AnswerId}|">
+                        <div class="card-body">
+                            <span th:text="${answer.AnswerContent}"></span>
+                            <span class="badge badge-pill badge-info mr-2" th:if="${answer.user != null}">[[${answer.user.username}]]</span>
+                            <button class="btn btn-success edit-btn" 
+                                    th:data-id="${answer.AnswerId}" 
+                                    th:data-content="${answer.AnswerContent}" 
+                                    sec:authorize="isAuthenticated()" 
+                                    th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}">
+                                답변수정
+                            </button>
+                            <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.AnswerId}|}" class="btn btn-danger delete" 
+                               sec:authorize="isAuthenticated()" 
+                               th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}" 
+                               th:text="답변삭제"></a>                                
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+
+        <!-- 답변 작성 -->
+        <form th:action="@{|/answer/create/${board.boardId}|}" method="post" th:object="${answerForm}">
+            <div class="form-group mb-0">
+                <textarea sec:authorize="isAnonymous()" name="content" id="content" cols="30" rows="10" class="form-control mb-0" 
+                          th:field="*{content}" disabled placeholder="로그인한 상태에서 답변 작성 가능합니다."></textarea>
+                <textarea sec:authorize="isAuthenticated()" name="content" id="content" cols="30" rows="10" class="form-control mb-0" 
+                          th:field="*{content}"></textarea>
+                <br /><br />
+            </div>
+            <input type="submit" value="답변 등록하기" class="btn btn-warning text-white p-3 mt-0"/>
+        </form>
+    </div>
+
+    <!--답변 수정 모달-->
+    <div class="modal" id="editAnswerModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="editAnswerForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">답변 수정</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="editAnswerContent" class="form-control" name="content" rows="4"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script layout:fragment="script" type="text/javascript">
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener("click", function() {
+            if (confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const editForm = document.getElementById("editAnswerForm");
+
+        // 답변 수정 버튼 클릭 이벤트
+        editButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const answerId = this.dataset.id;
+				console.log(`Sending request  answer ID: ${answerId}`);
+                const answerContent = this.dataset.content;
+
+                // 모달에 기존 답변 내용 설정
+                document.getElementById("editAnswerContent").value = answerContent;
+                $('#editAnswerModal').modal('show');
+
+                // onsubmit 핸들러 설정 (중복 방지)
+                editForm.onsubmit = function(event) {
+                    event.preventDefault();
+
+                    const content = document.getElementById("editAnswerContent").value;
+
+                    fetch(`/answer/modify/${answerId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
+                        },
+                        body: JSON.stringify({ content: content })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            const answerElement = document.querySelector(`#answer_${answerId} .card-body`);
+                            if (answerElement) {
+                                answerElement.textContent = content; // 내용 업데이트
+                            }
+                            $('#editAnswerModal').modal('hide'); // 모달 닫기
+                            location.reload(); // 페이지 새로 고침
+                        } else {
+                            alert("수정에 실패했습니다.");
+                        }
+                    });
+                };
+            });
+        });
+
+        // 질문 수정 버튼 클릭 이벤트
+        const editQuestionBtn = document.getElementById("editQuestionBtn");
+        if (editQuestionBtn) {
+            const id = editQuestionBtn.dataset.boardId; // boardId 가져오기
+			console.log(`Sending request  board ID: ${id}`);
+            editQuestionBtn.addEventListener("click", function() {
+                const questionContent = document.querySelector('.card-title').textContent; // 질문 내용 가져오기
+                document.getElementById("editQuestionContent").value = questionContent; // 모달에 기존 내용 설정
+                $('#editQuestionModal').modal('show'); // 모달 열기
+            });
+
+            // 질문 수정 폼 제출 이벤트
+            const editQuestionForm = document.getElementById("editQuestionForm");
+            editQuestionForm.onsubmit = function(event) {
+                event.preventDefault(); // 기본 폼 제출 방지
+                const newContent = document.getElementById("editQuestionContent").value; // 새 질문 내용
+
+                // 질문 수정 요청
+                fetch(`/question/modify/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
+                    },
+                    body: JSON.stringify({ content: newContent }) // 질문 내용 전송
+                })
+                .then(response => {
+                    if (response.ok) {
+						document.querySelector('.card-title.text-white').textContent = newContent; // 질문 내용 업데이트
+                        $('#editQuestionModal').modal('hide'); // 모달 닫기
+                    } else {
+                        alert("수정에 실패했습니다.");
+                    }
+                });
+            };
+        }
+    });
+</script>
+
+</html>
