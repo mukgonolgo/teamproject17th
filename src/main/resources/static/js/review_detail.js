@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     const reviewIdElement = document.querySelector("#reviewId");
     const commentContentElement = document.querySelector("#commentContent");
-    const commentForm = document.querySelector(".comment-input"); // 댓글 작성 폼
-    const submitButton = document.querySelector("#submitComment"); // 제출 버튼
+    const commentForm = document.querySelector(".comment-input");
+    const submitButton = document.querySelector("#submitComment");
 
     let isEditMode = false; // 수정 모드 여부
     let editCommentId = null; // 수정할 댓글 ID 저장
+    let replyToCommentId = null; // 대댓글 작성 대상 댓글 ID
 
     // 로그인 여부 및 로그인한 사용자 ID 확인
     const isAuthenticated = document.getElementById("isAuthenticated").value === 'true';
@@ -18,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const reviewId = reviewIdElement.value;
-    let replyToCommentId = null; // 대댓글 작성 대상 댓글 ID
 
     // 댓글 목록 가져오기
     function fetchComments() {
@@ -39,13 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         comments.forEach(comment => {
             renderComment(comment, commentsList);
-
-            // 대댓글이 있는 경우 처리
-            if (comment.replies && comment.replies.length > 0) {
-                comment.replies.forEach(reply => {
-                    renderReply(reply, commentsList);
-                });
-            }
         });
     }
 
@@ -55,14 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
             ? new Date(comment.updatedAt).toLocaleString()
             : new Date(comment.createDate).toLocaleString();
 
-        // 댓글 작성자와 리뷰 작성자가 같을 경우 '작성자' 표시
         const isAuthor = comment.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
 
         const actionButtons = isAuthenticated && loggedInUserId == comment.userId ? `
             <span type="button" class="btn badge badge-primary edit-button" data-comment-id="${comment.commentId}" data-content="${comment.content}">수정</span>
             <span type="button" class="btn badge badge-danger delete-button" data-comment-id="${comment.commentId}">삭제</span>
         ` : '';
-
+	
         const commentHtml = `
             <hr />
             <div class="comment" data-comment-id="${comment.commentId}">
@@ -79,6 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
         parentElement.insertAdjacentHTML("beforeend", commentHtml);
+
+        // 대댓글이 있는 경우, 부모 댓글 아래에 대댓글만 표시
+        if (comment.replies && comment.replies.length > 0) {
+            comment.replies.forEach(reply => {
+                renderReply(reply, parentElement);
+            });
+        }
     }
 
     // 대댓글 렌더링 함수
@@ -87,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ? new Date(reply.updatedAt).toLocaleString()
             : new Date(reply.createDate).toLocaleString();
 
-        // 대댓글 작성자와 리뷰 작성자가 같을 경우 '작성자' 표시
         const isReplyAuthor = reply.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
 
         const replyActionButtons = isAuthenticated && loggedInUserId == reply.userId ? `
@@ -123,10 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (isEditMode) {
-            // 수정 모드일 경우, 수정 API 호출
             updateComment(editCommentId, commentContent);
         } else {
-            // 일반 댓글 작성
             const csrfToken = document.querySelector('meta[name="_csrf"]').content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
@@ -146,10 +142,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!response.ok) throw new Error("댓글 작성에 실패했습니다.");
                     return response.json();
                 })
-                .then(data => {
-                    commentContentElement.value = ""; // 입력 필드 초기화
-                    replyToCommentId = null; // 대댓글 대상 초기화
-                    fetchComments(); // 댓글 목록 다시 불러오기
+                .then(() => {
+                    commentContentElement.value = "";
+                    replyToCommentId = null;
+                    fetchComments();
                 })
                 .catch(error => {
                     alert(error.message);
@@ -164,24 +160,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const commentId = target.getAttribute("data-comment-id");
 
         if (target.classList.contains("edit-button")) {
-            // 수정 버튼 클릭 시
             const content = target.getAttribute("data-content");
-            commentContentElement.value = content; // 수정할 내용 입력란에 표시
-            editCommentId = commentId; // 수정할 댓글 ID 저장
-            isEditMode = true; // 수정 모드로 전환
-            submitButton.textContent = "수정 완료"; // 버튼 텍스트 변경
-            commentContentElement.focus(); // 입력란으로 포커스 이동
+            commentContentElement.value = content;
+            editCommentId = commentId;
+            isEditMode = true;
+            submitButton.textContent = "수정 완료";
+            commentContentElement.focus();
         } else if (target.classList.contains("delete-button")) {
-            // 삭제 버튼 클릭 시
             if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
                 deleteComment(commentId);
             }
         } else if (target.classList.contains("reply-button")) {
-            // 답글 버튼 클릭 시
-            replyToCommentId = commentId; // 대댓글을 작성할 댓글 ID 저장
+            replyToCommentId = commentId;
             const username = target.getAttribute("data-username");
-            commentContentElement.value = `@${username} `; // 댓글 입력란에 @유저네임 자동 입력
-            commentContentElement.focus(); // 입력란으로 포커스 이동
+            commentContentElement.value = `@${username} `;
+            commentContentElement.focus();
         }
     });
 
@@ -203,11 +196,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(() => {
-                isEditMode = false; // 수정 모드 해제
-                editCommentId = null; // 수정할 댓글 ID 초기화
-                submitButton.textContent = "댓글 작성"; // 버튼 텍스트 원래대로 변경
-                commentContentElement.value = ""; // 입력 필드 초기화
-                fetchComments(); // 댓글 목록 다시 불러오기
+                isEditMode = false;
+                editCommentId = null;
+                submitButton.textContent = "댓글 작성";
+                commentContentElement.value = "";
+                fetchComments();
                 alert("댓글이 수정되었습니다.");
             })
             .catch(error => console.error("댓글 수정 중 오류가 발생했습니다:", error));
@@ -226,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => {
                 if (!response.ok) throw new Error("댓글 삭제에 실패했습니다.");
-                fetchComments(); // 삭제 후 댓글 목록 다시 불러오기
+                fetchComments();
                 alert("댓글이 삭제되었습니다.");
             })
             .catch(error => console.error("댓글 삭제 중 오류가 발생했습니다:", error));
@@ -235,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 초기 댓글 목록 불러오기
     fetchComments();
 
-    /* 공유 모달창 기능 */
+    // 공유 모달창 기능
     document.getElementById('shareBtn').addEventListener('click', function () {
         const modal = document.getElementById('shareModal');
         const shareUrl = window.location.href;

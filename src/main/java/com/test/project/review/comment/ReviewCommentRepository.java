@@ -18,7 +18,8 @@ public interface ReviewCommentRepository extends JpaRepository<ReviewComment, Lo
     long countByReview(Review review);
 	  // 부모 댓글을 기준으로 대댓글의 개수를 반환
     long countByParent(ReviewComment parent);
-
+    // 특정 리뷰에 속한 부모 댓글(대댓글이 아닌 댓글)을 조회
+    List<ReviewComment> findByReviewIdAndParentIsNull(Long reviewId);
     // 리뷰를 기준으로 댓글 목록을 그룹과 순서대로 가져오는 메소드
     List<ReviewComment> findByReviewOrderByGroupsAscOrdersAsc(Review review);
 
