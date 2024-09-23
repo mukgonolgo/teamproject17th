@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.commonmark:commonmark:0.18.0'
     implementation 'org.springframework.security:spring-security-config:6.1.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     
 
     compileOnly 'org.projectlombok:lombok:1.18.28'

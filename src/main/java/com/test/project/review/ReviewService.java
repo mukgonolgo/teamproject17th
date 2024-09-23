@@ -74,46 +74,17 @@ public class ReviewService {
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
-    
-    @Transactional
-    public void processTags(List<String> tags, Review review) {
-        Set<ReviewTagMap> reviewTagMaps = new HashSet<>();
-        for (int i = 0; i < tags.size(); i++) {
-            String tagName = tags.get(i);
-            ReviewTag tag = reviewTagRepository.findByName(tagName);
-            if (tag == null) {
-                tag = new ReviewTag();
-                tag.setName(tagName);
-                reviewTagRepository.save(tag);
-            }
 
-            ReviewTagMap tagMap = new ReviewTagMap();
-            tagMap.setReviewTag(tag);
-            tagMap.setReview(review);
-            tagMap.setOrderIndex(i);
-
-            reviewTagMaps.add(tagMap);
-        }
-        review.setTagMaps(reviewTagMaps);
-    }
         
     @Transactional
     public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review) throws IOException {
-        String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
         List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
-
-        // 이미지 개수 로그 출력
-        System.out.println("이미지 개수: " + imageFiles.size());
+        String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
 
         for (MultipartFile file : imageFiles) {
             String uuid = UUID.randomUUID().toString();
             String filename = uuid + "_" + file.getOriginalFilename();
             File dest = new File(imagePath + filename);
-
-            // 중복 체크
-            if (reviewImageRepository.existsByFilename(filename)) {
-                continue; // 중복된 파일은 건너뜁니다.
-            }
 
             // 파일 저장
             file.transferTo(dest);
@@ -128,17 +99,55 @@ public class ReviewService {
             ReviewImageMap imageMap = new ReviewImageMap();
             imageMap.setReview(review);
             imageMap.setReviewImage(image);
-
             reviewImageMaps.add(imageMap);
-
-            System.out.println("Image saved with ID: " + image.getId());
         }
 
-        // 리뷰에 이미지 매핑 설정
-        review.setReviewImageMap(reviewImageMaps);
+        review.getReviewImageMap().addAll(reviewImageMaps);
         return reviewImageMaps;
     }
+
+
     
+    
+    @Transactional
+    public void processTags(List<String> tags, Review review) {
+        Set<ReviewTagMap> existingTagMaps = review.getTagMaps();
+        Set<String> existingTags = existingTagMaps.stream()
+            .map(tagMap -> tagMap.getReviewTag().getName())
+            .collect(Collectors.toSet());
+
+        Set<String> newTags = new HashSet<>(tags);
+
+        // 삭제할 태그
+        Set<ReviewTagMap> tagsToRemove = existingTagMaps.stream()
+            .filter(tagMap -> !newTags.contains(tagMap.getReviewTag().getName()))
+            .collect(Collectors.toSet());
+        review.getTagMaps().removeAll(tagsToRemove);
+
+        // 추가할 태그
+        Set<String> tagsToAdd = newTags.stream()
+            .filter(tag -> !existingTags.contains(tag))
+            .collect(Collectors.toSet());
+
+        int orderIndex = existingTagMaps.size();
+        for (String tagName : tagsToAdd) {
+            ReviewTag tag = reviewTagRepository.findByName(tagName);
+            if (tag == null) {
+                tag = new ReviewTag();
+                tag.setName(tagName);
+                reviewTagRepository.save(tag);
+            }
+
+            ReviewTagMap tagMap = new ReviewTagMap();
+            tagMap.setReviewTag(tag);
+            tagMap.setReview(review);
+            tagMap.setOrderIndex(orderIndex++);
+            review.getTagMaps().add(tagMap);
+        }
+    }
+
+
+
     // 현재 로그인한 사용자의 ID를 가져오는 메서드
     public Long getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -199,4 +208,30 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-}
+    public void updateReview(Long id, Review updatedReview, List<MultipartFile> fileUpload, List<String> tags, String rating) throws IOException {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id));
+
+        // 리뷰 정보 업데이트
+        review.setTitle(updatedReview.getTitle());
+        review.setContent(updatedReview.getContent());
+        review.setRating(rating);
+
+        // 태그 처리
+        processTags(tags, review);
+
+        // 이미지 처리 (새로 업로드된 이미지만 추가)
+        if (fileUpload != null && !fileUpload.isEmpty()) {
+            processImages(fileUpload, review);
+        }
+
+        review.setUpdatedAt(LocalDateTime.now());
+        reviewRepository.save(review);
+    }
+
+   
+    }
+
+
+
+
