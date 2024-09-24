@@ -40,8 +40,18 @@
             </div>
         </div>
 
-        <!-- 비밀번호 보이기/숨기기 스크립트 -->
-        <script>
+        <!-- 로그인 실패 시 에러 메시지 alert로 표시 -->
+        <script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+			    const urlParams = new URLSearchParams(window.location.search);
+			    const errorMessage = urlParams.get('error');
+			    
+			    if (errorMessage) {
+			        alert(decodeURIComponent(errorMessage));  // 오류 메시지 출력
+			    }
+			});
+
+            // 비밀번호 보이기/숨기기 스크립트
             document.getElementById("togglePassword").addEventListener("click", function() {
                 var passwordField = document.getElementById("password");
                 var icon = document.getElementById("password-icon");
