@@ -1,82 +1,80 @@
 package com.test.project.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.test.project.DataNotFoundException;
-import com.test.project.notice.Notice;
-import com.test.project.notice.NoticeRepository;
 import com.test.project.user.SiteUser;
-
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class StoreService {
-    @Autowired
-    private StoreRepository storeRepository;
 
-   public Store getStore(Integer StoreId) {
-      Optional<Store> store = this.storeRepository.findById(StoreId);
-      if(store.isPresent()) {
-         return store.get();
-      }else {
-         throw new DataNotFoundException("store not found");
-      }
-   }
-	public void create(String storeName, String storeContent) {
-		Store store = new Store();
-		store.setStoreName(storeName);
-		store.setStoreContent(storeContent);
-		store.setCreateDate(LocalDateTime.now());
-		this.storeRepository.save(store);
-	}
-	public void delete(Store store) {
-		this.storeRepository.delete(store);
-	}
-	
-	public void vote(Store store, SiteUser siteUser) {
-		store.getVoter().add(siteUser);
-		this.storeRepository.save(store);
-	}
-    public List<Store> getAllStore() {
-        return storeRepository.findAll();
+    @Autowired
+    private final StoreRepository storeRepository;
+
+    // 가게 정보 조회
+    public Store getStore(Integer storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new DataNotFoundException("Store not found"));
     }
-	
-    public int getTotalCount() {
-        return (int) storeRepository.count(); // 전체 공지사항 수 반환
-    }
-    public void saveStore(String storeName,//식당이름
-    		              String postcode,
-    		              String basicAddress,//
-    		              String detilAddress,
-    					  double storeLatitude, 
-    					  double storeLongitude,
-    					  String storeContent,
-    					  String kategorieGroup,
-    					  String storeTagGroups,
-    					  String storeNumber,
-    					  String StoreStarttime,
-    					  String StoreEndTime) {
+
+    // 가게 저장 (SiteUser 추가)
+    public Store saveStore(String storeName, String postcode, String basicAddress, String detailAddress,
+                           double storeLatitude, double storeLongitude, String storeContent, String kategorieGroup,
+                           String storeTagGroups, String storeNumber, String storeStarttime, String storeEndTime,
+                           Boolean storeAdvertisement, SiteUser siteUser, boolean isPremium) {
         Store store = new Store();
         store.setStoreName(storeName);
         store.setPostcode(postcode);
         store.setBasicAddress(basicAddress);
-        store.setDetilAddress(detilAddress);
+        store.setDetailAddress(detailAddress);
         store.setStoreLatitude(storeLatitude);
-        store.setStoreLongitude(storeLatitude);
+        store.setStoreLongitude(storeLongitude);
         store.setStoreContent(storeContent);
         store.setKategorieGroup(kategorieGroup);
         store.setStoreTagGroups(storeTagGroups);
         store.setStoreNumber(storeNumber);
-        store.setStoreStarttime(StoreStarttime);
-        store.setStoreEndTime(StoreEndTime);
-        store.setCreateDate(LocalDateTime.now()); // 현재 시간으로 설정
+        store.setStoreStarttime(storeStarttime);
+        store.setStoreEndTime(storeEndTime);
+        store.setStoreAdvertisement(storeAdvertisement != null ? storeAdvertisement : false);
+        store.setCreateDate(LocalDateTime.now());
+        store.setSiteUser(siteUser);  // 사업자 정보 저장
 
-        storeRepository.save(store); // 데이터 저장
+        // 프리미엄 광고 여부에 따라 승인 상태 설정
+        if (isPremium) {
+            store.setApprovalStatus(4); // 프리미엄 승인 대기중
+        } else {
+            store.setApprovalStatus(1); // 일반 광고 승인 대기중
+        }
+
+        return storeRepository.save(store);
     }
+
+    // 모든 가게 조회
+    public List<Store> getAllStore() {
+        return storeRepository.findAll();
+    }
+
+    public Store save(Store store) {
+        return storeRepository.save(store);
+    }
+ // 가게 삭제 로직
+    public void deleteStore(Integer storeId) {
+        storeRepository.deleteById(storeId);  // 가게 ID를 기준으로 가게 삭제
+    }
+ // 모든 가게 조회 (페이지네이션 추가)
+    public Page<Store> getAllStores(Pageable pageable) {
+        return storeRepository.findAll(pageable);
+    }
+
+    // 사업자 이름으로 가게 검색
+    public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
+        return storeRepository.findBySiteUserUsernameContaining(username, pageable);
+    }
+    
 }

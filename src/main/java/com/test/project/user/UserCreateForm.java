@@ -2,6 +2,7 @@ package com.test.project.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,8 @@ public class UserCreateForm {
     private String username;
 
     @NotEmpty(message = "비밀번호를 입력하세요")
-    @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{6,}$", 
+             message = "특수문자, 영어, 숫자 조합으로 6글자 이상 입력해 주세요.")
     private String password;
 
     @NotEmpty(message = "비밀번호 확인을 입력하세요")
@@ -30,7 +32,6 @@ public class UserCreateForm {
     @NotEmpty(message = "연락처를 입력하세요")
     private String contact;
 
-    // 주소 필드들 (우편번호, 기본 주소, 상세 주소로 분리)
     @NotEmpty(message = "우편번호를 입력하세요")
     private String postcode;
 
@@ -42,4 +43,10 @@ public class UserCreateForm {
 
     private String profileImage;
     private String snsAgree;
+
+    @NotEmpty(message = "닉네임을 입력하세요")
+    private String nickname;
+    @NotEmpty(message = "회원 유형을 선택하세요")
+    private String userType; // 일반회원 or 사업자
+
 }

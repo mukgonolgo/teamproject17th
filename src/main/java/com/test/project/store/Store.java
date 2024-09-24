@@ -4,18 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-//import com.test.project.review.Review;
+import com.test.project.reservation.Reservation;
 import com.test.project.user.SiteUser;
+import jakarta.persistence.*;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,42 +24,48 @@ public class Store {
 
     @Column(length = 50)
     private String storeName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String postcode;
-    
+
     @Column(columnDefinition = "TEXT")
-    private String basicAddress;  
-    
+    private String basicAddress;
+
     @Column(columnDefinition = "TEXT")
-    private String detilAddress;   
+    private String detailAddress;
 
     private double storeLatitude;
-    
     private double storeLongitude;
 
     @Column(columnDefinition = "TEXT")
-    private String storeContent;        
+    private String storeContent;
 
-    private LocalDateTime createDate;  
+    private LocalDateTime createDate;
+    private boolean storeAdvertisement;
+    private String kategorieGroup;
+    private String storeTagGroups;
+    private String storeNumber;
 
-    private boolean storeAdvertisement; //광고여부
+    @Column(length = 5) // HH:MM 형식으로 제한
+    private String storeStarttime;
 
-    private String kategorieGroup;   
+    @Column(length = 5) // HH:MM 형식으로 제한
+    private String storeEndTime;
     
-    private String storeTagGroups;   
-    
-    private String storeNumber;    
-    
-    private String StoreStarttime;
-    
-    private String StoreEndTime;
-    
-    @ManyToOne
-    private SiteUser review;
-
-    private LocalDateTime modifyDate; 
-    
+	@OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE) //질문이 삭제되면 관련 답변도 모두 삭제하겠다.
+	private List<Reservation> reservationList;
+	
     @ManyToMany
-    private Set<SiteUser> voter; 
+    private Set<SiteUser> voter;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")  // SiteUser와 연관 관계 설정
+    private SiteUser siteUser;     // 글을 작성한 사업자
+
+    private LocalDateTime modifyDate;
+
+    // 승인 상태 필드 (1: 일반 광고 승인 대기 중, 2: 일반 광고 승인, 3: 일반 광고 보류, 4: 프리미엄 승인 대기 중, 5: 프리미엄 허용, 6: 프리미엄 보류)
+    @Column(nullable = false)
+    private Integer approvalStatus = 1; // 기본값: 일반 광고 승인 대기 중
 }
+
