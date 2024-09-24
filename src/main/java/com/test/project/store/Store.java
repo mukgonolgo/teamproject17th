@@ -1,7 +1,6 @@
 package com.test.project.store;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import com.test.project.user.SiteUser;
 import jakarta.persistence.*;
 
@@ -29,7 +28,7 @@ public class Store {
     private String basicAddress;
 
     @Column(columnDefinition = "TEXT")
-    private String detailAddress;  // 오타 수정: detil -> detail
+    private String detailAddress;
 
     private double storeLatitude;
     private double storeLongitude;
@@ -43,7 +42,6 @@ public class Store {
     private String storeTagGroups;
     private String storeNumber;
 
-    // 오픈 시간과 마감 시간 필드
     @Column(length = 5) // HH:MM 형식으로 제한
     private String storeStarttime;
 
@@ -51,10 +49,12 @@ public class Store {
     private String storeEndTime;
 
     @ManyToOne
-    private SiteUser review;
+    @JoinColumn(name = "user_id")  // SiteUser와 연관 관계 설정
+    private SiteUser siteUser;     // 글을 작성한 사업자
 
     private LocalDateTime modifyDate;
 
-    @ManyToMany
-    private Set<SiteUser> voter;
+    // 승인 상태 필드 (1: 일반 광고 승인 대기 중, 2: 일반 광고 승인, 3: 일반 광고 보류, 4: 프리미엄 승인 대기 중, 5: 프리미엄 허용, 6: 프리미엄 보류)
+    @Column(nullable = false)
+    private Integer approvalStatus = 1; // 기본값: 일반 광고 승인 대기 중
 }

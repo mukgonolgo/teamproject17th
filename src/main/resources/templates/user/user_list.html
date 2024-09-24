@@ -19,6 +19,7 @@
                     <th scope="col">상세주소</th>
                     <th scope="col">유형</th>
                     <th scope="col">승인 상태</th> <!-- 승인 상태 열 추가 -->
+                    <th scope="col">관리</th> <!-- 관리 열 추가 -->
                 </tr>
             </thead>
             <tbody>
@@ -30,30 +31,36 @@
                     <td th:text="${user.basicAddress}"></td>
                     <td th:text="${user.detailAddress}"></td>
                     <td th:text="${user.userType}"></td>
-					<td>
-					    <!-- 승인 상태 표시 -->
-					    <span th:if="${user.approvalStatus == 1}">일반회원</span>
-					    <span th:if="${user.approvalStatus == 2}">사업자 승인 대기 중</span>
-					    <span th:if="${user.approvalStatus == 3}">승인된 사업자</span>
-					    <span th:if="${user.approvalStatus == 4}">보류된 사업자</span>
+                    <td>
+                        <!-- 승인 상태 표시 -->
+                        <span th:if="${user.approvalStatus == 1}">일반회원</span>
+                        <span th:if="${user.approvalStatus == 2}">사업자 승인 대기 중</span>
+                        <span th:if="${user.approvalStatus == 3}">승인된 사업자</span>
+                        <span th:if="${user.approvalStatus == 4}">보류된 사업자</span>
+                    </td>
+                    <td>
+                        <!-- 승인 대기 중일 때만 승인 및 보류 버튼 표시 -->
+                        <div th:if="${user.approvalStatus == 2}">
+                            <form th:action="@{/user/approve}" method="post" class="mr-2">
+                                <input type="hidden" name="userId" th:value="${user.id}" />
+                                <input type="hidden" name="approvalStatus" value="3" /> <!-- 3은 승인된 사업자를 의미 -->
+                                <button type="submit" class="btn btn-success">승인</button>
+                            </form>
 
-					    <!-- 버튼들을 flex로 나란히 배치 -->
-					    <div th:if="${user.approvalStatus == 2}" class="d-flex">
-					        <!-- 승인 버튼 -->
-					        <form th:action="@{/user/approve}" method="post" class="mr-2">
-					            <input type="hidden" name="userId" th:value="${user.id}" />
-					            <input type="hidden" name="approvalStatus" value="3" /> <!-- 3은 승인된 사업자를 의미 -->
-					            <button type="submit" class="btn btn-success">승인</button>
-					        </form>
+                            <form th:action="@{/user/hold}" method="post" class="mr-2">
+                                <input type="hidden" name="userId" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-warning">보류</button>
+                            </form>
+                        </div>
 
-					        <!-- 보류 버튼 -->
-					        <form th:action="@{/user/hold}" method="post">
-					            <input type="hidden" name="userId" th:value="${user.id}" />
-					            <button type="submit" class="btn btn-warning">보류</button>
-					        </form>
-					    </div>
-					</td>
-
+                        <!-- 삭제 버튼을 별도로 배치 -->
+                        <div>
+                            <form th:action="@{/user/delete}" method="post">
+                                <input type="hidden" name="userId" th:value="${user.id}" />
+                                <button type="submit" class="btn btn-danger">삭제</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

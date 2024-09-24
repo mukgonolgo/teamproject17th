@@ -385,7 +385,13 @@ public class UserController {
 	    // 재심사 요청 후 index.html로 리디렉션
 	    return "redirect:/";
 	}
-
+	
+	  // 회원 삭제 처리
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam("userId") Long userId) {
+        userService.deleteUser(userId);  // 서비스에서 삭제 로직 처리
+        return "redirect:/user/list";    // 삭제 후 다시 회원 리스트 페이지로 리디렉션
+    }
 
 	}
 

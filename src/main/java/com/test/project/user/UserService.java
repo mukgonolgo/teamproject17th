@@ -171,5 +171,10 @@ public class UserService {
 	public List<SiteUser> findAllUsers() {
 	    return userRepository.findAll(); // DB에서 모든 사용자 조회
 	}
+	
+	 // 회원 삭제
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);  // JPA Repository의 deleteById 메서드를 사용하여 삭제
+    }
 
 }
