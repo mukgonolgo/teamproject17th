@@ -23,8 +23,8 @@ public class StoreController {
     private final StoreService storeService;
     private final UserService userService;
     
-    @GetMapping("/store_alist")
-    public String getStoreListForAdmin(Model model) {
+    @GetMapping("/store_alist_full")
+    public String getStoreListForAdminWithoutPagination(Model model) {
         List<Store> storeList = storeService.getAllStore();  // 모든 가게를 가져옴
         model.addAttribute("storeList", storeList);
         return "store/store_alist";  // store_alist.html 파일로 이동
