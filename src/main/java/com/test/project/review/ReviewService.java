@@ -111,6 +111,7 @@ public class ReviewService {
     
     @Transactional
     public void processTags(List<String> tags, Review review) {
+        // 1. 기존 태그를 불러옴
         Set<ReviewTagMap> existingTagMaps = review.getTagMaps();
         Set<String> existingTags = existingTagMaps.stream()
             .map(tagMap -> tagMap.getReviewTag().getName())
@@ -118,23 +119,29 @@ public class ReviewService {
 
         Set<String> newTags = new HashSet<>(tags);
 
-        // 삭제할 태그
+        // 2. 삭제할 태그를 찾음 (기존 태그 중에서 새로운 태그에 없는 것들)
         Set<ReviewTagMap> tagsToRemove = existingTagMaps.stream()
             .filter(tagMap -> !newTags.contains(tagMap.getReviewTag().getName()))
             .collect(Collectors.toSet());
-        review.getTagMaps().removeAll(tagsToRemove);
 
-        // 추가할 태그
+        // 3. 삭제할 태그들을 리뷰에서 제거
+        for (ReviewTagMap tagMap : tagsToRemove) {
+            review.getTagMaps().remove(tagMap);  // 리뷰와의 연결을 끊음
+            reviewTagRepository.delete(tagMap.getReviewTag());  // 태그 삭제
+        }
+
+        // 4. 새로 추가할 태그를 찾음 (새 태그 중에서 기존 태그에 없는 것들)
         Set<String> tagsToAdd = newTags.stream()
             .filter(tag -> !existingTags.contains(tag))
             .collect(Collectors.toSet());
 
+        // 5. 새 태그 추가
         int orderIndex = existingTagMaps.size();
-        for (String tagName : tagsToAdd) {
-            ReviewTag tag = reviewTagRepository.findByName(tagName);
+        for (String newTag : tagsToAdd) {
+            ReviewTag tag = reviewTagRepository.findByName(newTag);
             if (tag == null) {
                 tag = new ReviewTag();
-                tag.setName(tagName);
+                tag.setName(newTag);
                 reviewTagRepository.save(tag);
             }
 
@@ -144,7 +151,10 @@ public class ReviewService {
             tagMap.setOrderIndex(orderIndex++);
             review.getTagMaps().add(tagMap);
         }
+
+        reviewRepository.save(review);  // 리뷰 저장
     }
+
 
 
 

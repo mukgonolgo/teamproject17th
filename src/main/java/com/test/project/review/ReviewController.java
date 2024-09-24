@@ -202,10 +202,22 @@ public class ReviewController {
     public String showUpdateForm(@PathVariable("id") Long id, Model model) {
         Review review = reviewService.findReviewById(id)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
-        Long userId = review.getUser().getId(); // 사용자 ID
-        model.addAttribute("review", review); // 리뷰 정보
-        model.addAttribute("userId", userId); // 사용자 ID 전달
-        return "review/review_update_form";  // 수정 폼 페이지로 이동
+
+        // 태그 리스트 가져오기
+        List<String> tags = review.getTagMaps().stream()
+                .map(tagMap -> tagMap.getReviewTag().getName())
+                .collect(Collectors.toList());
+
+        // 이미지 리스트 가져오기
+        List<String> imagePaths = review.getReviewImageMap().stream()
+                .map(imageMap -> imageMap.getReviewImage().getFilepath())  // 이미지 경로만 추출
+                .collect(Collectors.toList());
+
+        model.addAttribute("review", review);
+        model.addAttribute("tags", String.join(",", tags)); // 태그를 쉼표로 구분된 문자열로 전달
+        model.addAttribute("imagePaths", imagePaths); // 이미지 경로 리스트 전달
+
+        return "review/review_update_form"; // 수정 페이지로 이동
     }
 
 
@@ -215,19 +227,16 @@ public class ReviewController {
         @PathVariable Long id,
         @ModelAttribute Review review,
         @RequestParam(name = "fileUpload", required = false) List<MultipartFile> fileUpload,
-        @RequestParam("tagsJson") String tagsJson,
+        @RequestParam("tags") String tags,
         @RequestParam("rating") String rating,
         Model model) {
 
+        // 태그 데이터를 쉼표로 분리하여 리스트로 변환
+        List<String> tagsList = Arrays.asList(tags.split(","));
+
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<String> tags = objectMapper.readValue(tagsJson, List.class);
-
-            reviewService.updateReview(id, review, fileUpload, tags, rating);
-
-        } catch (IOException e) {
-            model.addAttribute("errorMessage", "태그 데이터를 처리하는 중 오류가 발생했습니다.");
-            return "review/review_update_form";
+            // 리뷰 업데이트 처리
+            reviewService.updateReview(id, review, fileUpload, tagsList, rating);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "리뷰를 업데이트하는 중 오류가 발생했습니다.");
             return "review/review_update_form";
@@ -236,7 +245,17 @@ public class ReviewController {
         return "redirect:/review_detail/" + id;
     }
 
-    
+
+
+ // 서버에서 태그를 직렬화할 때:
+    @GetMapping("/get_tags/{reviewId}")
+    @ResponseBody
+    public List<String> getTags(@PathVariable Long reviewId) {
+        Review review = reviewService.findById(reviewId);
+        return review.getTagMaps().stream()
+                     .map(tagMap -> tagMap.getReviewTag().getName()) // 태그 이름만 추출
+                     .collect(Collectors.toList());
+    }
     
     
     
