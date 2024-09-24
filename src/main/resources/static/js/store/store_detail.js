@@ -282,6 +282,7 @@ updateCalendarDimensions(); // 초기 캘린더 크기 업데이트
 $(window).resize(function() {
     updateCalendarDimensions(); // 창 크기 변경 시 캘린더 크기 업데이트
 });
+<<<<<<< HEAD
 
 		function checkOpenHours() {
            const startTime = document.getElementById('startTime1').value;
@@ -312,3 +313,5 @@ $(window).resize(function() {
        // 입력값이 변경될 때마다 상태를 업데이트
        document.getElementById('startTime').addEventListener('input', checkOpenHours);
        document.getElementById('endTime').addEventListener('input', checkOpenHours);
+=======
+>>>>>>> refs/remotes/origin/develop

@@ -262,7 +262,11 @@
         }
 
         /* 예약 버튼 */
+<<<<<<< HEAD
         .reservation_btn {
+=======
+        .restaurant_re_btn {
+>>>>>>> refs/remotes/origin/develop
             text-decoration: none;
             background-color: black;
             color: white;
