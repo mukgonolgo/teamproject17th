@@ -12,5 +12,7 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     Store findStoreWithUser(@Param("storeId") Integer storeId);
     
     // 사업자 이름으로 가게 검색 (페이지네이션 포함)
-    Page<Store> findBySiteUserUsernameContaining(String username, Pageable pageable);
+    Page<Store> findByStoreId(Integer storeId, Pageable pageable);
+    Page<Store> findByStoreNameContainingIgnoreCase(String storeName, Pageable pageable);
+    Page<Store> findBySiteUser_UsernameContainingIgnoreCase(String username, Pageable pageable);
 }

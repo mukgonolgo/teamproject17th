@@ -34,11 +34,19 @@ import com.test.project.review.img.ReviewImageRepository;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.store.Store;
+import com.test.project.store.StoreService;
+import com.test.project.user.UserService;
 
 import jakarta.transaction.Transactional;
 
 @Controller
 public class ReviewController {
+   
+   @Autowired
+   private StoreService storeService;
+   @Autowired
+   private UserService userService ;
 
     private final String uploadDirectory = "src/main/resources/static/img/upload";
 
@@ -56,6 +64,11 @@ public class ReviewController {
 
     @GetMapping("/review")
     public String reviewPage(Model model) {
+       List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
+        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
+        model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
+        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
+        
         List<Review> reviewPage = reviewService.getAllReviews();
         model.addAttribute("reviewPage", reviewPage);
         return "review/review_page";

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -176,5 +178,32 @@ public class UserService {
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);  // JPA Repository의 deleteById 메서드를 사용하여 삭제
     }
+    
+    public Page<SiteUser> searchById(String id, Pageable pageable) {
+        try {
+            Long userId = Long.parseLong(id);
+            return userRepository.findAllById(userId, pageable);
+        } catch (NumberFormatException e) {
+            return Page.empty(pageable);
+        }
+    }
+
+
+    public Page<SiteUser> searchByUsername(String username, Pageable pageable) {
+        return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+    }
+
+    public Page<SiteUser> searchByNickname(String nickname, Pageable pageable) {
+        return userRepository.findByNicknameContainingIgnoreCase(nickname, pageable);
+    }
+
+    public Page<SiteUser> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);  // 모든 유저 정보를 페이지네이션으로 반환
+    }
+
+	public Page<SiteUser> searchById(long long1, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

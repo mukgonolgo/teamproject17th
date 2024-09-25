@@ -1,6 +1,9 @@
 package com.test.project.user;
 
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<SiteUser, Long> {
@@ -19,6 +22,15 @@ public interface UserRepository extends JpaRepository<SiteUser, Long> {
     
  // 닉네임으로 SiteUser 찾기
     Optional<SiteUser> findByNickname(String nickname);
+    
+ 
+    Page<SiteUser> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
+    Page<SiteUser> findByNicknameContainingIgnoreCase(String nickname, Pageable pageable);
+
+	Page<SiteUser> findAllById(Long userId, Pageable pageable);
+
+	
+
 
    
 }

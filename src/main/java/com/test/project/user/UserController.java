@@ -2,6 +2,10 @@ package com.test.project.user;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
@@ -317,7 +321,7 @@ public class UserController {
 	    }
 	}
 	
-	@GetMapping("/list")
+	@GetMapping("/user/showList")
 	public String showUserList(Model model) {
 	    List<SiteUser> userList = userService.findAllUsers(); // 모든 사용자 정보 가져오기
 	    model.addAttribute("userList", userList);
@@ -325,14 +329,18 @@ public class UserController {
 	}
 	
 	@PostMapping("/approve")
-	public String approveUser(@RequestParam("userId") Long userId, @RequestParam("approvalStatus") int approvalStatus) {
+	public String approveUser(@RequestParam("userId") Long userId,
+	                          @RequestParam("approvalStatus") int approvalStatus,
+	                          @RequestParam("page") int currentPage,
+	                          @RequestParam("search") String search) {
 	    Optional<SiteUser> userOptional = userRepository.findById(userId);
 	    if (userOptional.isPresent()) {
 	        SiteUser user = userOptional.get();
-	        user.setApprovalStatus(approvalStatus);  // 승인 또는 보류 상태 업데이트
+	        user.setApprovalStatus(approvalStatus);
 	        userRepository.save(user);
 	    }
-	    return "redirect:/user/list";  // 회원 리스트로 리디렉션
+	    // 현재 페이지 번호를 리다이렉션에 포함시킴
+	    return "redirect:/user/list?page=" + currentPage + "&search=" + search;
 	}
 
 
@@ -347,14 +355,18 @@ public class UserController {
 	    return "some_template";
 	}
 	@PostMapping("/hold")
-	public String holdUser(@RequestParam("userId") Long userId) {
+	public String holdUser(@RequestParam("userId") Long userId,
+	                       @RequestParam("approvalStatus") int approvalStatus,
+	                       @RequestParam("page") int currentPage,
+	                       @RequestParam("search") String search) {
 	    Optional<SiteUser> userOptional = userRepository.findById(userId);
 	    if (userOptional.isPresent()) {
 	        SiteUser user = userOptional.get();
-	        user.setApprovalStatus(4);  // 보류 상태로 업데이트
+	        user.setApprovalStatus(approvalStatus);
 	        userRepository.save(user);
 	    }
-	    return "redirect:/user/list";  // 회원 리스트로 리디렉션
+	    // 현재 페이지 번호를 리다이렉션에 포함시킴
+	    return "redirect:/user/list?page=" + currentPage + "&search=" + search;
 	}
 
 	
@@ -392,6 +404,47 @@ public class UserController {
         userService.deleteUser(userId);  // 서비스에서 삭제 로직 처리
         return "redirect:/user/list";    // 삭제 후 다시 회원 리스트 페이지로 리디렉션
     }
+    
+    @GetMapping("/list")
+    public String getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int size,
+                              @RequestParam(value = "search", required = false) String search,
+                              @RequestParam(value = "searchType", defaultValue = "id") String searchType,
+                              Model model) {
+        // 페이지 요청을 ID 필드의 내림차순으로 정렬 (추가됨)
+    	Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")); // ID로 오름차순 정렬
+        Page<SiteUser> userPage = null;
+
+        // 검색 처리 (추가)
+        if (search != null && !search.isEmpty()) {
+            switch (searchType) {
+                case "id":
+                    userPage = userService.searchById(Long.parseLong(search), pageable);
+                    break;
+                case "username":
+                    userPage = userService.searchByUsername(search, pageable);
+                    break;
+                case "nickname":
+                    userPage = userService.searchByNickname(search, pageable);
+                    break;
+                default:
+                    userPage = userService.getAllUsers(pageable);
+                    break;
+            }
+        } else {
+            userPage = userService.getAllUsers(pageable);
+        }
+
+        model.addAttribute("userPage", userPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("search", search);
+        model.addAttribute("searchType", searchType);
+
+        return "user/user_list";  // user_list.html 반환
+    }
+
+
 
 	}
 
