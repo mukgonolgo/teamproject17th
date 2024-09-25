@@ -178,72 +178,83 @@ public class ReviewService {
 
     
     // 이미지를 처리하는 로직 (이미 존재하는 메서드를 사용)
-       @Transactional
-       public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review, String existingImages) throws IOException {
-           List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
-           String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
+    @Transactional
+    public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review, String existingImages) throws IOException {
+        List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
+        String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
 
-           // 기존 이미지 경로를 Set으로 변환
-           Set<String> existingImagesSet = new HashSet<>();
-           if (existingImages != null && !existingImages.isEmpty()) {
-               existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
-           }
+        // 기존 이미지 경로를 Set으로 변환
+        Set<String> existingImagesSet = new HashSet<>();
+        if (existingImages != null && !existingImages.isEmpty()) {
+            existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
+        }
 
-           // 현재 이미지 맵 가져오기
-           List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
+        // 현재 이미지 맵 가져오기
+        List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
+        List<ReviewImageMap> imagesToRemove = new ArrayList<>();
 
-           // 새로운 이미지 파일 처리
-           for (MultipartFile file : imageFiles) {
-               String uuid = UUID.randomUUID().toString();
-               String filename = uuid + "_" + file.getOriginalFilename();
-               File dest = new File(imagePath + filename);
+        // 새로운 이미지 파일 처리
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            for (MultipartFile file : imageFiles) {
+                // 파일이 비어있는지 확인
+                if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
+                    continue;  // 파일이 비어있거나 잘못된 경우는 건너뜀
+                }
 
-               // 파일 저장
-               file.transferTo(dest);
+                String uuid = UUID.randomUUID().toString();
+                String filename = uuid + "_" + file.getOriginalFilename();
+                File dest = new File(imagePath + filename);
 
-               // 이미지 객체 생성 및 저장
-               ReviewImage image = new ReviewImage();
-               image.setFilename(filename);
-               image.setFilepath("/img/upload/" + filename);
-               reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
+                // 파일 저장
+                file.transferTo(dest);
 
-               // 이미지와 리뷰의 매핑
-               ReviewImageMap imageMap = new ReviewImageMap();
-               imageMap.setReview(review);
-               imageMap.setReviewImage(image);
-               reviewImageMaps.add(imageMap);
-           }
+                // 이미지 객체 생성 및 저장
+                ReviewImage image = new ReviewImage();
+                image.setFilename(filename);
+                image.setFilepath("/img/upload/" + filename);
+                reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
 
-           // 기존 이미지 처리: 유지할 이미지 경로만 남기고 나머지 이미지를 삭제
-           for (ReviewImageMap imageMap : currentImageMaps) {
-               String fullPath = imageMap.getReviewImage().getFilepath();
+                // 이미지와 리뷰의 매핑
+                ReviewImageMap imageMap = new ReviewImageMap();
+                imageMap.setReview(review);
+                imageMap.setReviewImage(image);
+                reviewImageMaps.add(imageMap);
+            }
+        }
 
-               // 만약 이미지 경로가 existingImages에 포함되어 있지 않으면 삭제 대상
-               if (!existingImagesSet.contains(fullPath)) {
-                   // 실제 파일 삭제
-                   File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + fullPath);
-                   if (fileToDelete.exists()) {
-                       if (fileToDelete.delete()) {
-                           System.out.println("파일이 성공적으로 삭제되었습니다: " + fullPath);
-                       } else {
-                           System.out.println("파일 삭제에 실패했습니다: " + fullPath);
-                       }
-                   }
+        // 기존 이미지 처리: 유지할 이미지 경로만 남기고 나머지 이미지를 삭제
+        for (ReviewImageMap imageMap : currentImageMaps) {
+            String fullPath = imageMap.getReviewImage().getFilepath();
 
-                   // 데이터베이스에서 이미지 및 매핑 삭제
-                   reviewImageMapRepository.delete(imageMap);  // 매핑 삭제
-                   reviewImageRepository.delete(imageMap.getReviewImage());  // 이미지 삭제
-               }
-           }
+            // 만약 이미지 경로가 existingImages에 포함되어 있지 않으면 삭제 대상
+            if (!existingImagesSet.contains(fullPath)) {
+                // 실제 파일 삭제
+                File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + fullPath);
+                if (fileToDelete.exists()) {
+                    if (fileToDelete.delete()) {
+                        System.out.println("파일이 성공적으로 삭제되었습니다: " + fullPath);
+                    } else {
+                        System.out.println("파일 삭제에 실패했습니다: " + fullPath);
+                    }
+                }
 
-           // 새로운 이미지를 추가한 후, 해당 이미지를 리뷰에 매핑
-           review.getReviewImageMap().addAll(reviewImageMaps);
+                // 삭제할 이미지 매핑 저장
+                imagesToRemove.add(imageMap);
+            }
+        }
 
-           // 리뷰 저장
-           reviewRepository.save(review);
+        // 기존 이미지에서 삭제할 매핑 제거
+        currentImageMaps.removeAll(imagesToRemove);
 
-           return reviewImageMaps;
-       }
+        // 새로운 이미지를 추가한 후, 해당 이미지를 리뷰에 매핑
+        currentImageMaps.addAll(reviewImageMaps);
+
+        // 리뷰 저장
+        reviewRepository.save(review);
+
+        return reviewImageMaps;
+    }
+
 
 
 

@@ -265,6 +265,10 @@ public class ReviewController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            // 오류 발생 시 에러 로그 출력
+            e.printStackTrace();  // 예외 출력
+            System.err.println("오류 발생: " + e.getMessage());  // 오류 메시지 출력
+
             // 에러 발생 시 에러 메시지 반환
             response.put("status", "error");
             response.put("message", "리뷰를 업데이트하는 중 오류가 발생했습니다.");
