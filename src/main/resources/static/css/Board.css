@@ -1,6 +1,7 @@
 * {
 	text-decoration: none;
 	color: black;
+	
 }
 
 .board_table {
@@ -68,7 +69,7 @@
 	align-items: center;
 	border: 4px solid #f44336;
 	border-radius: 20px;
-
+	margin-bottom: 10px;
 }
 
 .search_kw {
@@ -114,10 +115,7 @@
 	margin-bottom: 20px;
 }
 
-.question_border {
-	border: 1px solid lightgray;
-	height: 300px;
-}
+
 
 .hidden {
     display: none;
@@ -126,3 +124,10 @@
 .shown{
     display: block;
 }
+
+.boardLink{
+	cursor: pointer;
+	text-decoration: none !important;
+	width: 100%;
+	display: block;
+	}

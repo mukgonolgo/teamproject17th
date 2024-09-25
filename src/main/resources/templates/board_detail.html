@@ -29,8 +29,8 @@
 			</span>
 		</div>
 
-		<div class="question_border">
-			<span class="">질문내용 : </span>
+		<div >
+			
 			<span th:text="${board.boardContent}" class="question"></span>
 		</div>
 		<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}"
@@ -65,7 +65,7 @@
 			</div>
 		</div>
 
-		<h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom py-5 roof"></h4>
+		<h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom py-4 roof"></h4>
 
 		<div>
 			<ul class="list-unstyled">
@@ -93,9 +93,11 @@
 						</div>
 					</div>
 					<div class="comments">
-						<p th:if="${answer.comment != null}">
-						<p th:each="comment : ${answer.comment}" th:text="${comment.answerContent}"></p>
-						</p>
+					    <p th:if="${answer.comment != null}">
+					        <p th:each="comment : ${answer.comment}" style="margin-left: 20px;">
+					            ㄴ <span th:text="${comment.answerContent}"></span>
+					        </p>
+					    </p>
 					</div>
 				</div>
 			</ul>

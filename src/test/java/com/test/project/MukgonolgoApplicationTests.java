@@ -12,19 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.test.project.review.Review;
-import com.test.project.review.img.ReviewImage;
-import com.test.project.review.ReviewRepository;
-import com.test.project.review.ReviewService;
 
 @SpringBootTest
 public class MukgonolgoApplicationTests {
     
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     @Test
     public void testProcessImages() throws IOException {
