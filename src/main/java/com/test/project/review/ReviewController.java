@@ -43,8 +43,7 @@ public class ReviewController {
    
    @Autowired
    private StoreService storeService;
-   @Autowired
-   private UserService userService ;
+
 
     private final String uploadDirectory = "src/main/resources/static/img/upload";
 
@@ -81,11 +80,6 @@ public class ReviewController {
         System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
         model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
         System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
-        
-    
-        model.addAttribute("reviewPage", reviewPage);
-        return "review/review_page";
-    }
 
 
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();

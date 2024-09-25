@@ -81,15 +81,16 @@ public class StoreController {
 
     // 가게 상세 페이지
     @GetMapping("/detail/{storeId}")
-    public String detail(Model model, @PathVariable("storeId") Integer storeId) {
+    public String detail(@AuthenticationPrincipal UserDetails userDetails,Model model, @PathVariable("storeId") Integer storeId) {
         Store store = storeService.getStore(storeId);
         model.addAttribute("store", store);
         
-//        // SiteUser의 username을 모델에 추가 에러 발생
-//        if (store.getSiteUser() != null) {
-//            model.addAttribute("username", store.getSiteUser().getUsername());
-//        }
-
+		if(userDetails != null) {
+			SiteUser user = userService.getUser(userDetails.getUsername());
+			model.addAttribute("profileImage",user.getImageUrl());
+			model.addAttribute("username",user.getUsername());
+			model.addAttribute("userid",user.getId());
+		}
         return "store/store_detail"; // 상세 페이지 템플릿
     }
 
