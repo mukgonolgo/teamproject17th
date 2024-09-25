@@ -204,17 +204,15 @@ document.getElementById('reviewForm').addEventListener('submit', function(event)
 
     let formData = new FormData(this);
 
-	
+    // 서버로 전송할 파일 개수 확인
+    console.log("서버로 전송될 파일 개수:", imageFiles.length);
 
-	console.log("서버로 전송될 파일 개수:", imageFiles.length); // 서버로 보낼 파일 개수 확인
-    // 새 이미지 파일 추가
-	imageFiles.forEach(function(file, index) {  // index를 두 번째 인자로 추가
-	    console.log("Index: " + index);  // 이제 index가 올바르게 정의됨
-	    console.log("File: " + file.name);
-		formData.append('fileUpload', file, file.name); // 새 파일 추가
-	});
-     
-
+    // 새 이미지 파일 추가 및 로그 출력
+    imageFiles.forEach(function(file, index) {
+        console.log("Index: " + index);  // 인덱스 출력
+        console.log("File: " + file.name);  // 파일 이름 출력
+        formData.append('fileUpload', file, file.name); // 새 파일 추가
+    });
 
     // 기존 이미지 경로를 추가하여 서버로 전송
     formData.append('existingImages', existingImagesArray.join(','));  // 서버에서 처리할 상대 경로
