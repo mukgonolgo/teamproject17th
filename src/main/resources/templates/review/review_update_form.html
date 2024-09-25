@@ -14,17 +14,14 @@
 			<!-- CSRF 토큰 -->
 			<input type="hidden" name="${_csrf.parameterName}"
 				value="${_csrf.token}" /> <input type="hidden" id="reviewId"
-				name="reviewId" value="${review.id}" /> <input type="hidden"
+				name="reviewId" th:value="${review.id}" /> <input type="hidden"
 				id="existingTags" th:value="${tags}">
-
 
 			<!-- 제목 필드 (기존 리뷰 제목 표시) -->
 			<div class="S3_rw">
 				<label for="title">제목</label> <input type="text" id="title"
 					name="title" th:value="${review.title}" placeholder="제목을 입력하세요...">
 
-				<!-- 사용자 ID (수정 불가 필드) -->
-				<input type="hidden" id="userId" name="userId" value="${userId}" />
 
 				<!-- 파일 업로드 -->
 				<label for="file-upload">파일(최소 1개부터 5개까지 추가 등록 가능합니다!!)</label>
@@ -39,10 +36,17 @@
 							style="display: none;" multiple>
 					</div>
 					<!-- 이미지 미리보기 영역 -->
-					<li th:each="imagePath : ${imagePaths}" class="mx-1"><img
-						th:src="@{${imagePath}}" alt="이미지 미리보기"
-						style="max-width: 100px; max-height: 100px;" class="ima-fluid" />
-					</li>
+					<!-- 기존 이미지를 로드하고 삭제 이벤트 추가 -->
+<!-- 기존 이미지를 출력하는 부분 -->
+<ul>
+    <li th:each="image : ${imageData}" class="mx-1 existing-image">
+        <img th:src="@{${image.filepath}}" alt="이미지 미리보기"
+             style="max-width: 100px; max-height: 100px;" class="img-fluid" />
+    </li>
+</ul>
+
+
+
 				</div>
 
 

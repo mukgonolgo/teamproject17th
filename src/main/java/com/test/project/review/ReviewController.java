@@ -15,9 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.test.project.DataNotFoundException;
 import com.test.project.review.comment.CommentResponse;
 import com.test.project.review.comment.ReviewCommentService;
+import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
+import com.test.project.review.img.ReviewImageMapRepository;
+import com.test.project.review.img.ReviewImageRepository;
 import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTagMap;
@@ -32,6 +36,13 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+    
+    @Autowired
+    private ReviewImageRepository reviewImageRepository;
+    
+    @Autowired
+    private ReviewImageMapRepository reviewImageMapRepository;
+
 
     @Autowired
     private ReviewCommentService reviewcommentService;
@@ -110,7 +121,7 @@ public class ReviewController {
         return "review/review_create_form";  // 리뷰 작성 폼 페이지로 이동
     }
 
-    // 리뷰를 생성하는 메서드 (이미지 및 태그 처리 포함)
+ // 리뷰를 생성하는 메서드 (이미지 및 태그 처리 포함)
     @PostMapping("/review_create")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> createReview(
@@ -121,12 +132,13 @@ public class ReviewController {
 
         Long userId = reviewService.getCurrentUserId();
         SiteUser user = userService.getUserById(userId).orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
-        
+
         review.setCreateDate(LocalDateTime.now());
         review.setUser(user);
 
         reviewService.processTags(tags, review);
-        List<ReviewImageMap> reviewImageMaps = reviewService.processImages(fileUpload, review);  // 이미지 처리
+        // processImages 메서드 호출 시 기존 이미지 경로는 null 또는 빈 문자열로 전달
+        List<ReviewImageMap> reviewImageMaps = reviewService.processImages(fileUpload, review, "");  // 이미지 처리
 
         reviewRepository.save(review);
 
@@ -136,6 +148,7 @@ public class ReviewController {
 
         return ResponseEntity.ok(response);
     }
+
 
    
 
@@ -208,14 +221,19 @@ public class ReviewController {
                 .map(tagMap -> tagMap.getReviewTag().getName())
                 .collect(Collectors.toList());
 
-        // 이미지 리스트 가져오기
-        List<String> imagePaths = review.getReviewImageMap().stream()
-                .map(imageMap -> imageMap.getReviewImage().getFilepath())  // 이미지 경로만 추출
-                .collect(Collectors.toList());
+     // 이미지 ID와 경로를 담기 위한 리스트
+        List<Map<String, String>> imageData = review.getReviewImageMap().stream()
+            .map(imageMap -> {
+                Map<String, String> imgData = new HashMap<>();
+                imgData.put("id", String.valueOf(imageMap.getReviewImage().getId())); // 이미지 ID
+                imgData.put("filepath", imageMap.getReviewImage().getFilepath()); // 이미지 경로
+                return imgData;
+            })
+            .collect(Collectors.toList());
 
         model.addAttribute("review", review);
         model.addAttribute("tags", String.join(",", tags)); // 태그를 쉼표로 구분된 문자열로 전달
-        model.addAttribute("imagePaths", imagePaths); // 이미지 경로 리스트 전달
+        model.addAttribute("imageData", imageData); // 이미지 ID와 경로 리스트 전달
 
         return "review/review_update_form"; // 수정 페이지로 이동
     }
@@ -223,27 +241,37 @@ public class ReviewController {
 
     // 리뷰 수정 메서드
     @PostMapping("/review_update/{id}")
-    public String updateReview(
-        @PathVariable Long id,
-        @ModelAttribute Review review,
-        @RequestParam(name = "fileUpload", required = false) List<MultipartFile> fileUpload,
-        @RequestParam("tags") String tags,
-        @RequestParam("rating") String rating,
-        Model model) {
+    @ResponseBody  // JSON 형식으로 응답
+    public ResponseEntity<Map<String, Object>> updateReview(
+            @PathVariable Long id,
+            @ModelAttribute Review review,
+            @RequestParam(name = "fileUpload", required = false) List<MultipartFile> fileUpload,
+            @RequestParam(name = "existingImages", required = false) String existingImages, // 기존 이미지 경로
+            @RequestParam("tags") String tags,
+            @RequestParam("rating") String rating) {
 
+        Map<String, Object> response = new HashMap<>();
+        
         // 태그 데이터를 쉼표로 분리하여 리스트로 변환
         List<String> tagsList = Arrays.asList(tags.split(","));
 
         try {
             // 리뷰 업데이트 처리
-            reviewService.updateReview(id, review, fileUpload, tagsList, rating);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "리뷰를 업데이트하는 중 오류가 발생했습니다.");
-            return "review/review_update_form";
-        }
+            reviewService.updateReview(id, review, fileUpload, existingImages, tagsList, rating);
 
-        return "redirect:/review_detail/" + id;
+            // 성공 응답
+            response.put("status", "success");
+            response.put("message", "리뷰가 성공적으로 업데이트되었습니다.");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // 에러 발생 시 에러 메시지 반환
+            response.put("status", "error");
+            response.put("message", "리뷰를 업데이트하는 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
+
 
 
 
@@ -257,6 +285,46 @@ public class ReviewController {
                      .collect(Collectors.toList());
     }
     
+
     
+    @DeleteMapping("/delete_image_by_url")
+    @ResponseBody
+    public ResponseEntity<String> deleteImageByUrl(@RequestBody Map<String, String> request) {
+        String imageUrl = request.get("imageUrl");
+
+        // 이미지 URL로부터 ReviewImage 찾기
+        ReviewImage image = reviewImageRepository.findByFilepath(imageUrl)
+                .orElseThrow(() -> new DataNotFoundException("Image not found"));
+
+        // ReviewImage 객체로부터 ReviewImageMap 찾기
+        List<ReviewImageMap> imageMaps = reviewImageMapRepository.findByReviewImage(image);
+
+        if (imageMaps.isEmpty()) {
+            throw new DataNotFoundException("Image map not found");
+        }
+
+        // 이미지와 매핑 데이터 삭제
+        for (ReviewImageMap imageMap : imageMaps) {
+            ReviewImage img = imageMap.getReviewImage();
+
+            // 실제 파일 삭제
+            File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + img.getFilepath());
+            if (fileToDelete.exists() && fileToDelete.delete()) {
+                System.out.println("파일이 성공적으로 삭제되었습니다: " + img.getFilepath());
+            } else {
+                System.out.println("파일 삭제 실패 또는 파일이 존재하지 않음: " + img.getFilepath());
+            }
+
+            // 데이터베이스에서 매핑과 이미지 삭제
+            reviewImageMapRepository.delete(imageMap);  // 매핑 삭제
+            reviewImageRepository.delete(img);  // 이미지 삭제
+        }
+
+        return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
+    }
+
+
+
+
     
 }
