@@ -177,11 +177,19 @@ public class ReviewService {
     
 
     
-    // 이미지를 처리하는 로직 (이미 존재하는 메서드를 사용)
     @Transactional
     public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review, String existingImages) throws IOException {
         List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
         String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
+
+        // 서버로 전달된 파일 개수 출력
+        System.out.println("서버가 수신한 파일 개수: " + imageFiles.size());
+
+        // 각 파일 이름 출력
+        for (int i = 0; i < imageFiles.size(); i++) {
+            MultipartFile file = imageFiles.get(i);
+            System.out.println("서버에서 받은 파일 " + (i + 1) + ": " + file.getOriginalFilename());
+        }
 
         // 기존 이미지 경로를 Set으로 변환
         Set<String> existingImagesSet = new HashSet<>();
@@ -194,32 +202,34 @@ public class ReviewService {
         List<ReviewImageMap> imagesToRemove = new ArrayList<>();
 
         // 새로운 이미지 파일 처리
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            for (MultipartFile file : imageFiles) {
-                // 파일이 비어있는지 확인
-                if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
-                    continue;  // 파일이 비어있거나 잘못된 경우는 건너뜀
-                }
-
-                String uuid = UUID.randomUUID().toString();
-                String filename = uuid + "_" + file.getOriginalFilename();
-                File dest = new File(imagePath + filename);
-
-                // 파일 저장
-                file.transferTo(dest);
-
-                // 이미지 객체 생성 및 저장
-                ReviewImage image = new ReviewImage();
-                image.setFilename(filename);
-                image.setFilepath("/img/upload/" + filename);
-                reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
-
-                // 이미지와 리뷰의 매핑
-                ReviewImageMap imageMap = new ReviewImageMap();
-                imageMap.setReview(review);
-                imageMap.setReviewImage(image);
-                reviewImageMaps.add(imageMap);
+        for (MultipartFile file : imageFiles) {
+            if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
+                continue;  // 파일이 비어있거나 잘못된 경우는 건너뜀
             }
+
+            // 중복 파일 처리 방지 로직 추가
+            if (reviewImageRepository.existsByFilename(file.getOriginalFilename())) {
+                System.out.println("중복된 파일이 발견되었습니다: " + file.getOriginalFilename());
+                continue;  // 중복된 파일이면 추가하지 않음
+            }
+
+            // 파일 저장
+            String uuid = UUID.randomUUID().toString();
+            String filename = uuid + "_" + file.getOriginalFilename();
+            File dest = new File(imagePath + filename);
+            file.transferTo(dest);
+
+            // 이미지 객체 생성 및 저장
+            ReviewImage image = new ReviewImage();
+            image.setFilename(filename);
+            image.setFilepath("/img/upload/" + filename);
+            reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
+
+            // 이미지와 리뷰의 매핑
+            ReviewImageMap imageMap = new ReviewImageMap();
+            imageMap.setReview(review);
+            imageMap.setReviewImage(image);
+            reviewImageMaps.add(imageMap);
         }
 
         // 기존 이미지 처리: 유지할 이미지 경로만 남기고 나머지 이미지를 삭제
@@ -249,11 +259,16 @@ public class ReviewService {
         // 새로운 이미지를 추가한 후, 해당 이미지를 리뷰에 매핑
         currentImageMaps.addAll(reviewImageMaps);
 
+        // 이미지 리스트를 추가할 때 순서대로 추가하는 것을 보장하기 위해 새로운 리스트로 갱신
+        review.setReviewImageMap(currentImageMaps);
+
         // 리뷰 저장
         reviewRepository.save(review);
 
         return reviewImageMaps;
     }
+
+
 
 
 

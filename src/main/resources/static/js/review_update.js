@@ -74,10 +74,17 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // 이미지 추가 함수
+// 이미지 추가 함수
 function addImage(event) {
     const files = Array.from(event.target.files);
 
     files.forEach(file => {
+        // 중복 확인: imageFiles 배열에 동일한 파일이 있으면 추가하지 않음
+        if (imageFiles.some(existingFile => existingFile.name === file.name && existingFile.size === file.size)) {
+            console.log("이미 추가된 파일입니다:", file.name);
+            return;  // 중복된 파일이므로 추가하지 않음
+        }
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const imgContainer = document.createElement('div');
@@ -94,10 +101,12 @@ function addImage(event) {
 
             // 파일을 추가
             imageFiles.push(file); // 새로 추가된 파일을 저장
+            console.log("파일이 추가되었습니다:", file.name);
         };
         reader.readAsDataURL(file);
     });
 }
+
 
 // 태그 입력 및 삭제 기능
 let S3_tags_input = $("#S3_tags_input");
@@ -195,10 +204,17 @@ document.getElementById('reviewForm').addEventListener('submit', function(event)
 
     let formData = new FormData(this);
 
+	
+
+	console.log("서버로 전송될 파일 개수:", imageFiles.length); // 서버로 보낼 파일 개수 확인
     // 새 이미지 파일 추가
-    imageFiles.forEach((file) => {
-        formData.append('fileUpload', file, file.name); // 새 파일 추가
-    });
+	imageFiles.forEach(function(file, index) {  // index를 두 번째 인자로 추가
+	    console.log("Index: " + index);  // 이제 index가 올바르게 정의됨
+	    console.log("File: " + file.name);
+		formData.append('fileUpload', file, file.name); // 새 파일 추가
+	});
+     
+
 
     // 기존 이미지 경로를 추가하여 서버로 전송
     formData.append('existingImages', existingImagesArray.join(','));  // 서버에서 처리할 상대 경로

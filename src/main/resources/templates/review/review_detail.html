@@ -209,7 +209,7 @@
 							</span>
 
 							<!-- 업데이트 시간  -->
-							<div class="row mt-2">
+							<div class="row ">
 								<div class="col">
 									<p class="card-text">
 										<small class="text-muted"> <span
@@ -221,9 +221,12 @@
 								<div class="col text-right">
 									<!-- 리뷰 수정 버튼 -->
 									<a th:href="@{/review_update_form/{id}(id=${review.id})}"
-										class="text-secondary"><small>수정</small></a>
+										class="text-primary btn btn-outline-primary btn-sm"><small>수정</small></a>
 									<!-- 리뷰 삭제 버튼 -->
-									<button id="deleteReviewButton" data-review-id="${review.id}" class="btn btn-danger">삭제</button>
+									<button id="deleteReviewButton" data-review-id="${review.id}"
+										class="btn btn-outline-danger btn-sm">
+										<small>삭제</small>
+									</button>
 								</div>
 
 
