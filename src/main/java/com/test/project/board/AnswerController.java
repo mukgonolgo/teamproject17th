@@ -1,13 +1,11 @@
 package com.test.project.board;
 
-import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.apache.catalina.User;
-import org.hibernate.internal.build.AllowSysOut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,12 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserService;
 
@@ -41,7 +36,8 @@ public class AnswerController {
 	private final UserService userService;
 	private final BoardService boardService;
 	private final AnswerService answerService;
-
+	private final AnswerRepository answerRepository;
+	private static final Logger logger = LoggerFactory.getLogger(AnswerService.class);
 	private void setUserAttributes(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		SiteUser user = userService.getUser(userDetails.getUsername());
 		model.addAttribute("profileImage", user.getImageUrl());
@@ -93,57 +89,43 @@ public class AnswerController {
 	public ResponseEntity<String> createComment(
 	        @PathVariable("AnswerId") Long id,
 	        @RequestBody Map<String, String> body,
-	        @Valid AnswerFormDTO answerFormDTO,
-	        Principal principal) { // JSON 형식으로 받기
-		Object commentJsom = body.get("comment");
-		List<Answer> comment = new ArrayList<>(); // 빈 리스트로 초기화
-		 ObjectMapper objectMapper = new ObjectMapper();
-
-		    /*object로 html에서 받은 comment값을 String으로 변환시키고 LIst에 추가하거나
-		     * List 타입일 경우 변환 없이 그대로 넣는 코드
-		     *   */
-	    if (commentJsom instanceof String) {
-	        String commentJson = (String) commentJsom; // String으로 변환
-
-	        // JSON 배열을 List<Answer>로 변환
-	        if (commentJson != null && !commentJson.isEmpty()) {
-	            try {
-	                comment = objectMapper.readValue(commentJson, new TypeReference<List<Answer>>() {});
-	            } catch (IOException e) {
-	                e.printStackTrace(); // 에러 로그 추가
-	                return ResponseEntity.badRequest().body("Invalid comment format");
-	            }
-	        }
-	    } else if (commentJsom instanceof List) {
-	        // comment가 이미 List 형태일 경우
-	        comment = (List<Answer>) commentJsom;
-	    }
-
+	        Principal principal) {
 	    
-	    
-	    
-	    System.out.println("@@@@@@@@@@@@@@@@@@createComment 메서드 시작 @@@@@@@@@@@@"); // 로그 추가
-	    Answer parentAnswer = answerService.findById(id);
-	    
+	    // 부모 답변 조회
+	    Answer parentAnswer = answerService.getAnswer(id);
 	    if (parentAnswer == null) {
 	        return ResponseEntity.notFound().build();
 	    }
-	    Board board = this.boardService.findById(id);
-	    SiteUser siteUser = this.userService.getUser(principal.getName());
-	    Answer answer = new Answer();
-	    String siteuser = answer.getUsername();
+	    // 사용자 정보 조회
+	    SiteUser siteUser = userService.getUser(principal.getName());
+	    logger.info("answer id (b4 commentContent) "+ id);
+	    logger.info("Request Body(af b4 commment: " + body);		  
+	    // 댓글 내용 추출
+	    String commentContent = body.get("comment");
+	    logger.info("Request Body(af b4 commentContent: " + commentContent);		  
+		  
+	    if (commentContent == null || commentContent.isEmpty()) {
+	        return ResponseEntity.badRequest().body("댓글 내용이 비어있습니다.");
+	    }
+	    logger.info("answer id (af commentContent) "+ id);
 	    
-	    System.out.println("answerFormDTO.getContent()  ==" + answerFormDTO.getContent());
-	    answer.setAnswerContent(answerFormDTO.getContent());
-	    answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer);
+	    // 대댓글 생성
+	    Answer comment = new Answer();
+	    comment.setAnswerContent(commentContent);
+	    comment.setUser(siteUser);
+	    comment.setParentAnswer(parentAnswer);
+	    comment.setAnswerCreateDate(LocalDateTime.now());
+	    logger.info("answer id (acc 114line) "+ id);
+	    logger.info("commentContent (acc 115line) "+ commentContent);
+		  
+	    // 대댓글을 부모 답변의 댓글 목록에 추가
+	    parentAnswer.getComment().add(comment);
 	    
-	    System.out.println("pa === " + parentAnswer);
-	    System.out.println("****************************");
-	    System.out.println("co === " + commentJsom);
+	    // 대댓글 저장
+	    answerRepository.save(comment);
 	    
-	    return ResponseEntity.ok().build();
+	    return ResponseEntity.ok("대댓글이 성공적으로 추가되었습니다.");
 	}
-
 
 
 	@PreAuthorize("isAuthenticated()")

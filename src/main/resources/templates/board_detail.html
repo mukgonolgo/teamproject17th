@@ -1,291 +1,312 @@
 <html layout:decorate="~{layout}">
 
 <head>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/Board.css" />
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<!-- Bootstrap JS -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/Board.css" />
 </head>
 
 <div layout:fragment="content">
-    <div class="container">
-        <span>
-            <i th:if="${board.boardTag == '일반'}" class="badge badge-primary ri-message-3-line"><span
-                    th:text="${board.boardTag}" style="color: white;"></span></i>
-            <i th:if="${board.boardTag == '질문'}" class="badge badge-success ri-question-mark"><span
-                    th:text="${board.boardTag}"></span></i>
-            <i th:if="${board.boardTag == '친구찾기'}" class="badge badge-warning ri-search-2-line"><span
-                    th:text="${board.boardTag}"></span></i>
-        </span>
+	<div class="container">
+		<span>
+			<i th:if="${board.boardTag == '일반'}" class="badge badge-primary ri-message-3-line"><span
+					th:text="${board.boardTag}" style="color: white;"></span></i>
+			<i th:if="${board.boardTag == '질문'}" class="badge badge-success ri-question-mark"><span
+					th:text="${board.boardTag}"></span></i>
+			<i th:if="${board.boardTag == '친구찾기'}" class="badge badge-warning ri-search-2-line"><span
+					th:text="${board.boardTag}"></span></i>
+		</span>
 
-        <div class="question_title border-bottom">
-            <span class="">질문제목 :</span>
-            <span th:text="${board.boardTitle}"></span>
-            <span class="small float-right">
-                유저명 :<span th:text="${board.username}"></span>
-            </span>
-        </div>
+		<div class="question_title border-bottom">
+			<span class="">질문제목 :</span>
+			<span th:text="${board.boardTitle}"></span>
+			<span class="small float-right">
+				유저명 :<span th:text="${board.username}"></span>
+			</span>
+		</div>
 
-        <div class="question_border">
-            <span class="">질문내용 : </span>
-            <span th:text="${board.boardContent}" class="question"></span>
-        </div>
-        <a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}"
-           class="delete btn btn-danger mt-2 float-right" sec:authorize="isAuthenticated()"
-           th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
-           style="margin-right: 10px;">질문 삭제</a>
-        <button id="editQuestionBtn" th:data-board-id="${board.boardId}" class="btn btn-success mt-2 float-right"
-                sec:authorize="isAuthenticated()"
-                th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
-                style="margin-right: 10px;">질문 수정</button>
+		<div class="question_border">
+			<span class="">질문내용 : </span>
+			<span th:text="${board.boardContent}" class="question"></span>
+		</div>
+		<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}"
+			class="delete btn btn-danger mt-2 float-right" sec:authorize="isAuthenticated()"
+			th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
+			style="margin-right: 10px;">질문 삭제</a>
+		<button id="editQuestionBtn" th:data-board-id="${board.boardId}" class="btn btn-success mt-2 float-right"
+			sec:authorize="isAuthenticated()"
+			th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
+			style="margin-right: 10px;">질문 수정</button>
 
-        <!-- 질문 수정 모달 -->
-        <div class="modal" id="editQuestionModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form id="editQuestionForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title">질문 수정</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <textarea id="editQuestionContent" class="form-control" name="content" rows="4"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                            <button type="submit" class="btn btn-primary">저장</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+		<!-- 질문 수정 모달 -->
+		<div class="modal" id="editQuestionModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<form id="editQuestionForm">
+						<div class="modal-header">
+							<h5 class="modal-title">질문 수정</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<textarea id="editQuestionContent" class="form-control" name="content" rows="4"></textarea>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+							<button type="submit" class="btn btn-primary">저장</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 
-        <h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom py-5 roof"></h4>
+		<h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom py-5 roof"></h4>
 
-        <div>
-            <ul class="list-unstyled">
-                <div class="my-5 mt-5 answer_line" th:each="answer : ${board.answerList}">
-                    <div th:id="|answer_${answer.AnswerId}|">
-                        <span th:text="${answer.AnswerContent}"></span>
-                        <span class="badge badge-pill badge-info mr-2" th:if="${answer.user != null}">
-                            [[${answer.user.username}]]
-                        </span>
-                        <a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.AnswerId}|}"
-                           class="btn btn-danger delete float-right" sec:authorize="isAuthenticated()"
-                           th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}"
-                           th:text="답변삭제" style="margin-right: 10px;"></a>
+		<div>
+			<ul class="list-unstyled">
+				<div class="my-5 mt-5 answer_line" th:each="answer : ${board.answerList}">
+					<div th:id="|answer_${answer.AnswerId}|">
+						<span th:text="${answer.AnswerContent}"></span>
+						<span class="badge badge-pill badge-info mr-2" th:if="${answer.user != null}">
+							[[${answer.user.username}]]
+						</span>
+						<a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.AnswerId}|}"
+							class="btn btn-danger delete float-right" sec:authorize="isAuthenticated()"
+							th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}"
+							th:text="답변삭제" style="margin-right: 10px;"></a>
 
-                        <button class="btn btn-success edit-btn float-right" th:data-id="${answer.AnswerId}"
-                                th:data-content="${answer.AnswerContent}" sec:authorize="isAuthenticated()"
-                                th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}"
-                                style="margin-right: 10px;">답변수정</button>
+						<button class="btn btn-success edit-btn float-right" th:data-id="${answer.AnswerId}"
+							th:data-content="${answer.AnswerContent}" sec:authorize="isAuthenticated()"
+							th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}"
+							style="margin-right: 10px;">답변수정</button>
 
-                        <button class="btn btn-primary float-right" th:data-id="${answer.AnswerId}"
-						        style="margin-right: 10px;" id="reply-btn">대댓글 달기</button>								
-								<div class="reply-container hidden">
-								    <textarea class="form-control mt-2" rows="3" placeholder="대댓글을 입력하세요"></textarea>
-								    <button class="btn btn-success mt-2 save-reply-btn">저장</button>
-								</div>
-                    </div>
-                    <p th:if="${answer.comment != null}" th:text="${answer.comment}"> </p>
-                </div>
-            </ul>
-        </div>
+						<button class="btn btn-primary float-right" th:data-id="${answer.AnswerId}"
+							style="margin-right: 10px;" id="reply-btn">대댓글 달기</button>
+						<div class="reply-container hidden">
+							<textarea class="form-control mt-2" rows="3" placeholder="대댓글을 입력하세요"></textarea>
+							<button class="btn btn-success mt-2 save-reply-btn">저장</button>
+						</div>
+					</div>
+					<div class="comments">
+						<p th:if="${answer.comment != null}">
+						<p th:each="comment : ${answer.comment}" th:text="${comment.answerContent}"></p>
+						</p>
+					</div>
+				</div>
+			</ul>
+		</div>
 
-        <!-- 답변 작성 -->
-        <form th:action="@{|/answer/create/${board.boardId}|}" method="post" th:object="${answerFormDTO}">
-            <div class="form-group mb-0" style="margin-top: 70px;">
-                <textarea sec:authorize="isAnonymous()" name="content" id="content" cols="30" rows="10"
-                          class="form-control mb-0" th:field="*{content}" disabled
-                          placeholder="로그인한 상태에서 답변 작성 가능합니다."></textarea>
-                <textarea sec:authorize="isAuthenticated()" name="content" id="content" cols="30" rows="10"
-                          class="form-control mb-0" th:field="*{content}"></textarea>
-                <br /><br />
-            </div>
-            <input type="submit" value="답변 등록하기" class="btn btn-warning text-white p-3 mt-0" />
-        </form>
-    </div>
+		<!-- 답변 작성 -->
+		<form th:action="@{|/answer/create/${board.boardId}|}" method="post" th:object="${answerFormDTO}">
+			<div class="form-group mb-0" style="margin-top: 70px;">
+				<textarea sec:authorize="isAnonymous()"
+					placeholder="로그인한 상태에서 답변 작성 가능합니다."></textarea>
+				<textarea sec:authorize="isAuthenticated()" name="content" id="content" cols="30" rows="10"
+					class="form-control mb-0" th:field="*{content}"></textarea>
+				<br /><br />
+			</div>
+			<input type="submit" value="답변 등록하기" class="btn btn-warning text-white p-3 mt-0" id="answerText" />
+		</form>
+	</div>
 
-    <!-- 답변 수정 모달 -->
-    <div class="modal" id="editAnswerModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="editAnswerForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">답변 수정</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <textarea id="editAnswerContent" class="form-control" name="content" rows="4"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                        <button type="submit" class="btn btn-primary">저장</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+	<!-- 답변 수정 모달 -->
+	<div class="modal" id="editAnswerModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<form id="editAnswerForm">
+					<div class="modal-header">
+						<h5 class="modal-title">답변 수정</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<textarea id="editAnswerContent" class="form-control" name="content" rows="4"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="submit" class="btn btn-primary">저장</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 
 </div>
 
 <script layout:fragment="script" type="text/javascript">
-    const deleteElements = document.getElementsByClassName("delete");
-    Array.from(deleteElements).forEach(function (element) {
-        element.addEventListener("click", function () {
-            if (confirm("정말로 삭제하시겠습니까?")) {
-                location.href = this.dataset.uri;
-            }
-        });
-    });
+	const deleteElements = document.getElementsByClassName("delete");
+	Array.from(deleteElements).forEach(function (element) {
+		element.addEventListener("click", function () {
+			if (confirm("정말로 삭제하시겠습니까?")) {
+				location.href = this.dataset.uri;
+			}
+		});
+	});
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const editAnswerForm = document.getElementById("editAnswerForm");
+	document.addEventListener("DOMContentLoaded", function () {
+		const editButtons = document.querySelectorAll(".edit-btn");
+		const editAnswerForm = document.getElementById("editAnswerForm");
 
-        // 답변 수정 버튼 클릭 이벤트
-        editButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const answerId = this.dataset.id;
-                const answerContent = this.dataset.content;
+		// 답변 수정 버튼 클릭 이벤트
+		editButtons.forEach(button => {
+			button.addEventListener("click", function () {
+				const answerId = this.dataset.id;
+				const answerContent = this.dataset.content;
 
-                // 모달에 기존 답변 내용 설정
-                document.getElementById("editAnswerContent").value = answerContent;
-                $('#editAnswerModal').modal('show');
+				// 모달에 기존 답변 내용 설정
+				document.getElementById("editAnswerContent").value = answerContent;
+				$('#editAnswerModal').modal('show');
 
-                // onsubmit 핸들러 설정
-                editAnswerForm.onsubmit = function (event) {
-                    event.preventDefault();
+				// onsubmit 핸들러 설정
+				editAnswerForm.onsubmit = function (event) {
+					event.preventDefault();
 
-                    const content = document.getElementById("editAnswerContent").value;
+					const content = document.getElementById("editAnswerContent").value;
 
-                    fetch(`/answer/modify/${answerId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
-                        },
-                        body: JSON.stringify({ content: content })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            const answerElement = document.querySelector(`#answer_${answerId}`);
-                            if (answerElement) {
-                                answerElement.querySelector("span").textContent = content; // 내용 업데이트
-                            }
-                            $('#editAnswerModal').modal('hide'); // 모달 닫기
-                            location.reload(); // 페이지 새로 고침
-                        } else {
-                            alert("수정에 실패했습니다.");
-                        }
-                    });
-                };
-            });
-        });
+					fetch(`/answer/modify/${answerId}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
+						},
+						body: JSON.stringify({content: content})
+					})
+						.then(response => {
+							if (response.ok) {
+								const answerElement = document.querySelector(`#answer_${answerId}`);
+								if (answerElement) {
+									answerElement.querySelector("span").textContent = content; // 내용 업데이트
+								}
+								$('#editAnswerModal').modal('hide'); // 모달 닫기
+								location.reload(); // 페이지 새로 고침
+							} else {
+								alert("수정에 실패했습니다.");
+							}
+						});
+				};
+			});
+		});
 
-        // 질문 수정 버튼 클릭 이벤트
-        const editQuestionBtn = document.getElementById("editQuestionBtn");
+		// 질문 수정 버튼 클릭 이벤트
+		const editQuestionBtn = document.getElementById("editQuestionBtn");
 
-        if (editQuestionBtn) {
-            const id = editQuestionBtn.dataset.boardId; // boardId 가져오기
+		if (editQuestionBtn) {
+			const id = editQuestionBtn.dataset.boardId; // boardId 가져오기
 
-            editQuestionBtn.addEventListener("click", function () {
-                const questionContent = document.querySelector('.question').textContent; // 질문 내용 가져오기
-                document.getElementById("editQuestionContent").value = questionContent; // 모달에 기존 내용 설정
-                $('#editQuestionModal').modal('show'); // 모달 열기
-            });
+			editQuestionBtn.addEventListener("click", function () {
+				const questionContent = document.querySelector('.question').textContent; // 질문 내용 가져오기
+				document.getElementById("editQuestionContent").value = questionContent; // 모달에 기존 내용 설정
+				$('#editQuestionModal').modal('show'); // 모달 열기
+			});
 
-            // 질문 수정 폼 제출 이벤트
-            const editQuestionForm = document.getElementById("editQuestionForm");
+			// 질문 수정 폼 제출 이벤트
+			const editQuestionForm = document.getElementById("editQuestionForm");
 
-            editQuestionForm.onsubmit = function (event) {
-                event.preventDefault(); // 기본 폼 제출 방지
-                const newContent = document.getElementById("editQuestionContent").value; // 새 질문 내용
+			editQuestionForm.onsubmit = function (event) {
+				event.preventDefault(); // 기본 폼 제출 방지
+				const newContent = document.getElementById("editQuestionContent").value; // 새 질문 내용
 
-                // 질문 수정 요청
-                fetch(`/question/modify/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
-                    },
-                    body: JSON.stringify({ content: newContent }) // 질문 내용 전송
-                })
-                .then(response => {
-                    if (response.ok) {
-                        document.querySelector('.question').textContent = newContent; // 질문 내용 업데이트
-                        $('#editQuestionModal').modal('hide'); // 모달 닫기
-                    } else {
-                        alert("수정에 실패했습니다.");
-                    }
-                });
-            };
-        }
+				// 질문 수정 요청
+				fetch(`/question/modify/${id}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
+					},
+					body: JSON.stringify({content: newContent}) // 질문 내용 전송
+				})
+					.then(response => {
+						if (response.ok) {
+							document.querySelector('.question').textContent = newContent; // 질문 내용 업데이트
+							$('#editQuestionModal').modal('hide'); // 모달 닫기
+						} else {
+							alert("수정에 실패했습니다.");
+						}
+					});
+			};
+		}
 
-        // 대댓글 버튼 클릭 이벤트
-        const replyButtons = document.querySelectorAll("#reply-btn");
+		// 대댓글 버튼 클릭 이벤트
+		const replyButtons = document.querySelectorAll("#reply-btn");
 
-        replyButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                
-                const replyContainer = this.nextElementSibling; // 대댓글 컨테이너 선택
-                if (replyContainer) {
-                    replyContainer.classList.toggle("hidden"); // hidden 클래스 토글
-                    replyContainer.classList.toggle("shown");  // shown 클래스 토글
-                }
-            });
-        });
+		replyButtons.forEach(button => {
+			button.addEventListener("click", function () {
 
-        // 대댓글 저장 버튼 클릭 이벤트
-        const saveReplyButtons = document.querySelectorAll(".save-reply-btn");
-        
-        saveReplyButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const replyContainer = this.closest('.reply-container');
-                const textarea = replyContainer.querySelector("textarea");
-                const content = textarea.value.trim();
-                
-                if (content) {
-                    const answerId = this.closest('.answer_line').querySelector("[id^='answer_']").id.split('_')[1]; // 부모 댓글 ID 가져오기
-					console.log("contnet=="+content);
-					console.log("AID=="+answerId);
+				const replyContainer = this.nextElementSibling; // 대댓글 컨테이너 선택
+				if (replyContainer) {
+					replyContainer.classList.toggle("hidden"); // hidden 클래스 토글
+					replyContainer.classList.toggle("shown");  // shown 클래스 토글
+				}
+			});
+		});
+
+		// 대댓글 저장 버튼 클릭 이벤트
+		const saveReplyButtons = document.querySelectorAll(".save-reply-btn");
+
+		saveReplyButtons.forEach(button => {
+			button.addEventListener("click", function () {
+				const replyContainer = this.closest('.reply-container');
+				const textarea = replyContainer.querySelector("textarea");
+				const comment = textarea.value.trim();
+
+				if (comment) {
+					const answerId = this.closest('.answer_line').querySelector("[id^='answer_']").id.split('_')[1]; // 부모 댓글 ID 가져오기
+					console.log("comment==" + comment);
+					console.log("AID==" + answerId);
 					console.log(`Sending request to: /answer/comment/${answerId}`);
-					console.log(`Request body: ${JSON.stringify({ content: content })}`);
+					console.log(`Request body: ${JSON.stringify({comment: comment})}`);
 
-                    fetch(`/answer/comment/${answerId}`, {
-                        method: 'POST',
-                        headers: {							
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
-                        },
-						
-                        body: JSON.stringify({ content: content }) // 대댓글 내용 전송
-                    })					
-                    .then(response => {
-                        if (response.ok) {
-                            textarea.value = ""; // 텍스트 지우기
-                            alert("대댓글이 저장되었습니다.");
-                        } else {
-                            alert("대댓글 저장에 실패했습니다.");
-                        }
-                    });
-                } else {
-                    alert("대댓글 내용을 입력해 주세요.");
-                }
-				console.log(`Sending request to: /answer/comment/${answerId}`);
-				console.log(`Request body: ${JSON.stringify({ content: content })}`);
+					fetch(`/answer/comment/${answerId}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value // CSRF 토큰 추가
+						},
 
-            });
-        });
-    });
+						body: JSON.stringify({comment: comment}) // 대댓글 내용 전송
+					})
+						.then(response => {
+							if (response.ok) {
+								textarea.value = ""; // 텍스트 지우기
+								alert("대댓글이 저장되었습니다.");
+								location.reload(); // 페이지 리로드
+
+							} else {
+								alert("대댓글 저장에 실패했습니다.");
+							}
+						});
+				} else {
+					alert("대댓글 내용을 입력해 주세요.");
+				}
+
+
+			});
+		});
+	});
+
+
+	const answerBtn = document.getElementById("answerText");
+
+	answerBtn.addEventListener("click", function (event) {
+	    event.preventDefault(); // 기본 폼 제출 방지
+
+	    const content = document.getElementById("content").value.trim(); // textarea의 값 가져오기
+
+	    if (!content) {
+	        alert("댓글 내용을 입력해 주세요."); // 내용이 비어있을 경우 알림
+	        document.getElementById("content").focus(); // textarea에 포커스
+	        return; // 함수 종료
+	    }
+
+	    document.forms[0].submit(); // 폼 제출
+	});
 </script>
 
 </html>

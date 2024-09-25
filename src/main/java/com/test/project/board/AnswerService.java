@@ -34,8 +34,16 @@ public class AnswerService {
 		  
 		  return answerRepository.save(answer); // 저장 호출 추가
 	}
-
-
+	
+	public Answer createComment(Answer parentAnswer, String content, SiteUser user) {
+	    Answer comment = new Answer();
+	    comment.setAnswerContent(content);
+	    comment.setUser(user);
+	    comment.setParentAnswer(parentAnswer);
+	    comment.setAnswerCreateDate(LocalDateTime.now());
+	    parentAnswer.getComment().add(comment); // 대댓글 목록에 추가
+	    return answerRepository.save(comment); // 대댓글 저장
+	}
 
 	//답변 조회
 		public Answer getAnswer(Long id) {
