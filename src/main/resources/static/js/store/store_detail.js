@@ -282,7 +282,7 @@ updateCalendarDimensions(); // 초기 캘린더 크기 업데이트
 $(window).resize(function() {
     updateCalendarDimensions(); // 창 크기 변경 시 캘린더 크기 업데이트
 });
-<<<<<<< HEAD
+
 
 		function checkOpenHours() {
            const startTime = document.getElementById('startTime1').value;
@@ -313,5 +313,29 @@ $(window).resize(function() {
        // 입력값이 변경될 때마다 상태를 업데이트
        document.getElementById('startTime').addEventListener('input', checkOpenHours);
        document.getElementById('endTime').addEventListener('input', checkOpenHours);
-=======
->>>>>>> refs/remotes/origin/develop
+	   
+	   
+	   
+	   // 예약하기 버튼 클릭 시 팝업에 값 표시
+	   document.querySelectorAll('.restaurant_re_btn').addEventListener('click', function() {
+	       const selectedDate = document.querySelector('.selected-date-input').value;
+	       const startTime = document.querySelector('#startTime2').value;
+	       const endTime = document.querySelector('#endTime2').value;
+	       const memberCount = document.querySelector('#count').innerText;
+
+	       document.getElementById('modalSelectedDate').value = selectedDate;
+	       document.getElementById('modalStartTime').value = startTime;
+	       document.getElementById('modalEndTime').value = endTime;
+	       document.getElementById('modalMemberCount').value = memberCount;
+	   });
+
+	   // 예약 확정 함수
+	   function confirmReservation() {
+	       alert('예약이 완료되었습니다!');
+	       $('#reservationModal').modal('hide'); // 모달 닫기
+	   }
+
+
+
+	   
+	   

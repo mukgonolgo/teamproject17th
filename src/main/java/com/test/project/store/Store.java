@@ -1,6 +1,10 @@
 package com.test.project.store;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import com.test.project.reservation.Reservation;
 import com.test.project.user.SiteUser;
 import jakarta.persistence.*;
 
@@ -47,6 +51,12 @@ public class Store {
 
     @Column(length = 5) // HH:MM 형식으로 제한
     private String storeEndTime;
+    
+    @ManyToMany
+    private Set<SiteUser> voter;
+    
+	@OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE) //질문이 삭제되면 관련 답변도 모두 삭제하겠다.
+	private List<Reservation> reservationList;
 
     @ManyToOne
     @JoinColumn(name = "user_id")  // SiteUser와 연관 관계 설정

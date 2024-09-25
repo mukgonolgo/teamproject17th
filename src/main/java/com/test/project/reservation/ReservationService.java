@@ -21,10 +21,10 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	
 	
-	public Reservation create(Store store, String reservationDay, String reservationTime, String reservationMember, SiteUser author) {
+	public Reservation create(Store store, String reservationDay, String reservationTime, String reservationMember, SiteUser user) {
 	    Reservation reservation = new Reservation();
 	    reservation.setStore(store);
-	    reservation.setAuthor(author);
+	    reservation.setUser(user);
 	    reservation.setReservationDay(reservationDay);
 	    reservation.setReservationtime(reservationTime);
 	    reservation.setReservationMember(reservationMember);
@@ -64,6 +64,8 @@ public class ReservationService {
 			throw new DataNotFoundException("답변이 없습니다.");
 		}
 	}
+	
+
 	
 
 

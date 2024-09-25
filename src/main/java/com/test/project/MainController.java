@@ -23,8 +23,8 @@ public class MainController {
 	public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
 		if(userDetails != null) {
 			SiteUser user = userService.getUser(userDetails.getUsername());
-			model.addAttribute("profileImage",user.getImageUrl());
-			model.addAttribute("username",user.getUsername());
+			model.addAttribute("navProfileImage",user.getImageUrl());
+			model.addAttribute("navUsername",user.getUsername());
 		}
 		return "index";
 	}

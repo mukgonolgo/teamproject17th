@@ -36,7 +36,9 @@ public class Reservation {
 	private String reservationMember;
 	private LocalDateTime createDate;
 	@ManyToOne
+    @JoinColumn(name = "store_id") 
 	private Store store; //외래키(FK) 관계 : Answer(자식:N)<-Question(부모:1) 
 	@ManyToOne
-	private SiteUser author;
+    @JoinColumn(name = "user_id") 
+	private SiteUser user;
 }
