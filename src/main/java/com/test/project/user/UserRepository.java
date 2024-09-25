@@ -19,7 +19,13 @@ public interface UserRepository extends JpaRepository<SiteUser, Long> {
 
     // 사용자 이름으로 SiteUser 찾기
     Optional<SiteUser> findByUsername(String username);
+
+    // 전화번호로 SiteUser 찾기
+    Optional<SiteUser> findByPhoneNumber(String phoneNumber);
     
+ // 사용자 ID로 SiteUser 찾기
+    Optional<SiteUser> findById(Long id);
+
  // 닉네임으로 SiteUser 찾기
     Optional<SiteUser> findByNickname(String nickname);
     
@@ -32,6 +38,6 @@ public interface UserRepository extends JpaRepository<SiteUser, Long> {
 	
 
 
-   
+ 
 }
 

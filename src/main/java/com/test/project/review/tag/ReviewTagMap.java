@@ -1,5 +1,7 @@
 package com.test.project.review.tag;
 
+import java.util.Set;
+
 import com.test.project.review.Review;
 
 import jakarta.persistence.Column;
@@ -34,4 +36,6 @@ public class ReviewTagMap {
     // 태그를 정렬된 순서로 가져오기 위해 추가
     @Column(name = "order_index")
     private Integer orderIndex;
+    
+  
 }

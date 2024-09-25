@@ -308,6 +308,16 @@ public class UserController {
 	    }
 	}
 
+
+	@GetMapping("/check-login")
+	public ResponseEntity<String> checkLogin(@AuthenticationPrincipal SiteUser user) {
+	    if (user != null) {
+	        return ResponseEntity.ok("Logged in as: " + user.getUsername());
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
+	    }
+	}
+
 	
 	// 닉네임 중복 체크
 	@GetMapping("/checkNickname")
@@ -447,6 +457,7 @@ public class UserController {
 
 
 	}
+
 
 
 

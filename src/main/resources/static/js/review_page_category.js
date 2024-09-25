@@ -170,3 +170,21 @@ $(document).ready(function() {
         $(this).closest('.dropdown').find('.dropdown-toggle').text(selectedText);
     });
 });
+
+
+document.addEventListener('DOMContentLoaded',
+				function() {
+					const carouselItems = document
+							.querySelectorAll('.carousel-item');
+					const prevButton = document
+							.querySelector('.carousel-control-prev');
+					const nextButton = document
+							.querySelector('.carousel-control-next');
+
+					if (carouselItems.length <= 1) {
+						if (prevButton)
+							prevButton.style.display = 'none';
+						if (nextButton)
+							nextButton.style.display = 'none';
+					}
+				});

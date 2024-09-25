@@ -2,6 +2,9 @@
 <html layout:decorate="~{layout}">
 <head>
     <link rel="stylesheet" href="/css/review_create_form.css" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
 
 </head>
 <body>
@@ -11,7 +14,8 @@
         <div class="S3_rw">
             <label for="title">제목</label>
             <input type="text" id="title" name="title" placeholder="제목을 입력하세요...">
-
+			  <!-- 사용자 ID 입력 필드 -->
+			    <input type="hidden" id="userId" name="userId" value="${userId}" />
             <label for="file-upload">파일(최소 1개부터 5개까지 추가 등록 가능합니다!!)</label>
             <div class="file-upload">
                 <div class="icon-container">
