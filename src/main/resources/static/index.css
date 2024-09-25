@@ -1,0 +1,54 @@
+@font-face {
+    font-family: 'TTTtangsbudaejjigaeB';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/TTTtangsbudaejjigaeB.woff2') format('woff2');
+} 
+
+@font-face {
+    font-family: 'JNE-Bareun-TTF-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-1@1.0/JNE-Bareun-TTF-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.carousel-item {
+    height: 900px;
+    position: relative;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    position: absolute;
+    bottom: 450px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+}
+
+.text-title {
+    font-size: 6vh !important;
+    font-family: 'TTTtangsbudaejjigaeB';
+}
+
+.t-shadow {
+    text-shadow: 0px 0px 8px rgb(0, 0, 0);
+}
+
+.content {
+    font-family: 'JNE-Bareun-TTF-Bold';
+}
+
+.gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+    z-index: 1;
+}

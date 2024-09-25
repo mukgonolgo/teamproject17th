@@ -9,7 +9,7 @@
           <div class="card cs-card">
             <div class="card-body cs-card-body  my-5">
               <h5 class="card-title display-4 text-center">예약이 완료 되었습니다!</h5>
-              <h6 class="card-subtitle mb-2 text-muted text-center my-3">예약번호 : <span>1234-5678-9ABCD</span></h6>
+              <h6 class="card-subtitle mb-2 text-muted text-center my-3">예약번호 : <span th:text="${reservation.reservationNumber}">1234-5678-9ABCD</span></h6>
               <hr class="mt-4">
               <div class="row mt-5 align-items-center align-items-stretch">
                 <!--예약인원-->
@@ -17,14 +17,15 @@
                   <!--프로필-->
                   <div class="text-center row mt-5" >
                       <div class="col">
-                        <img src="/img/profile/2.jpg" alt="img" class="rounded-circle mt-3 img-fluid" style="width: 80px;">
-                        <p class="font-weight-bold mt-2"><span>먹는게제일좋아</span></p>
+						<img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 40px" class="rounded-circle"/>
+                        <p class="font-weight-bold mt-2"><span th:text="${re_user.nickname}">너의 이름은?</span></p>
                       </div>
                   </div>
                   <!--프로필 끝-->
                     <div class="my-5">
-                      <p>예약일시 : <span>2024-08-30 12:00</span></p>
-                      <p>예약인원 : <span>4명</span></p>
+                      <p>예약일시 :  <span th:text="${reservation.reservationDay}">>4명</span></p>
+					  <p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>					  
+                      <p>예약인원 : <span th:text="${reservation.reservationMember}">>4명</span></p>
                     </div>
                     <div class="btn_box mt-5 pt-2">
                     <button class="btn btn-dark cs-btn">상세페이지로 이동</button>
@@ -34,10 +35,10 @@
                 
                 <div class="col-6 ">
                       <img src="https://placehold.co/2150x2100" alt="food_img" style="width: 300px;" class="img-fluid">
-                      <h5 class="card-title mt-3">상호명 : 돼지냠냠</h5>
-                      <p class="mb-5">주소 : This is some text within a card body.</p>
+                      <h5 class="card-title mt-3" th:text="'주소: ' + ${re_store.storeName}" >상호명 : 돼지냠냠</h5>
+                      <p class="mb-5"th:text="'상호명: ' + ${re_store.basicAddress}  + ' ( '+ ${re_store.basicAddress} +' )' ">주소 : This is some text within a card body.</p>
                       <div class="btn_box mt-5 pt-2">
-                      <button class="btn btn-dark cs-btn">지도 보기</button>
+                      <a   class="btn btn-dark cs-btn">지도 보기</a>
                       </div>
                 </div>
               
@@ -61,7 +62,7 @@
       <div class="row ">
         <div class="col cs-card">
               <h1 class="text-center">예약이 완료 되었습니다!</h1>
-              <h6 class="card-subtitle mb-2 text-muted text-center my-3">예약번호 : <span>1234-5678-9ABCD</span></h6>
+              <h6 class="card-subtitle mb-2 text-muted text-center my-3">예약번호 : <span th:text="${reservation.reservationNumber}">1234-5678-9ABCD</span></h6>
               <hr class="mt-4">
               <div class="row mt-5 align-items-center align-items-stretch">
                <!--예약인원-->
@@ -69,24 +70,27 @@
                   <!--프로필-->
                   <div class="text-center row mt-5" >
                       <div class="col">
-                        <img src="/img/profile/2.jpg" alt="food_img" class="rounded-circle mt-3 img-fluid" style="width: 80px;">
-                        <p class="font-weight-bold mt-2"><span>먹는게제일좋아</span></p>
+						<img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 80px" class="rounded-circle"/>
+                        <p class="font-weight-bold mt-2"><span th:text="${re_user.nickname}">너의 이름은?</span></p>
                       </div>
                   </div>
                   <!--프로필 끝-->
                     <div class="my-5">
-                      <p>예약일시 : <span>2024-08-30 12:00</span></p>
-                      <p>예약인원 : <span>4명</span></p>
+						<p>예약일시 :  <span th:text="${reservation.reservationDay}">>4명</span></p>
+						<p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>					  
+						<p>예약인원 : <span th:text="${reservation.reservationMember}">>4명</span></p>
                     </div>
                     <div class="btn_box mt-5 pt-2">
-                    <button class="btn btn-dark cs-btn">상세페이지로 이동</button>
+					<a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark cs-btn">상세 보기</a>
+
                   </div>
                 </div>
                 <!--col-->
                 <div class="col-12 col-md-6 mt-5">
                       <img src="https://placehold.co/2150x2100" alt="" style="width: 300px;" class="img-fluid">
                       <h5 class="card-title mt-3">상호명 : 돼지냠냠</h5>
-                      <p class="mb-5">주소 : This is some text within a card body.</p>
+                      <span class="mb-5"th:text="'상호명: ' + ${re_store.basicAddress}">주소 : This is some text within a card body.</span>
+					  <span class="mb-5"th:text="' ( '+ ${re_store.basicAddress} +' )' "> This is some text within a card body.</span>
                       <div class="btn_box mt-5 pt-2">
                       <button class="btn btn-dark cs-btn">지도 보기</button>
                       </div>

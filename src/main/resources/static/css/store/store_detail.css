@@ -79,11 +79,11 @@
                 예약css
          ---------------------*/
 
-         .restaurant_re_section {
-            
+         .restaurant_re_section { 
             height: 100vw; /* 높이를 화면 높이에 맞춤 */
             overflow: visible; /* overflow 속성을 visible로 변경 */
             position: relative;
+			border: none;
         }
 
         .restaurant_re_title {
@@ -222,12 +222,14 @@
         .time_check{
             display: none;
         }
-        .S1_d_Check .selected-time,.S1_d_Check .selected-Memver,.S1_d_Check .selected-date-input{
+        .form-control{
+			display: flex;
+
             font-weight: bold;
             border: none; 
             color: inherit; 
             pointer-events: none; 
-            background-color:#f0f0f0 ;
+            background-color:#f7f7f7;
         }
         .S1_d_Check .time-input {
             border-radius: 5px;
@@ -270,6 +272,7 @@
             display: flex;
             font-size: 17px;
             justify-content: center;
+			border: none;			
             
         }
         .restaurant_re_btn:hover {
@@ -277,3 +280,20 @@
             color: black;
             text-decoration: none;
         }
+		.modal{
+			overflow: hidden;
+		}
+		.modal .form-control{
+			display: flex;
+			text-align: center;
+		    font-weight: bold;
+		    border: none; 
+		    color: inherit; 
+		    pointer-events: none; 
+		    background-color:white;
+		}
+		.re-error-message {
+		    color: red;
+		    margin: 10px 20px;
+			font-size: 10px;
+		}

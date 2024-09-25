@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+	<div class="container mt-5">
+	    <div class="row">
+	        <div class="col-md-4" th:each="post : ${posts}">
+	            <div class="card mb-4">
+	                <div class="card-body">
+	                    <h5 class="card-title" th:text="${post.title}">Title</h5>
+	                    <p class="card-text" th:text="${post.content}">Content</p>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</div>
+</html>
+
+=======
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -12,3 +31,4 @@
     </ul>
 </body>
 </html>
+>>>>>>> refs/remotes/origin/develop

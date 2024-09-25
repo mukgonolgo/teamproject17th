@@ -1,0 +1,158 @@
+@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+/*카드 디자인*/
+@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+/*카드 디자인*/
+.body{
+    font-family: 'NanumSquare', sans-serif;
+}
+a {
+    text-decoration: none !important; 
+}
+.S3_card {
+    width: 105%;
+}
+ .custom-border{
+    border-radius: 20px !important;
+ }
+.fa-heart {
+    cursor: pointer;
+}
+/*카드 내용*/
+.S3_card-text{
+    overflow: hidden;           
+    text-overflow: ellipsis;     
+}
+.S3_card-title{
+    font-size: 2vh;
+    text-overflow: ellipsis;
+    white-space: nowrap;     
+    font-weight: bold;
+    color: black;
+}
+.S3_carousel-inner {
+    width: 100%;
+    height: 250px;
+    padding: 10px;
+}
+
+.S3_custom-card-img {
+    height: 100%;
+    object-fit: cover; 
+}
+.S3_carousel-item {
+    width: 100%;
+    height: 100%;
+}
+.S3_hover_btn{
+    display: none;
+}
+.carousel:hover .S3_hover_btn{
+    display: block;
+    margin-top: 230px;
+}  
+.S3_card .text-end {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20; 
+}
+.S3_card .text-end .fa-heart {
+    margin-right: 0; 
+}
+.text-dark{
+    margin-top: -4px;
+}
+.S3_tag_box{
+    position: relative;
+}
+/* 카드에 호버 효과 추가 */
+.S3_card {
+    transition: transform 0.3s ease; 
+}
+
+/* 호버 상태에서 카드 확대 */
+.S3_card:hover {
+    transform: scale(1.02); 
+}
+.gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    z-index: 1;
+}
+
+
+/*인원수 박스*/
+.col-auto {
+    position: relative; /* 버튼의 위치를 기준으로 박스를 위치시킬 수 있도록 설정 */
+}
+
+/* 인원수 박스 스타일 */
+#rangeBox {
+    position: absolute; /* 박스를 버튼 위에 올려놓기 위해 사용 */
+    left: -120px; /* 버튼의 왼쪽에 맞추어 위치하도록 설정 */
+    z-index: 1000; /* 박스가 버튼 위에 표시되도록 설정 */
+    display: none; /* 기본적으로 숨김 */
+    top: 0px;
+}
+
+/* 박스가 보일 때 */
+#rangeBox.show {
+    display: block; /* 박스가 보이도록 설정 */
+}
+
+    /* Range 슬라이더 스타일 */
+    .custom-range {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        background: #ddd;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity .15s ease-in-out;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+
+        background: #333;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .custom-range::-webkit-slider-runnable-track {
+        background: #ddd;
+    }
+
+    .custom-range::-moz-range-track {
+        background: #ddd;
+    }
+
+    /* 바가 채워진 부분 색깔 */
+    .custom-range::-webkit-slider-runnable-track {
+        background: linear-gradient(to right, #868686 0%, #868686 var(--value), #ddd var(--value), #ddd 100%);
+    }
+
+    .custom-range::-moz-range-track {
+        background: linear-gradient(to right, #868686 0%, #868686 var(--value), #ddd var(--value), #ddd 100%);
+    }
+    .ca_button{
+        border-radius: 0px 0px 4px 4px!important;
+    }
+
+@media (max-width: 1200px) {
+    .S3_carousel-inner {
+        width: 100%;
+        height: 450px; 
+    }
+    .S3_custom-card-img {
+        height: 100%;
+        object-fit: cover; 
+    }
+    .S3_card {
+        width: 100%;
+    }
+}

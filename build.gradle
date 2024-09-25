@@ -35,9 +35,10 @@ dependencies {
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.commonmark:commonmark:0.18.0'
-
+    
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
