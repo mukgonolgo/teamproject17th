@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -406,16 +407,15 @@ public class UserController {
     }
     
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한이 있는 사용자만 접근 가능
     public String getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
                               @RequestParam(value = "size", defaultValue = "10") int size,
                               @RequestParam(value = "search", required = false) String search,
                               @RequestParam(value = "searchType", defaultValue = "id") String searchType,
                               Model model) {
-        // 페이지 요청을 ID 필드의 내림차순으로 정렬 (추가됨)
-    	Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")); // ID로 오름차순 정렬
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<SiteUser> userPage = null;
 
-        // 검색 처리 (추가)
         if (search != null && !search.isEmpty()) {
             switch (searchType) {
                 case "id":

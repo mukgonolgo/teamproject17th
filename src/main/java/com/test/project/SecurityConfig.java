@@ -17,10 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)  // @PreAuthorize 활성화
 public class SecurityConfig {
 
-    // CustomAuthenticationFailureHandler 등록
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
@@ -28,7 +27,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll())
+                .requestMatchers("/user/list", "/store_alist").hasRole("ADMIN")  // /user/list는 관리자만 접근 가능
+                .requestMatchers("/**").permitAll())  // 그 외 모든 요청은 접근 허용
             .csrf((csrf) -> csrf
                 .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
             .headers((headers) -> headers
