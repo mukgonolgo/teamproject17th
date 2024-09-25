@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLike;
 import com.test.project.review.tag.ReviewTagMap;
@@ -103,6 +104,17 @@ public class Review {
 
     public void setLikeCount(Long likeCount) {
         this.likeCount = likeCount;
+    }
+    
+    // ReviewImageMap과 연관된 이미지 리스트를 반환하는 메서드 추가
+    public List<ReviewImage> getImages() {
+        List<ReviewImage> images = new ArrayList<>();
+        
+        for (ReviewImageMap imageMap : reviewImageMap) {
+            images.add(imageMap.getImage());  // ReviewImageMap에서 ReviewImage 객체를 가져옴
+        }
+        
+        return images;
     }
 
 }

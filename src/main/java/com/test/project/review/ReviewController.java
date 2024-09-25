@@ -25,12 +25,25 @@ import com.test.project.review.img.ReviewImageRepository;
 import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTagMap;
+
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.store.Store;
+import com.test.project.store.StoreService;
+import com.test.project.user.UserService;
+
+import jakarta.transaction.Transactional;
+
+
 @Controller
 public class ReviewController {
+   
+   @Autowired
+   private StoreService storeService;
+
 
     private final String uploadDirectory = "src/main/resources/static/img/upload";
 
@@ -59,8 +72,15 @@ public class ReviewController {
     // 리뷰 목록 페이지를 반환하는 메서드
     @GetMapping("/review")
     public String reviewPage(Model model) {
+
         List<Review> reviewPage = reviewService.getAllReviews();  // 모든 리뷰 가져오기
         Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+
+       List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
+        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
+        model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
+        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
+
 
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
         for (Review review : reviewPage) {

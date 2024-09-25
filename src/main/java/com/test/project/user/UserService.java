@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,8 +31,8 @@ public class UserService {
 
    // 회원가입 로직
    public SiteUser create(String username, String emailDomain, String password, String postcode, String basicAddress,
-         String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name)
-         throws IOException {
+         String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name,
+         String nickname,String userType) throws IOException {
 
       SiteUser user = new SiteUser();
       user.setUsername(username);
@@ -41,8 +44,18 @@ public class UserService {
       user.setPassword(passwordEncoder.encode(password));
       user.setSnsAgree(snsAgree);
       user.setName(name);
+      user.setNickname(nickname); // 닉네임 저장
+      user.setUserType(userType); // userType 저장
+      
+       // userType에 따른 approvalStatus 설정
+       if (userType.equals("일반회원")) {
+           user.setApprovalStatus(1); // 일반회원
+       } else if (userType.equals("사업자")) {
+           user.setApprovalStatus(2); // 승인 대기 중인 사업자
+       }
 
 // 프로필 이미지 저장 로직
+
       if (!imageFile.isEmpty()) {
          String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
          Path filePath = Paths.get(UPLOAD_DIR, fileName);
@@ -150,8 +163,8 @@ public class UserService {
    }
    //다른페이지에서도 네브바 프로필사진과 닉네임이 뜨게 하기 위해 작성 
    public Optional<SiteUser> getUserByUsername(String username) {
-	    return userRepository.findByUsername(username);
-	}
+       return userRepository.findByUsername(username);
+   } 
 
 
    public boolean checkPassword(String rawPassword, String encodedPassword) {
@@ -163,4 +176,46 @@ public class UserService {
       return userRepository.findById(id);
    }
 
+// 닉네임 중복 확인 로직
+   public boolean isNicknameTaken(String nickname) {
+      return userRepository.findByNickname(nickname).isPresent();
+   }
+   
+   public List<SiteUser> findAllUsers() {
+       return userRepository.findAll(); // DB에서 모든 사용자 조회
+   }
+   
+    // 회원 삭제
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);  // JPA Repository의 deleteById 메서드를 사용하여 삭제
+    }
+    
+    public Page<SiteUser> searchById(String id, Pageable pageable) {
+        try {
+            Long userId = Long.parseLong(id);
+            return userRepository.findAllById(userId, pageable);
+        } catch (NumberFormatException e) {
+            return Page.empty(pageable);
+        }
+    }
+
+
+    public Page<SiteUser> searchByUsername(String username, Pageable pageable) {
+        return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+    }
+
+    public Page<SiteUser> searchByNickname(String nickname, Pageable pageable) {
+        return userRepository.findByNicknameContainingIgnoreCase(nickname, pageable);
+    }
+
+    public Page<SiteUser> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);  // 모든 유저 정보를 페이지네이션으로 반환
+    }
+
+   public Page<SiteUser> searchById(long long1, Pageable pageable) {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
 }
+
