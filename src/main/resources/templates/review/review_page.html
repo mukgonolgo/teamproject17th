@@ -17,6 +17,61 @@
 <!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
 <script src="js/review_page_category.js"></script>
 
+   <!-- 지도 API 포함 -->
+   <script type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
+
+   <style>
+      #map {
+         display: none;
+         /* 초기에는 지도가 보이지 않도록 설정 */
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         z-index: 1000;
+      }
+     
+     #test{
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      z-index: 999999999;
+     }
+
+      #closeMap {
+         display: none;
+         /* 초기에는 버튼이 보이지 않도록 설정 */
+         position: fixed;
+         top: 10px;
+         right: 10px;
+         z-index: 1001;
+         background-color: #fff;
+         border: none;
+         padding: 10px 20px;
+         font-size: 16px;
+         cursor: pointer;
+      }
+	  .card-body {
+	      padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
+	      height: auto; /* 높이를 자동으로 조정 */
+	  }
+
+	  .card {
+	      height: auto; /* 카드 전체 높이를 자동으로 조정 */
+	      display: flex;
+	      flex-direction: column;
+	      justify-content: space-between; /* 내용들이 균등하게 분포되도록 조정 */
+	  }
+
+	  .card-title {
+	      font-size: 20px; /* 텍스트 크기를 적절하게 조정 */
+		  margin-top: 20px;
+	      margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
+	  }
+
+   </style>   
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -379,6 +434,8 @@
 
 
 	<script src="/js/review_page_like.js"></script>
+
+
 
 </div>
 
