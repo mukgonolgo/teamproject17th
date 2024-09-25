@@ -2,11 +2,17 @@ package com.test.project.user;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +29,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -51,16 +58,17 @@ public class UserController {
 		return "user/signup_form";
 	}
 
-	// 회원가입 처리
+	// UserController의 signup 메서드에서 오류가 있을 때, 오류 메시지를 모델에 추가
 	@PostMapping("/signup")
 	public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult,
-	                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+	                     @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) {
 	    if (bindingResult.hasErrors()) {
+	        // 오류 처리...
 	        return "user/signup_form";
 	    }
 
 	    if (!userCreateForm.getPassword().equals(userCreateForm.getConfirmPassword())) {
-	        bindingResult.rejectValue("confirmPassword", "passwordInCorrect", "2개의 패스워드가 서로 일치하지 않습니다.");
+	        model.addAttribute("errorMessage", "패스워드를 일치시켜 주세요.");
 	        return "user/signup_form";
 	    }
 
@@ -68,17 +76,22 @@ public class UserController {
 	        userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
 	                           userCreateForm.getPassword(), userCreateForm.getPostcode(),
 	                           userCreateForm.getBasicAddress(), userCreateForm.getDetailAddress(),
-	                           userCreateForm.getContact(), userCreateForm.getSnsAgree(), imageFile, userCreateForm.getName());
+	                           userCreateForm.getContact(), userCreateForm.getSnsAgree(), imageFile,
+	                           userCreateForm.getName(), userCreateForm.getNickname(), userCreateForm.getUserType());
 	    } catch (DataIntegrityViolationException e) {
-	        bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+	        model.addAttribute("errorMessage", "이미 등록된 사용자입니다.");
 	        return "user/signup_form";
 	    } catch (Exception e) {
-	        bindingResult.reject("signupFailed", e.getMessage());
+	        model.addAttribute("errorMessage", e.getMessage());
 	        return "user/signup_form";
 	    }
 
 	    return "redirect:/";
 	}
+
+
+
+
 
 
 	// 로그인 폼
@@ -295,6 +308,7 @@ public class UserController {
 	    }
 	}
 
+
 	@GetMapping("/check-login")
 	public ResponseEntity<String> checkLogin(@AuthenticationPrincipal SiteUser user) {
 	    if (user != null) {
@@ -304,6 +318,152 @@ public class UserController {
 	    }
 	}
 
+	
+	// 닉네임 중복 체크
+	@GetMapping("/checkNickname")
+	@ResponseBody
+	public String checkNickname(@RequestParam("nickname") String nickname) {
+	    try {
+	        boolean isTaken = userService.isNicknameTaken(nickname);
+	        return "{\"isTaken\": " + isTaken + "}";
+	    } catch (Exception e) {
+	        return "{\"error\": \"서버 오류가 발생했습니다.\"}";
+	    }
+	}
+	
+	@GetMapping("/user/showList")
+	public String showUserList(Model model) {
+	    List<SiteUser> userList = userService.findAllUsers(); // 모든 사용자 정보 가져오기
+	    model.addAttribute("userList", userList);
+	    return "user/user_list"; // user_list.html 페이지로 이동
+	}
+	
+	@PostMapping("/approve")
+	public String approveUser(@RequestParam("userId") Long userId,
+	                          @RequestParam("approvalStatus") int approvalStatus,
+	                          @RequestParam("page") int currentPage,
+	                          @RequestParam("search") String search) {
+	    Optional<SiteUser> userOptional = userRepository.findById(userId);
+	    if (userOptional.isPresent()) {
+	        SiteUser user = userOptional.get();
+	        user.setApprovalStatus(approvalStatus);
+	        userRepository.save(user);
+	    }
+	    // 현재 페이지 번호를 리다이렉션에 포함시킴
+	    return "redirect:/user/list?page=" + currentPage + "&search=" + search;
+	}
 
 
-}
+
+	@GetMapping("/somePage")
+	public String somePage(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	    if (userDetails != null) {
+	        SiteUser user = userService.getUser(userDetails.getUsername());
+	        model.addAttribute("approvalStatus", user.getApprovalStatus());
+	        model.addAttribute("profileImage", user.getImageUrl());
+	    }
+	    return "some_template";
+	}
+	@PostMapping("/hold")
+	public String holdUser(@RequestParam("userId") Long userId,
+	                       @RequestParam("approvalStatus") int approvalStatus,
+	                       @RequestParam("page") int currentPage,
+	                       @RequestParam("search") String search) {
+	    Optional<SiteUser> userOptional = userRepository.findById(userId);
+	    if (userOptional.isPresent()) {
+	        SiteUser user = userOptional.get();
+	        user.setApprovalStatus(approvalStatus);
+	        userRepository.save(user);
+	    }
+	    // 현재 페이지 번호를 리다이렉션에 포함시킴
+	    return "redirect:/user/list?page=" + currentPage + "&search=" + search;
+	}
+
+	
+	// 재심사 요청 처리 (POST)
+	@PostMapping("/reapply")
+	public String reapplyForApproval(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+	    try {
+	        // 사용자 상태를 승인 대기로 변경
+	        SiteUser user = userService.getUser(userDetails.getUsername());
+	        user.setApprovalStatus(2);  // 승인 대기 상태로 변경
+	        userRepository.save(user);
+
+	        // 사용자 세션을 갱신하여 새로운 승인 상태 반영
+	        CustomUserDetails updatedUserDetails = new CustomUserDetails(user, userDetails.getAuthorities());  // SiteUser와 기존 권한을 사용하여 새로운 CustomUserDetails 생성
+	        UsernamePasswordAuthenticationToken authentication = 
+	            new UsernamePasswordAuthenticationToken(updatedUserDetails, null, updatedUserDetails.getAuthorities());
+	        
+	        SecurityContextHolder.getContext().setAuthentication(authentication);  // 세션 갱신
+
+	        // 성공 메시지 추가
+	        model.addAttribute("successMessage", "재심사 요청이 성공적으로 처리되었습니다.");
+	    } catch (Exception e) {
+	        // 오류 발생 시 메시지 추가
+	        model.addAttribute("errorMessage", "재심사 요청 중 오류가 발생했습니다.");
+	        return "user/profile";  // 오류 발생 시 프로필 페이지로 돌아감
+	    }
+
+	    // 재심사 요청 후 index.html로 리디렉션
+	    return "redirect:/";
+	}
+	
+	  // 회원 삭제 처리
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam("userId") Long userId) {
+        userService.deleteUser(userId);  // 서비스에서 삭제 로직 처리
+        return "redirect:/user/list";    // 삭제 후 다시 회원 리스트 페이지로 리디렉션
+    }
+    
+    @GetMapping("/list")
+    public String getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
+                              @RequestParam(value = "size", defaultValue = "10") int size,
+                              @RequestParam(value = "search", required = false) String search,
+                              @RequestParam(value = "searchType", defaultValue = "id") String searchType,
+                              Model model) {
+        // 페이지 요청을 ID 필드의 내림차순으로 정렬 (추가됨)
+    	Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")); // ID로 오름차순 정렬
+        Page<SiteUser> userPage = null;
+
+        // 검색 처리 (추가)
+        if (search != null && !search.isEmpty()) {
+            switch (searchType) {
+                case "id":
+                    userPage = userService.searchById(Long.parseLong(search), pageable);
+                    break;
+                case "username":
+                    userPage = userService.searchByUsername(search, pageable);
+                    break;
+                case "nickname":
+                    userPage = userService.searchByNickname(search, pageable);
+                    break;
+                default:
+                    userPage = userService.getAllUsers(pageable);
+                    break;
+            }
+        } else {
+            userPage = userService.getAllUsers(pageable);
+        }
+
+        model.addAttribute("userPage", userPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("search", search);
+        model.addAttribute("searchType", searchType);
+
+        return "user/user_list";  // user_list.html 반환
+    }
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+

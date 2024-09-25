@@ -1,0 +1,78 @@
+/* 전체 컨테이너에 여백과 배경색 */
+.Log_L_container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 타이틀 스타일 */
+.Log_L_title {
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 테이블 스타일 */
+.Log_L_table {
+    width: 120%;
+    border-collapse: collapse;
+}
+
+.Log_L_table th, .Log_L_table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.Log_L_table th {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.Log_L_table td {
+    background-color: #fff;
+    color: #333;
+}
+
+/* 버튼 스타일 */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn {
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.page-link {
+    color: #007bff;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+    text-decoration: none;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
