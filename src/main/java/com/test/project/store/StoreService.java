@@ -72,9 +72,22 @@ public class StoreService {
         return storeRepository.findAll(pageable);
     }
 
-    // 사업자 이름으로 가게 검색
-    public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
-        return storeRepository.findBySiteUserUsernameContaining(username, pageable);
+    public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {
+        try {
+            Integer id = Integer.parseInt(storeId);
+            return storeRepository.findByStoreId(id, pageable);
+        } catch (NumberFormatException e) {
+            return Page.empty(pageable);
+        }
     }
+
+    public Page<Store> searchStoresByStoreName(String storeName, Pageable pageable) {
+        return storeRepository.findByStoreNameContainingIgnoreCase(storeName, pageable);
+    }
+
+    public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
+        return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
+    }
+
     
 }

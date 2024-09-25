@@ -94,7 +94,9 @@ public class StoreController {
     }
 
     @PostMapping("/approve")
-    public String approveStore(@RequestParam("storeId") Integer storeId) {
+    public String approveStore(@RequestParam("storeId") Integer storeId, 
+                               @RequestParam("page") int page, 
+                               @RequestParam("search") String search) {
         Store store = storeService.getStore(storeId);
         if (store.getApprovalStatus() == 4) {
             store.setApprovalStatus(5); // 프리미엄 광고 승인
@@ -102,12 +104,15 @@ public class StoreController {
             store.setApprovalStatus(2); // 일반 광고 승인
         }
         storeService.save(store);
-        return "redirect:/store/store_alist";
+
+        // 처리 후 리다이렉트 시 페이지와 검색어 유지
+        return "redirect:/store/store_alist?page=" + page + "&search=" + search;
     }
 
-
     @PostMapping("/hold")
-    public String holdStore(@RequestParam("storeId") Integer storeId) {
+    public String holdStore(@RequestParam("storeId") Integer storeId, 
+                            @RequestParam("page") int page, 
+                            @RequestParam("search") String search) {
         Store store = storeService.getStore(storeId);
         if (store.getApprovalStatus() == 4) {
             store.setApprovalStatus(6); // 프리미엄 광고 보류
@@ -115,8 +120,11 @@ public class StoreController {
             store.setApprovalStatus(3); // 일반 광고 보류
         }
         storeService.save(store);
-        return "redirect:/store/store_alist";
+
+        // 처리 후 리다이렉트 시 페이지와 검색어 유지
+        return "redirect:/store/store_alist?page=" + page + "&search=" + search;
     }
+
     
     // 가게 삭제 처리
     @PostMapping("/delete")
@@ -131,13 +139,25 @@ public class StoreController {
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "10") int size,
         @RequestParam(value = "search", required = false) String search,
+        @RequestParam(value = "searchType", defaultValue = "owner") String searchType, // 검색 유형 추가
         Model model) {
-        
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("storeName").ascending());
         Page<Store> storePage;
-        
+
+        // 검색 유형에 따른 검색 처리
         if (search != null && !search.isEmpty()) {
-            storePage = storeService.searchStoresByOwnerUsername(search, pageable);
+            switch (searchType) {
+                case "storeId":
+                    storePage = storeService.searchStoresByStoreId(search, pageable);
+                    break;
+                case "storeName":
+                    storePage = storeService.searchStoresByStoreName(search, pageable);
+                    break;
+                default:
+                    storePage = storeService.searchStoresByOwnerUsername(search, pageable);
+                    break;
+            }
         } else {
             storePage = storeService.getAllStores(pageable);
         }
@@ -146,8 +166,9 @@ public class StoreController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", storePage.getTotalPages());
         model.addAttribute("search", search); // 검색어를 모델에 추가
+        model.addAttribute("searchType", searchType); // 검색 유형을 모델에 추가
 
-        return "store/store_alist";  // store_alist.html 파일로 이동
+        return "store/store_alist";
     }
     
 }
