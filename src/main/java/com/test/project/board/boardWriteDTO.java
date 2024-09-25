@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class boardwriteDTO {
+public class boardWriteDTO  {
 
 	private String tag = "일반";
 	
@@ -20,6 +20,6 @@ public class boardwriteDTO {
 	@NotEmpty(message="본문을 입력해주세요")
 	private String content;
 	
-    private boolean is_Private = false;
+    private boolean isPrivate;
     
 }

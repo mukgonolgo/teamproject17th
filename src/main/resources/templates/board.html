@@ -53,15 +53,20 @@
                 
                 <tbody>
                     <tr th:each="board, loop : ${board}" class="board_text" >
-						
                         <td th:text="${boardPage.getTotalElements() - (boardPage.number * boardPage.size) - loop.index}"></td>
-                        <td>
+						<td>
+						    <a th:href="@{|/board_detail/${board.boardId}|}" class="text-warning"
+						       th:text="${board.boardTitle}"></a>
+						    <span class="badge badge-pill badge-info ml-2" th:text="${board.answerList != null ? board.answerList.size() : 0}"></span>
+						</td>
+<!--                        <td> isprivate부분 있는 코드 
                             <a th:href="@{|/board_detail/${board.boardId}|}" class="text-warning"
-							th:text="${board.isPrivate() && board.username != principal.username ? '비밀글입니다.' : board.boardTitle}"></a> 							              
-								  <span class="badge badge-pill badge-info ml-2" th:text="${board.answerList != null ? board.answerList.size() : 0}"></span>
-                        </td>
+							th:text="${board.isPrivate() && board.username != principal.username ? '비밀글입니다.' : board.boardTitle}"></a> 	
+							<span class="badge badge-pill badge-info ml-2" th:text="${board.answerList != null ? board.answerList.size() : 0}"></span>
+                        </td>-->
                         <td>
                             <span th:if="${board.username != null}" th:text="${board.username}"></span>
+							
                         </td>
                         <td th:text="${#temporals.format(board.boardCreateDate, 'yyyy-MM-dd')}"></td>
                     </tr>
@@ -77,22 +82,22 @@
 			<nav th:if="${!board.isEmpty()}">
 			    <ul class="pagination justify-content-center">
 			        <li class="page-item" th:classappend="${!boardPage.hasPrevious()} ? 'disabled'">
-			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number}, kw=${kw})}" class="page-link">
+			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number-1}, kw=${kw})}" class="page-link">
 			                <span>이전</span>
 			            </a>
 			        </li>
 			        <li th:each="page: ${#numbers.sequence(1, boardPage.totalPages)}"
+			            th:if="${page >= boardPage.number + 1 - 2 and page <= boardPage.number + 1 + 2|| (boardPage.totalPages<=5)}" 
 			            th:classappend="${page == boardPage.number + 1} ? 'active'" class="page-item">
-			            <a th:href="@{/board/{id}(id=${id}, page=${page}, kw=${kw})}" class="page-link" th:text="${page}"></a>
+			            <a th:href="@{/board/{id}(id=${id}, page=${page - 1}, kw=${kw})}" class="page-link" th:text="${page}"></a>
 			        </li>
 			        <li class="page-item" th:classappend="${!boardPage.hasNext()} ? 'disabled'">
-			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number + 2}, kw=${kw})}" class="page-link">
+			            <a th:href="@{/board/{id}(id=${id}, page=${boardPage.number + 1}, kw=${kw})}" class="page-link">
 			                <span>다음</span>
 			            </a>
 			        </li>
 			    </ul>
 			</nav>
-			
 		
         </div>
 		</div>
@@ -129,7 +134,10 @@
 		    });
 
 			function fetchPostsForPage(tag, page) {
-				const boardTag = tag === "" ? "" : tag; // 전체 태그 클릭 시 빈 문자열 사용				   
+				const boardTag = tag === "" ? "" : tag; // 전체 태그 클릭 시 빈 문자열 사용	
+	
+	
+					
 			    fetch(`/posts?boardTag=${tag}&page=${page}`)
 			        .then(response => {
 			            if (!response.ok) {
@@ -157,8 +165,9 @@
 						                   </tr>
 						               </thead>
 						               <tbody></tbody>
+									   
 						           `;
-
+	
 			            const startIndex = (page - 1) * 5;
 			            const paginatedData = filteredData.slice(startIndex, startIndex + 5);
 	
@@ -193,7 +202,7 @@
 			function updatePagination(totalPosts) {
 			    const paginationContainer = document.querySelector('.pagination');
 			    paginationContainer.innerHTML = ''; // 기존 페이지네이션 초기화
-
+				
 			    const totalPages = Math.ceil(totalPosts / 5);
 			    for (let i = 1; i <= totalPages; i++) {
 			        const li = document.createElement('li');

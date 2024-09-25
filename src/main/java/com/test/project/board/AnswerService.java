@@ -1,32 +1,38 @@
 package com.test.project.board;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-import org.aspectj.weaver.patterns.TypePatternQuestions.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.test.project.DataNotFoundException;
 import com.test.project.user.SiteUser;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Service
 public class AnswerService {
 
 	@Autowired
 	private AnswerRepository answerRepository;
 
-	public Answer create(Board board, String content, SiteUser siteUser) {
+	public Answer create(Board board, String content, SiteUser siteUser,Answer parentAnswer, List<Answer> commentContent) {
 		Answer answer = new Answer();
+		
 		answer.setBoard(board);
 		answer.setUser(siteUser);
 		answer.setUsername(board.getUsername());
 		answer.setAnswerContent(content);
-		answer.setAnswerCreateDate(LocalDateTime.now());		
-		this.answerRepository.save(answer);
-		
-		return answer;
+		answer.setAnswerCreateDate(LocalDateTime.now());	
+		answer.setParentAnswer(parentAnswer);
+		answer.setComment(commentContent);  
+		  logger.info("content 저장 전: {}", content);
+		  logger.info("commentContent 저장 전: {}", commentContent);
+		  return answerRepository.save(answer); // 저장 호출 추가
 	}
+
+
 
 	//답변 조회
 		public Answer getAnswer(Long id) {
@@ -58,8 +64,11 @@ public class AnswerService {
 				throw new DataNotFoundException("question not found");
 			}
 		}
-
 		
+
 	
+		private static final Logger logger = LoggerFactory.getLogger(AnswerService.class);
+
+
 
 }

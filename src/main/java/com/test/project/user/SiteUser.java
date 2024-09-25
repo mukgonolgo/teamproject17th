@@ -55,4 +55,5 @@ public class SiteUser {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom; 
 
+    
 }
