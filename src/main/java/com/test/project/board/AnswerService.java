@@ -17,7 +17,10 @@ public class AnswerService {
 	@Autowired
 	private AnswerRepository answerRepository;
 
-	public Answer create(Board board, String content, SiteUser siteUser,Answer parentAnswer, List<Answer> commentContent) {
+	private static final Logger logger = LoggerFactory.getLogger(AnswerService.class);
+
+
+	public Answer create(Board board, String content, SiteUser siteUser,Answer parentAnswer) {
 		Answer answer = new Answer();
 		
 		answer.setBoard(board);
@@ -26,9 +29,9 @@ public class AnswerService {
 		answer.setAnswerContent(content);
 		answer.setAnswerCreateDate(LocalDateTime.now());	
 		answer.setParentAnswer(parentAnswer);
-		answer.setComment(commentContent);  
+		
 		  logger.info("content 저장 전: {}", content);
-		  logger.info("commentContent 저장 전: {}", commentContent);
+		  
 		  return answerRepository.save(answer); // 저장 호출 추가
 	}
 
@@ -61,14 +64,11 @@ public class AnswerService {
 			if(answer.isPresent()) {
 				return answer.get();
 			}else {
-				throw new DataNotFoundException("question not found");
+				throw new DataNotFoundException("answer not found(asv 64 line)");
 			}
 		}
 		
 
 	
-		private static final Logger logger = LoggerFactory.getLogger(AnswerService.class);
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.test.project.board;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.test.project.user.SiteUser;
@@ -64,8 +65,8 @@ public class Board {
     @Column(name = "board_tag")
     private String boardTag;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)   
-    private List<Answer> answerList;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)   
+    private List<Answer> answerList = new ArrayList<>();
    
     
     private boolean isPrivate; //비밀글 여부

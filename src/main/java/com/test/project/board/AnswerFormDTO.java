@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AnswerFormDTO {
-	@NotEmpty(message="답변내용을 입력하셔야 합니다.")
+	
 	private String content;
 	
 	

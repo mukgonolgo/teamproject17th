@@ -50,28 +50,24 @@ public class AnswerController {
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create/{AnswerId}")
+	@PostMapping("/create/{boardId}")
 	public String createAnswer(Model model,
-	        @PathVariable("AnswerId") Long id,
+	        @PathVariable("boardId") Long boardId,  // boardId로 변경
 	        @Valid AnswerFormDTO answerFormDTO,
 	        BindingResult bindingResult,
 	        Principal principal,
 	        @AuthenticationPrincipal UserDetails userDetails) {
 
-	    System.out.println("@@@@@@@@@createAnswer 메서드 시작@@@@@@@@@"); // 로그 추가
-	    Answer answer = this.answerService.findById(id);
-	    Board board = this.boardService.findById(id);
-	    
+	    System.out.println("@@@@@@@@@createAnswer 메서드 시작@@@@@@@@@");
+
+	    // 게시글 조회
+	    Board board = this.boardService.findById(boardId);  // boardId 사용
 	    SiteUser siteUser = this.userService.getUser(principal.getName());
 	    setUserAttributes(model, userDetails);
-	    System.out.println("content의 값" + board.getBoardContent());
-	    System.out.println("answer 엔티티의 값"+  answerService.getAnswer(id));	  
-	    System.out.println("answer 데이터 값"+  answer.getAnswerContent());
-	    
-	    
+
 	    // 유효성 검사
 	    if (bindingResult.hasErrors()) {
-	        System.out.println("유효성 검사 실패: " + bindingResult.getAllErrors()); // 에러 로그 추가
+	        System.out.println("유효성 검사 실패: " + bindingResult.getAllErrors());
 	        model.addAttribute("board", board);
 	        return "board_detail";
 	    }
@@ -81,20 +77,13 @@ public class AnswerController {
 	        parentAnswer = this.answerService.findById(answerFormDTO.getParentId());
 	    }
 
-	    // content가 있는 경우에만 처리
+	    // 답변 생성
 	    if (answerFormDTO.getContent() != null && !answerFormDTO.getContent().isEmpty()) {
-	        // 댓글(comment)이 있는지 체크
-	        List<Answer> comment = answerFormDTO.getComment();
-	        if(comment == null) {
-	        	comment = new ArrayList<>();
-	        }
-	        		
-	         answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer, comment);
-	        
+	        Answer answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer);
+
 	        // 리다이렉트 URL 생성
 	        return String.format("redirect:/board_detail/%s#answer_%s", answer.getBoard().getBoardId(), answer.getAnswerId());
 	    } else {
-	        // content가 없는 경우 처리
 	        model.addAttribute("board", board);
 	        return "board_detail"; 
 	    }
@@ -146,7 +135,7 @@ public class AnswerController {
 	    
 	    System.out.println("answerFormDTO.getContent()  ==" + answerFormDTO.getContent());
 	    answer.setAnswerContent(answerFormDTO.getContent());
-	    answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer, comment);
+	    answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer);
 	    
 	    System.out.println("pa === " + parentAnswer);
 	    System.out.println("****************************");

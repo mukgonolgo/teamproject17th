@@ -31,7 +31,7 @@ public class Answer {
 	private SiteUser user;
 	
     // 추가된 username 필드
-    @Column(name = "board_username", nullable = false, length = 50)
+    @Column(name = "board_username",  length = 50)
     private String username;
 
     
@@ -40,7 +40,7 @@ public class Answer {
     }
     
 	
-	@Column(nullable=false, length = 100, columnDefinition = "TEXT")
+	@Column( length = 100, columnDefinition = "TEXT")
 	private String AnswerContent;
 	
    

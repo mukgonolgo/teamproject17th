@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public class BoardService {
    private final AnswerRepository answerRepository;
    private final UserService userService;
    
+   private static final Logger logger = LoggerFactory.getLogger(AnswerService.class);
    
    public Page<Board> getBoard(Pageable pageable) {
    return boardRepository.findAll(pageable);
@@ -72,11 +75,13 @@ public class BoardService {
     }
 
    public Board findById(Long id) {
-      Optional<Board> question = this.boardRepository.findById(id);
-      if(question.isPresent()) {
-         return question.get();
+      Optional<Board> board = this.boardRepository.findById(id);
+      logger.info("findbyID(bsv 79line) 저장 전: {}", id);
+		
+      if(board.isPresent()) {
+         return board.get();
       }else {
-         throw new DataNotFoundException("question not found");
+         throw new DataNotFoundException("boardid not found(boardService 84 line)");
       }
    }
 
