@@ -1,0 +1,100 @@
+<html layout:decorate="~{layout}">
+<div layout:fragment="content">
+	<link rel="stylesheet" href="/css/notice/notice.css">
+	<script src="js/notices.js"></script>
+	<div class="No container mt-10 mb-10">
+		   <div class="No_notice text-center m-5">공지사항</div>
+	       <div class="search_box">
+	           <h5 class="mb-3 col-12">공지사항 검색</h5>
+	           <div class=" d-sm-flex justify-content-between align-items-center">
+
+				   <input id="search_kw" class="form-control mb-3 col-12 col-sm-9" type="search" placeholder="Search" aria-label="Search" th:value="${kw}">
+				   <button class="col-12 mb-3 col-sm-2 btn btn-primary" type="submit" id="btn_search">검색</button>
+	           </div>
+
+	       </div>
+
+		   <div class="accordion" id="accordionExample">
+		              <div class="card" th:each="notice, loop : ${paging}">
+		                  <div class="cardheader row" id="headingOne">
+							<div class="col-3 col-sm-2 col-lg-1 d-flex align-items-center">
+							    <span class="No_no">공지사항</span>
+							</div>
+							<div class="col-9 col-sm-10 col-lg-11 d-flex  align-items-center justify-content-between " type="button" data-toggle="collapse" th:data-target="'#collapse' + ${notice.noticeId}"  aria-expanded="true" th:aria-controls="'collapse' + ${notice.noticeId}">
+							    <span class="No_title ml-1"  th:text="${notice.noticeTitle}">
+							        [공지] 공지사항 입력해주세요
+							    </span>
+							    <div class="No_btn d-flex">
+									<img src="/img/arrow_drop.svg" alt="dfdf">
+									<form action="#" th:action="@{/notices/delete/{id}(id=${notice.noticeId})}" method="post">
+									    <button class="btn" type="submit" ><i class="fa-solid fa-x" style="color: #e72323;"></i></a>
+									</form>
+								</div>
+
+							</div>
+
+		                  </div>
+		                  <div th:id="'collapse' + ${notice.noticeId}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+							<div class="card-body row">
+							    <div class="col-0 col-sm-2 col-lg-1"></div>
+							    <div class="col-0 col-sm-10 col-lg-11 ">
+							        <pre class="No_Content ml-4"th:text="${notice.noticeContent}">공지사항을 잘 입력하세요</pre>
+							    </div>
+							</div>
+		                  </div>
+		              </div>		            
+		              <!-- 추가 공지사항은 여기에 추가할 수 있습니다 -->
+
+		      </div>
+
+			  <nav th:if="${!paging.isEmpty()}">
+			      <ul class="pagination justify-content-center">
+			          <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+			              <a href="javascript:void(0)" th:data-page="${currentPage - 1}" class="page-link">
+			                  <span>이전</span>
+			              </a>
+			          </li>
+			          <li th:each="page: ${#numbers.sequence(1, paging.totalPages)}" 
+			              th:if="${page >= currentPage - 2 and page <= currentPage + 2}"
+			              th:classappend="${page == currentPage} ? 'active'"
+			              class="page-item">
+			              <a th:data-page="${page - 1}" class="page-link" th:text="${page}"></a>
+			          </li>
+			          <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+			              <a href="javascript:void(0)" class="page-link" th:data-page="${currentPage + 1}">
+			                  <span>다음</span>
+			              </a>
+			          </li>
+			      </ul>
+			  </nav>
+
+			  <form th:action="@{/notices/list}" method="get" id="searchForm">
+			  	<input type="hidden" id="kw" th:value="${kw}" name="kw">
+			  	<input type="hidden" id="page" th:value="${paging.number}" name="page"/>
+			  </form>
+			  
+			  <div style="display: flex; justify-content: flex-end; white-space: nowrap; ">
+			    <a th:href="@{/notices/create}"  style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">공지 작성</a>
+			  </div>
+		     </div>
+
+</div>
+<script layout:fragment="script">
+	const page_elements = document.getElementsByClassName("page-link");
+	Array.from(page_elements).forEach(function(element) {
+	    element.addEventListener("click", function() {
+	        console.log("Page link clicked"); // 클릭 시 로그 확인
+	        document.getElementById("page").value = this.dataset.page;
+	        document.getElementById("searchForm").submit();
+	    });
+	});
+	
+	const btn_search = document.getElementById("btn_search");
+	btn_search.addEventListener("click",function(){
+		document.getElementById("kw").value= document.getElementById("search_kw").value;
+		document.getElementById("page").value=0;
+		//검색버튼 클릭시 페이징의 0부터 보여주기
+		document.getElementById("searchForm").submit();
+	})
+</script>
+</html>

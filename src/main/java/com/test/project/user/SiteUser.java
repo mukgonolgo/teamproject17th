@@ -31,6 +31,8 @@ public class SiteUser {
     private String password; // 사용자 비밀번호
 
     @Column(unique = true)
+    private String nickname; // 닉네임 추가
+
     private String email; // 이메일 주소
 
     private String imageUrl; // 프로필 이미지 경로
@@ -48,6 +50,9 @@ public class SiteUser {
     private String postcode;
     private String basicAddress;
     private String detailAddress;
-    
- 
+    private String userType; // 일반회원 or 사업자 (이 필드가 추가됨)
+
+    @Column(nullable = false)
+    private int approvalStatus = 2;  // 0: 관리자, 1: 일반회원, 2: 승인 대기 중인 사업자, 3: 승인된 사업자
+
 }

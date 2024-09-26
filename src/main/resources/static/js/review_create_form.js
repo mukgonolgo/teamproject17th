@@ -103,74 +103,89 @@ $(document).on("click", "span.badge", function () {
     }
 });
 
+// 별점 처리
 new Vue({
     el: '#app',
     data: {
-        selectedRating: 0, // 사용자 선택한 별점
+        selectedRating: 0 // 기본값을 0으로 설정하지만, 서버에서 받은 값으로 덮어씌움
     },
     computed: {
         ratingToPercent() {
-            return this.selectedRating * 20;
+            return this.selectedRating * 20; // 별점에 따른 백분율 계산
         }
     },
     methods: {
         setRating(n) {
-            if (this.selectedRating === n) {
-                // 동일한 별점을 두 번 클릭한 경우 초기화
-                this.selectedRating = 0;
-            } else {
-                this.selectedRating = n;
-            }
-
-            // star-ratings-fill의 넓이를 조정
+            this.selectedRating = n;
             const fillElement = document.querySelector('.star-ratings-fill');
             fillElement.style.width = this.ratingToPercent + '%';
-        }
-    }
-});				
 
+            // 별점 텍스트 업데이트
+            document.querySelector('.selected-rating span').textContent = this.selectedRating;
+        }
+    },
+    mounted() {
+        // 서버에서 전달받은 기존 별점 값을 input 요소에서 가져와 selectedRating에 설정
+        const existingRating = parseInt(document.getElementById('rating').value) || 0;
+        this.selectedRating = existingRating;
+
+        // 별점 UI와 텍스트 업데이트
+        const fillElement = document.querySelector('.star-ratings-fill');
+        fillElement.style.width = this.ratingToPercent + '%';
+        document.querySelector('.selected-rating span').textContent = this.selectedRating;
+    }
+});
 
 
 document.getElementById('reviewForm').addEventListener('submit', function(event) {
-	    event.preventDefault();
+    event.preventDefault();
 
-	    let formData = new FormData(this);
-	    
-	    // 파일 개수 로그 출력
-	    console.log("파일 개수:", formData.getAll('fileUpload').length);
-	    
-	    imageFiles.forEach((file) => {
-	        formData.append('fileUpload', file, file.name);
-	    });
+    let formData = new FormData(this);
 
-	    const tags = $("#S3_tagsOutput").val();
-	    const rating = document.getElementById('rating').value;
+    // 파일 개수 로그 출력
+    console.log("파일 개수:", formData.getAll('fileUpload').length);
 
-	    formData.append('tags', tags);
-	    formData.append('rating', rating);
+    imageFiles.forEach((file) => {
+        formData.append('fileUpload', file, file.name);
+    });
 
-	    fetch('/review_create', {
-	        method: 'POST',
-	        body: formData
-	    })
-	    .then(response => {
-	        if (!response.ok) {
-	            throw new Error('Network response was not ok ' + response.statusText);
-	        }
-	        return response.json();
-	    })
-	    .then(data => {
-	        console.log('성공:', data);
-	        // 리뷰 ID와 함께 리프레시 쿼리 파라미터를 추가
-	        window.location.href = `/review_detail/${data.reviewId}`;
-	    })
-	    .catch((error) => {
-	        console.error('오류:', error);
-	    })
-	    .finally(() => {
-	        imageFiles.length = 0;
-	        imageCount = 0;
-	        document.querySelectorAll('.img-container').forEach(container => container.remove());
-	        document.getElementById('add-icon').style.display = 'flex';
-	    });
-	});
+    const tags = $("#S3_tagsOutput").val();
+    const rating = document.getElementById('rating').value;
+
+    // 중복 방지를 위해 이미 존재하는 필드는 삭제 후 다시 추가
+    if (formData.has('rating')) {
+        formData.delete('rating');
+    }
+    formData.append('rating', rating);
+
+    // 태그 필드도 중복 추가 방지
+    if (formData.has('tags')) {
+        formData.delete('tags');
+    }
+    formData.append('tags', tags);
+
+    fetch('/review_create', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('성공:', data);
+        // 리뷰 ID와 함께 리프레시 쿼리 파라미터를 추가
+        window.location.href = `/review_detail/${data.reviewId}`;
+    })
+    .catch((error) => {
+        console.error('오류:', error);
+    })
+    .finally(() => {
+        imageFiles.length = 0;
+        imageCount = 0;
+        document.querySelectorAll('.img-container').forEach(container => container.remove());
+        document.getElementById('add-icon').style.display = 'flex';
+    });
+});

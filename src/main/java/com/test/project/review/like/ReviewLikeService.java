@@ -1,5 +1,9 @@
 package com.test.project.review.like;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.test.project.review.Review;
 import com.test.project.review.ReviewDto;
 import com.test.project.review.ReviewRepository;
+import com.test.project.review.img.ReviewImage;
+import com.test.project.review.img.ReviewImageMap;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 
@@ -22,6 +28,11 @@ public class ReviewLikeService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    
+    private final Map<Long, List<ReviewImage>> imageMap = new HashMap<>(); ;  // 리뷰 ID에 매핑된 이미지 리스트
+    
+  
 
     // 사용자가 특정 리뷰에 좋아요를 눌렀는지 확인하는 메서드
     public boolean isLikedByUser(Long reviewId, Long userId) {
@@ -65,5 +76,32 @@ public class ReviewLikeService {
                 .anyMatch(like -> like.getUser().equals(user)));
     }
 
-  
+    
+    public List<ReviewImageMap> getFirstImagesForLikedReviews(Long userId) {
+        // 유저가 좋아요한 리뷰 ID 리스트를 가져옴
+        List<Long> likedReviewIds = likeRepository.findLikedReviewIdsByUserId(userId);
+
+        // 각 리뷰에서 첫 번째 이미지를 가져옴
+        List<ReviewImageMap> firstImages = new ArrayList<>();
+        for (Long reviewId : likedReviewIds) {
+            // 리뷰를 찾음
+            Optional<Review> review = reviewRepository.findById(reviewId);
+            if (review.isPresent()) {
+                List<ReviewImageMap> imageMaps = review.get().getReviewImageMap();
+                if (!imageMaps.isEmpty()) {
+                    // 첫 번째 이미지 매핑 객체를 가져옴
+                    firstImages.add(imageMaps.get(0));
+                }
+            }
+        }
+
+        return firstImages;
+    }
+
+
+    
+    // 리뷰에 이미지를 추가하는 메서드 (리뷰 등록 시 사용)
+    public void addImagesForReview(Long reviewId, List<ReviewImage> images) {
+        imageMap.put(reviewId, images);
+    }
 }
