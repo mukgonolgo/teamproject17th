@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.review.img.ReviewImage;
+import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
@@ -55,7 +56,7 @@ public class MainController {
 	        model.addAttribute("user", siteUser);  // 전체 유저 객체 추가
 
 	        // 좋아요한 리뷰의 첫 번째 이미지를 가져옴
-	        List<ReviewImage> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
+	        List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
 	        model.addAttribute("likedImages", likedImages);  // 좋아요한 이미지 리스트 추가
 
 	        return "user/mypage";  // mypage.html 파일을 렌더링
@@ -63,6 +64,7 @@ public class MainController {
 
 	    return "redirect:/error";  // 유저가 없으면 에러 처리
 	}
+
 
 	
 

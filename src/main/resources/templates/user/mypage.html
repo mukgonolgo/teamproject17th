@@ -148,12 +148,16 @@
 									    <a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 <div class="row under_list p-1" style="overflow-x: auto; white-space: nowrap;">
-   <div class="col-xl-4 col-sm-6 col-4" th:each="image : ${likedImages}" style="width: 100%; height: 80px; padding: 2px;">
-    <a class="card" style="width: 100%; height: 100%;">
-        <img th:src="@{${image.filepath}}" alt="이미지 설명" style="width: 100%; height: auto; border-radius: 10px;">
-    </a>
+   <div class="col-xl-4 col-sm-6 col-4" th:each="imageMap : ${likedImages}" style="width: 100%; height: 80px; padding: 2px;">
+       <!-- 링크를 해당 리뷰의 상세 페이지로 설정 -->
+       <a th:href="@{/review_detail/{id}(id=${imageMap.review.id})}" class="card" style="width: 100%; height: 100%;">
+           <!-- 이미지 크기와 비율을 고정 -->
+           <img th:src="@{${imageMap.reviewImage.filepath}}" alt="이미지 설명" 
+                style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+       </a>
+   </div>
 </div>
-</div>
+
 
 
 

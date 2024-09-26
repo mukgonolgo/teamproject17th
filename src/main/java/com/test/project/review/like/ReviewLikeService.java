@@ -77,20 +77,20 @@ public class ReviewLikeService {
     }
 
     
-    public List<ReviewImage> getFirstImagesForLikedReviews(Long userId) {
+    public List<ReviewImageMap> getFirstImagesForLikedReviews(Long userId) {
         // 유저가 좋아요한 리뷰 ID 리스트를 가져옴
         List<Long> likedReviewIds = likeRepository.findLikedReviewIdsByUserId(userId);
 
         // 각 리뷰에서 첫 번째 이미지를 가져옴
-        List<ReviewImage> firstImages = new ArrayList<>();
+        List<ReviewImageMap> firstImages = new ArrayList<>();
         for (Long reviewId : likedReviewIds) {
             // 리뷰를 찾음
             Optional<Review> review = reviewRepository.findById(reviewId);
             if (review.isPresent()) {
                 List<ReviewImageMap> imageMaps = review.get().getReviewImageMap();
                 if (!imageMaps.isEmpty()) {
-                    // 첫 번째 이미지를 가져옴
-                    firstImages.add(imageMaps.get(0).getReviewImage());
+                    // 첫 번째 이미지 매핑 객체를 가져옴
+                    firstImages.add(imageMaps.get(0));
                 }
             }
         }

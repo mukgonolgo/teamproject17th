@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // 이미지 추가 함수
-// 이미지 추가 함수
 function addImage(event) {
     const files = Array.from(event.target.files);
 
