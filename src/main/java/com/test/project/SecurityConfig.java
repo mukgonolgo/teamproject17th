@@ -30,8 +30,8 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 	    .authorizeHttpRequests(requests -> requests
-	        .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/**")).authenticated() 
-	        .anyRequest().permitAll())
+	    		   .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/**")).permitAll() // 인증 없이도 댓글 조회 가능
+	               .anyRequest().permitAll()) // 나머지 요청도 모두 허용
 	    .csrf(csrf -> csrf
 	        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
 	    .headers(headers -> headers

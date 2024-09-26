@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+
 	// 로그인 상태에 따라 댓글 입력 폼 활성화/비활성화
 	if (isAuthenticated) {
 	    commentContentElement.removeAttribute("disabled");
@@ -29,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	    submitButton.setAttribute("disabled", true);
 	    commentContentElement.placeholder = "로그인 후 댓글을 작성할 수 있습니다.";
 	}
+	
+
 
     const reviewId = reviewIdElement.value;
 
@@ -43,7 +46,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("댓글을 불러오는 중 오류가 발생했습니다.", error);
             });
     }
+//ㄴ날짜시간포맷
+	function formatDate(dateString, isUpdated = false) {
+	    const date = new Date(dateString);
+	    const options = { 
+	        year: 'numeric', 
+	        month: 'numeric', 
+	        day: 'numeric', 
+	        hour: 'numeric', 
+	        minute: 'numeric', 
+	        hour12: true // 오전/오후를 나타냄
+	    };
+	    let formattedDate = date.toLocaleString('ko-KR', options);
 
+	    if (isUpdated) {
+	        formattedDate += " (수정됨)";  // 수정된 경우 "(수정됨)" 추가
+	    }
+
+	    return formattedDate;
+	}
+
+	
     // 댓글 렌더링 함수
     function renderComments(comments) {
         const commentsList = document.querySelector(".comments-list");
@@ -54,49 +77,54 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 댓글 렌더링 함수
-    function renderComment(comment, parentElement) {
-        const displayDate = comment.updatedAt
-            ? new Date(comment.updatedAt).toLocaleString()
-            : new Date(comment.createDate).toLocaleString();
+	// 댓글 렌더링 함수
+	function renderComment(comment, parentElement) {
+	    const displayDate = comment.updatedAt
+		? formatDate(comment.updatedAt)  // 수정된 시간일 경우 "(수정됨)" 표시
+		   : formatDate(comment.createDate);      // 작성 시간
 
-        const isAuthor = comment.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
+	    const isAuthor = comment.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
 
-        const actionButtons = isAuthenticated && loggedInUserId == comment.userId ? `
-            <span type="button" class="btn badge badge-primary edit-button" data-comment-id="${comment.commentId}" data-content="${comment.content}">수정</span>
-            <span type="button" class="btn badge badge-danger delete-button" data-comment-id="${comment.commentId}">삭제</span>
-        ` : '';
-	
-        const commentHtml = `
-            <hr />
-            <div class="comment" data-comment-id="${comment.commentId}">
-                <img src="${comment.userImage || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-2" style="width: 50px;height: 50px;">
-                <div class="comment-content">
-                    <span class="font-weight-bold">${comment.username}</span> ${isAuthor}
-                    <p>${comment.content}</p>
-                    <p class="card-text">
-                        <small class="text-muted">${displayDate}</small>
-                        <span type="button" class="btn badge badge-secondary reply-button" data-comment-id="${comment.commentId}" data-username="${comment.username}">답글달기</span>
-                        ${actionButtons}
-                    </p>
-                </div>
-            </div>
-        `;
-        parentElement.insertAdjacentHTML("beforeend", commentHtml);
+	    const actionButtons = isAuthenticated && loggedInUserId == comment.userId ? `
+	        <span type="button" class="btn badge badge-primary edit-button" data-comment-id="${comment.commentId}" data-content="${comment.content}">수정</span>
+	        <span type="button" class="btn badge badge-danger delete-button" data-comment-id="${comment.commentId}">삭제</span>
+	    ` : '';
 
-        // 대댓글이 있는 경우, 부모 댓글 아래에 대댓글만 표시
-        if (comment.replies && comment.replies.length > 0) {
-            comment.replies.forEach(reply => {
-                renderReply(reply, parentElement);
-            });
-        }
-    }
+	    // 로그인한 사용자만 답글달기 버튼 표시
+	    const replyButton = isAuthenticated ? `
+	        <span type="button" class="btn badge badge-secondary reply-button" data-comment-id="${comment.commentId}" data-username="${comment.username}">답글달기</span>
+	    ` : '';
+
+	    const commentHtml = `
+	        <hr />
+	        <div class="comment" data-comment-id="${comment.commentId}">
+	            <img src="${comment.userImage || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-2" style="width: 50px;height: 50px;">
+	            <div class="comment-content">
+	                <span class="font-weight-bold">${comment.username}</span> ${isAuthor}
+	                <p>${comment.content}</p>
+	                <p class="card-text">
+	                    <small class="text-muted">${displayDate}</small>
+	                    ${replyButton} <!-- 답글달기 버튼 -->
+	                    ${actionButtons} <!-- 수정/삭제 버튼 -->
+	                </p>
+	            </div>
+	        </div>
+	    `;
+	    parentElement.insertAdjacentHTML("beforeend", commentHtml);
+
+	    // 대댓글이 있는 경우, 부모 댓글 아래에 대댓글만 표시
+	    if (comment.replies && comment.replies.length > 0) {
+	        comment.replies.forEach(reply => {
+	            renderReply(reply, parentElement);
+	        });
+	    }
+	}
 
     // 대댓글 렌더링 함수
     function renderReply(reply, parentElement) {
         const replyDisplayDate = reply.updatedAt
-            ? new Date(reply.updatedAt).toLocaleString()
-            : new Date(reply.createDate).toLocaleString();
+		? formatDate(reply.updatedAt)  // 수정된 시간일 경우 "(수정됨)" 표시
+		 : formatDate(reply.createDate);      // 작성 시간
 
         const isReplyAuthor = reply.userId == authorId ? '<span class="badge text-danger">작성자</span>' : '';
 

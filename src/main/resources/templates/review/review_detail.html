@@ -124,8 +124,8 @@
 								class="col-3 text-right d-flex justify-content-end align-items-center mb-2">
 
 								<!-- 댓글 -->
-								<img src="/img/icon/chat.png" alt="" style="width: 20px"
-									class="tap_btn" /> <span class="text-dark mx-1"></span>
+								<img src="/img/icon/chat.png" alt="comment" style="width: 20px"
+									class="tap_btn" /> <span class="text-dark mx-1" th:text="${commentCount != null ? commentCount : 0}"></span>
 
 								<!-- 좋아요 -->
 								<div id="like-container">
@@ -214,10 +214,10 @@
 
 									<small class="text-muted"> <!-- 업데이트 시간이 존재할 때 업데이트 시간 표시 -->
 										<span th:if="${review.updatedAt != null}"
-										th:text="${#temporals.format(review.updatedAt, 'yyyy-MM-dd HH:mm')}+' UPDATE'"></span>
+										th:text="${#temporals.format(review.updatedAt, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
 										<!-- 업데이트 시간이 없을 때 생성 시간 표시 --> <span
 										th:if="${review.updatedAt == null}"
-										th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}+' UPDATE'"></span>
+										th:text="${#temporals.format(review.createDate, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
 									</small>
 
 								</div>
@@ -249,7 +249,7 @@
 							<!-- 기존 댓글들이 여기에 추가됩니다 -->
 						</div>
 
-						<!-- 댓글 작성 버튼은 로그인한 사용자만 볼 수 있도록 설정 -->
+						<!-- 댓글 작성 폼 -->
 						<div class="comment-input mt-4">
 							<form id="commentForm"
 								th:action="@{/comments/reviews/{reviewId}(reviewId=${review.id})}"
@@ -266,7 +266,8 @@
 									<textarea class="form-control ml-2" id="commentContent"
 										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
 								</div>
-								<div class="btn-container mt-2 text-right">
+								<div class="btn-container mt-2 text-right" >
+							
 									<button type="button" id="submitComment"
 										class="btn btn-dark mt-2">댓글 작성</button>
 								</div>

@@ -8,8 +8,10 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.project.DataNotFoundException;
+import com.test.project.review.comment.ReviewCommentRepository;
+import com.test.project.review.comment.ReviewCommentService;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageMapRepository;
@@ -44,6 +48,7 @@ public class ReviewService {
     private final ReviewImageMapRepository reviewImageMapRepository;
     private final ReviewTagRepository reviewTagRepository;
     private final ReviewLikeService reviewLikeService;
+    private final ReviewCommentRepository reviewCommentRepository;;
    
     
     private final UserRepository userRepository ;
@@ -55,13 +60,15 @@ public class ReviewService {
                          ReviewTagRepository reviewTagRepository,
                          UserRepository userRepository,
                          ReviewLikeService reviewLikeService,
-                         ReviewImageMapRepository reviewImageMapRepository) {
+                         ReviewImageMapRepository reviewImageMapRepository,
+                         ReviewCommentRepository reviewCommentRepository) {
         this.reviewRepository = reviewRepository;
         this.reviewImageRepository = reviewImageRepository;
         this.reviewImageMapRepository = reviewImageMapRepository;
         this.reviewTagRepository = reviewTagRepository;
         this.userRepository = userRepository;
         this.reviewLikeService = reviewLikeService;
+        this.reviewCommentRepository = reviewCommentRepository;
     }
 
     // ID로 리뷰 조회
@@ -313,6 +320,16 @@ public class ReviewService {
 
 
    
+       public long getCommentCountForReview(Long reviewId) {
+    	    // 리뷰 객체를 먼저 조회
+    	    Review review = reviewRepository.findById(reviewId)
+    	        .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + reviewId));
+
+    	    // 리뷰 객체로 댓글 수 계산
+    	    return reviewCommentRepository.countByReview(review);
+    	}
+
+
     }
 
 
