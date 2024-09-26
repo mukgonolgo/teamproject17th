@@ -7,7 +7,7 @@
     <body>
         <div layout:fragment="content" class="Log_Container">
             <div class="Log_Logo">
-                <h1>먹고놀고</h1>
+                <img src="/img/logo/logo (1).png" alt="login_logo" />
             </div>
             <div class="Log_LoginBox">
                 <form th:action="@{/user/login}" method="post">
@@ -28,15 +28,15 @@
                     </div>
 
                     <div class="Log_FormGroup">
-                        <button type="submit" class="Log_BtnPrimary btn-block">로그인</button>
+                        <button type="submit" class="Log_BtnPrimary btn-dark d-block w-100">로그인</button>
                     </div>
                 </form>
             </div>
 
             <div class="Log_HelpLinks">
-                <a href="/user/findId">아이디 찾기</a> |
-                <a href="/user/findPassword">비밀번호 찾기</a> |
-                <a href="/user/signup">회원가입</a>
+                <a href="/user/findId" class="text-dark">아이디 찾기</a> |
+                <a href="/user/findPassword" class="text-dark">비밀번호 찾기</a> |
+                <a href="/user/signup" class="text-dark">회원가입</a>
             </div>
         </div>
 

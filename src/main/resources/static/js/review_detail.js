@@ -136,8 +136,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const replyHtml = `
             <div class="reply ml-4" data-reply-id="${reply.commentId}">
                 <img src="${reply.userImage || '/img/user/default-profile.png'}" alt="프로필 사진" class="rounded-circle mt-2" style="width: 50px;height: 50px;">
-                <div class="reply-content">
-                    <span class="font-weight-bold">${reply.username}</span> ${isReplyAuthor}
+                <div class="reply-content" style="margin-left:-0px">
+                    <span class="font-weight-bold">${reply.username}</span>${isReplyAuthor}
                     <p>${reply.content}</p>
                     <p class="card-text">
                         <small class="text-muted">${replyDisplayDate}</small>

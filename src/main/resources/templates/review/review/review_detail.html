@@ -1,0 +1,300 @@
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="/css/review_detail.css" />
+
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+
+
+</head>
+<div layout:fragment="content">
+	<input type="hidden" id="isAuthenticated"
+		th:value="${#authorization.expression('isAuthenticated()') ? 'true' : 'false'}" />
+	<input type="hidden" id="loggedInUserId" th:value="${loggedInUserId}" />
+	<input type="hidden" id="authorId" th:value="${review.user.id}" />
+
+
+	<div class="container my-5">
+		<div class="row justify-content-center">
+			<!-- 음식점 정보 -->
+			<div class="col-xl-4 d-none d-xl-block">
+				<div class="card custom-border text-center p-2 S3_d_info_card">
+					<div id="carouselExample" class="carousel slide mt-3">
+						<div class="carousel-inner S3_d_carousel-inner">
+							<div class="carousel-item S3_d_carousel-item active">
+								<img src="/img/food/food2_2.png"
+									class="d-block w-100 custom-card-img" alt="...">
+							</div>
+							<div class="carousel-item S3_d_carousel-item">
+								<img src="/img/food/food2_3.png"
+									class="d-block w-100 custom-card-img" alt="...">
+							</div>
+							<div class="carousel-item S3_d_carousel-item">
+								<img src="/img/food/food_2.png"
+									class="d-block w-100 custom-card-img" alt="...">
+							</div>
+						</div>
+						<a
+							class="carousel-control-prev S3_d_carousel-control-prev S3_d_hover_btn"
+							href="#carouselExample" role="button" data-slide="prev"> <span
+							class="carousel-control-prev-icon" aria-hidden="true"></span> <span
+							class="sr-only">Previous</span>
+						</a> <a
+							class="carousel-control-next S3_d_carousel-control-next S3_d_hover_btn"
+							href="#carouselExample" role="button" data-slide="next"> <span
+							class="carousel-control-next-icon" aria-hidden="true"></span> <span
+							class="sr-only">Next</span>
+						</a>
+					</div>
+					<div class="S3_d_card_text text-left mb-2 mx-3">
+						<h2 class="  mt-3">
+							돼지냠냠 <img src="/img/icon/bookmark-regular.svg" alt="bookmark"
+								style="width: 15px; margin-top: 10px" class="float-right">
+						</h2>
+						<p>
+							<img src="/img/icon/star-solid.svg" alt="star"
+								style="width: 20px;"><small
+								class="text-muted ml-2 font-weight-bold">4.7</small> <small
+								class="text-muted"><i
+								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span
+								class="font-weight-bold">수원역 근처</span> 돼지냠냠</small>
+						</p>
+						<button class="btn btn-secondary ">예약하기</button>
+						<button class="btn btn-secondary ">구경가기</button>
+					</div>
+				</div>
+			</div>
+			<!-- 음식점 정보 끝 -->
+
+			<!-- 리뷰 카드 -->
+			<div class="col-xl-8 col-sm-12 ">
+				<div class="card custom-border p-3">
+					<div class="d-flex align-items-center mx-3 my-2">
+						<a th:href="@{/review_feed}"
+							class="text-dark d-flex align-items-center"
+							style="text-decoration: none;"> <img
+							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
+							alt="" class="rounded-circle"
+							style="width: 50px; height: 50px; object-fit: cover;"> <span
+							class="ml-3">
+								<h4 th:text="${review.user.nickname}"></h4>
+
+						</span>
+						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
+							style="color: #000000;"></i>
+					</div>
+
+
+
+
+
+					<div th:id="'S3_d_review_carouselExample' + ${review.id}"
+						class="carousel slide">
+						<div class="carousel-inner S3_d_review_carousel-inner">
+							<div class="carousel-item S3_d_carousel-item"
+								th:each="imageMap, iterStat : ${review.reviewImageMap}"
+								th:classappend="${iterStat.index == 0} ? ' active'">
+								<img th:src="@{${imageMap.reviewImage.filepath}}"
+									alt="review_dtail_Image" class="d-block w-100 custom-card-img">
+							</div>
+						</div>
+
+						<a class="carousel-control-prev S3_hover_btn"
+							th:href="'#S3_d_review_carouselExample' + ${review.id}"
+							role="button" data-slide="prev"> <span
+							class="carousel-control-prev-icon" aria-hidden="true"></span> <span
+							class="sr-only">Previous</span>
+						</a> <a class="carousel-control-next S3_hover_btn"
+							th:href="'#S3_d_review_carouselExample' + ${review.id}"
+							role="button" data-slide="next"> <span
+							class="carousel-control-next-icon" aria-hidden="true"></span> <span
+							class="sr-only">Next</span>
+						</a>
+					</div>
+					<div class="card-body">
+						<div class="row">
+							<div class="col-9">
+								<!-- 제목  -->
+								<h5 class="card-title S3_card-title" th:text="${review.title}"></h5>
+
+							</div>
+							<div
+								class="col-3 text-right d-flex justify-content-end align-items-center mb-2">
+
+								<!-- 댓글 -->
+								<img src="/img/icon/chat.png" alt="comment" style="width: 20px"
+									class="tap_btn" /> <span class="text-dark mx-1" th:text="${commentCount != null ? commentCount : 0}"></span>
+
+								<!-- 좋아요 -->
+								<div id="like-container">
+									<i id="like-btn" class="fa-regular fa-heart tap_btn"></i> <span
+										id="like-count" th:text="${likeCount}">0</span>
+								</div>
+
+
+								<!-- 공유버튼 -->
+								<img id="shareBtn" src="/img/icon/share-nodes-solid.svg"
+									alt="share" style="width: 15px" class="tap_btn mx-2" />
+
+
+
+							</div>
+						</div>
+
+						<!-- 모달창 -->
+						<div id="shareModal" class="modal" style="display: none;">
+							<div class="modal-content">
+								<span class="closeBtn text-right">&times;</span>
+
+								<!-- SNS 공유 버튼들을 감싸는 div -->
+								<div class="sns-share d-flex justify-content-center"
+									style="gap: 20px;">
+									<!-- 페이스북 공유 버튼 -->
+									<a href="" id="facebookShare" target="_blank"> <img
+										src="/img/icon/sns/f_black.png" alt="페이스북 공유"
+										style="width: 50px;" />
+									</a>
+
+									<!-- 트위터 공유 버튼 -->
+									<a href="" id="twitterShare" target="_blank"> <img
+										src="/img/icon/sns/x_black.png" alt="트위터 공유"
+										style="width: 50px;" />
+									</a>
+								</div>
+
+								<p>공유할 주소:</p>
+
+								<!-- 인풋창과 복사 버튼 -->
+								<div class="input-group mb-3">
+									<input type="text" class="form-control" id="shareUrl"
+										value="https://youtu.be/CyzW4FxtHVM?feature=shared" readonly>
+									<div class="input-group-append">
+										<!-- 복사 버튼 이미지 -->
+										<button class="btn btn-dark" id="copyBtn" type="button"
+											style="display: flex; align-items: center;">복사</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<p class="col-12 S3_store_s mb-2">
+							<!-- 별점 표시 영역 -->
+							<small class="starRating ml-0"
+								th:attr="data-review-id=${review.id}"></small>
+							<!-- 리뷰마다 고유한 ID 부여 -->
+							<a href="" style="text-decoration: none;"> <small
+								class="text-muted"> <i class="fa-solid fa-location-dot"
+									style="color: #000000;"></i> <span class="font-weight-bold">수원역
+										근처</span> 돼지냠냠
+							</small>
+							</a>
+						</p>
+
+
+
+
+
+						<!-- 내용  -->
+						<p class="card-text S3_card-text mt-2" style="height: 100px;"
+							th:text="${review.content}"></p>
+
+
+
+						<div class="tag mb-3 S3_tag_box ml-1">
+							<span th:each="tagMap : ${review.tagMaps}"> <span
+								class="badge badge-pill border border-dark"
+								th:text="'#'+${tagMap.reviewTag.name}"> </span>
+							</span>
+
+							<!-- 업데이트 시간  -->
+							<div class="row mt-2">
+								<div class="col">
+
+									<small class="text-muted"> <!-- 업데이트 시간이 존재할 때 업데이트 시간 표시 -->
+										<span th:if="${review.updatedAt != null}"
+										th:text="${#temporals.format(review.updatedAt, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
+										<!-- 업데이트 시간이 없을 때 생성 시간 표시 --> <span
+										th:if="${review.updatedAt == null}"
+										th:text="${#temporals.format(review.createDate, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
+									</small>
+
+								</div>
+
+
+								<div class="col text-right">
+									<!-- 로그인한 유저와 리뷰 작성자가 동일할 때만 버튼 표시 -->
+									<div th:if="${loggedInUserId == review.user.id}">
+										<!-- 리뷰 수정 버튼 -->
+										<a th:href="@{/review_update_form/{id}(id=${review.id})}"
+											class="text-primary btn btn-outline-primary btn-sm"> <small>수정</small>
+										</a>
+										<!-- 리뷰 삭제 버튼 -->
+										<button id="deleteReviewButton" data-review-id="${review.id}"
+											class="btn btn-outline-danger btn-sm">
+											<small>삭제</small>
+										</button>
+									</div>
+								</div>
+								<!-- col -->
+							</div>
+							<!-- 업데이트시간 -->
+
+						</div>
+						<!-- 태그 -->
+
+						<div class="comments-list">
+
+							<!-- 기존 댓글들이 여기에 추가됩니다 -->
+						</div>
+
+						<!-- 댓글 작성 폼 -->
+						<div class="comment-input mt-4">
+							<form id="commentForm"
+								th:action="@{/comments/reviews/{reviewId}(reviewId=${review.id})}"
+								method="post">
+								<input type="hidden" th:name="${_csrf.parameterName}"
+									th:value="${_csrf.token}" />
+
+								<!-- 리뷰 ID 숨김 필드 -->
+								<input type="hidden" id="reviewId" name="reviewId"
+									th:value="${review.id}" />
+
+
+								<div class="d-flex align-items-center mt-3">
+									<textarea class="form-control ml-2" id="commentContent"
+										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
+								</div>
+								<div class="btn-container mt-2 text-right" >
+							
+									<button type="button" id="submitComment"
+										class="btn btn-dark mt-2">댓글 작성</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+					<!--card-body-->
+				</div>
+				<!--card-->
+			</div>
+
+		</div>
+		<!-- row -->
+
+	</div>
+	<!-- container -->
+
+
+	<script th:inline="javascript">
+		var likedByUser = /*[[${likedByUser}]]*/ false;  // 서버에서 받은 값 설정
+		var reviewId = /*[[${review.id}]]*/ 0;  // 현재 리뷰 ID 설정
+	</script>
+
+	<script src="/js/review_detail.js"></script>
+	<script src="/js/reviewLike.js"></script>
+</div>
+<!-- content -->
+</html>
+

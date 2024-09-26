@@ -24,7 +24,7 @@
 </head>
 <div layout:fragment="content">
     <!-- 검색란 -->
-   <div class="section1 container my-5">
+   <div class="section1 container mt-5">
       <div class="row d-flex justify-content-end">
          <!--지역선택-->
          <div class="col-auto">
@@ -46,7 +46,37 @@
     </select>
 </div>
 
+         <!--인원수 선택-->
+         <div class="col-auto">
+            <!--People Count Button-->
+            <button class="btn text-secondary bg-white  P_C_button category_btn"
+               id="toggleButton">
+               인원수<i class="fa-solid fa-user ml-1"></i>
+            </button>
+            <!--인원수 박스-->
+            <div class="card ml-5 mt-5 hide_box" id="rangeBox"
+               style="width: 300px;">
+               <div class="card-body text-center">
+                  <span>인원</span> <label id="rangeValue" for="customRange2">1</label><span>명</span>
+                  <input type="range" class="custom-range" min="1" max="10"
+                     value="1" id="customRange2">
+               </div>
+               <button class="btn btn-dark ca_button w-100">인원수 적용</button>
+            </div>
+         </div>
+         <!--인원수 선택 끝-->
 
+         <!-- 날짜 선택 -->
+         <div class="col-auto">
+            <button id="calendar-btn"
+               class="btn btn-out bg-white text-secondary category_btn">
+               날짜 선택 <i class="fa-solid fa-calendar-days"></i>
+            </button>
+            <input type="button" name="datetimes" id="calendar-input" disabled
+               class="btn" />
+
+         </div>
+         <!-- 날짜 선택 끝 -->
 
          <!--메뉴 선택-->
          <div class="col-auto">
@@ -161,14 +191,13 @@
             <div class="dropdown">
                <button class="btn bg-white dropdown-toggle" type="button"
                   data-toggle="dropdown" aria-expanded="false">전체</button>
-                     <div class="dropdown-menu">
-            <a class="dropdown-item" href="/reviews/sorted?sort=all&direction=desc">전체</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=date&direction=desc">새로 올라온 순</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=date&direction=asc">오래된 순</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=rating&direction=desc">별점 순</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=comments&direction=desc">댓글 많은 순</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=likes&direction=desc">좋아요 순</a>
-        </div>
+               <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#">전체</a> <a class="dropdown-item"
+                     href="#">새로 올라온 순</a> <a class="dropdown-item" href="#">오래된 순</a>
+                  <a class="dropdown-item" href="#">별점 순</a> <a
+                     class="dropdown-item" href="#">댓글 많은 순</a> <a
+                     class="dropdown-item" href="#">좋아요 순</a>
+               </div>
             </div>
             <!--dropdown-->
          </div>
