@@ -10,66 +10,74 @@
 	<link rel="stylesheet" href="/css/Board.css" />
 </head>
 
-<div layout:fragment="content">
-	<div class="container">
-		<span>
-			<i th:if="${board.boardTag == '일반'}" class="badge badge-primary ri-message-3-line"><span
-					th:text="${board.boardTag}" style="color: white;"></span></i>
-			<i th:if="${board.boardTag == '질문'}" class="badge badge-success ri-question-mark"><span
-					th:text="${board.boardTag}"></span></i>
-			<i th:if="${board.boardTag == '친구찾기'}" class="badge badge-warning ri-search-2-line"><span
-					th:text="${board.boardTag}"></span></i>
-		</span>
-
-		<div class="question_title border-bottom">
-			<span class="">질문제목 :</span>
-			<span th:text="${board.boardTitle}"></span>
-			<span class="small float-right">
-				유저명 :<span th:text="${board.username}"></span>
-			</span>
-		</div>
-
+<div layout:fragment="content" >
+	<div class="container" >
 		<div >
-			
-			<span th:text="${board.boardContent}" class="question"></span>
-		</div>
-		<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}"
-			class="delete btn btn-danger mt-2 float-right" sec:authorize="isAuthenticated()"
-			th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
-			style="margin-right: 10px;">질문 삭제</a>
-		<button id="editQuestionBtn" th:data-board-id="${board.boardId}" class="btn btn-success mt-2 float-right"
-			sec:authorize="isAuthenticated()"
-			th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}"
-			style="margin-right: 10px;">질문 수정</button>
+			<span>
+				<i th:if="${board.boardTag == '일반'}" class="badge badge-primary ri-message-3-line"><span
+						th:text="${board.boardTag}" style="color: white;"></span></i>
+				<i th:if="${board.boardTag == '질문'}" class="badge badge-success ri-question-mark"><span
+						th:text="${board.boardTag}"></span></i>
+				<i th:if="${board.boardTag == '친구찾기'}" class="badge badge-warning ri-search-2-line"><span
+						th:text="${board.boardTag}"></span></i>
+			</span>
 
-		<!-- 질문 수정 모달 -->
-		<div class="modal" id="editQuestionModal" tabindex="-1" role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form id="editQuestionForm">
-						<div class="modal-header">
-							<h5 class="modal-title">질문 수정</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<textarea id="editQuestionContent" class="form-control" name="content" rows="4"></textarea>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-							<button type="submit" class="btn btn-primary">저장</button>
-						</div>
-					</form>
+			<div class="question_title border_bottomLine">
+				<span class="">질문제목 :</span>
+				<span th:text="${board.boardTitle}"></span>
+				<span class="small float-right">
+					유저명 :<span th:text="${board.username}"></span>
+				</span>
+			</div>
+
+			<div class="questionBody">
+				<span th:text="${board.boardContent}" class="question "></span>
+
+				<div>
+					<a href="javascript:void(0);" th:data-uri="@{|/question/delete/${board.boardId}|}"
+						class="delete btn btn-danger mt-2 float-right questionBodyBtn" sec:authorize="isAuthenticated()"
+						th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}" style="margin-right: -15px;">
+						질문 삭제</a>
+					<button id="editQuestionBtn" th:data-board-id="${board.boardId}"
+						class="btn btn-success mt-2 float-right questionBodyBtn" sec:authorize="isAuthenticated()"
+						th:if="${board.user != null and #authentication.getPrincipal().getUsername() == board.user.username}" style="margin-right: 10px;">
+						질문 수정</button>
+				</div>
+
+			</div>
+			<div class="border_bottomLine"> </div>
+			<!-- 질문 수정 모달 -->
+			<div class="modal" id="editQuestionModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<form id="editQuestionForm">
+							<div class="modal-header">
+								<h5 class="modal-title">질문 수정</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<textarea id="editQuestionContent" class="form-control" name="content"
+									rows="4"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+								<button type="submit" class="btn btn-primary">저장</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="my-5 border-bottom py-4 roof"></h4>
+		</div>
+		
+		<div class="mt-4">
+		<h4 th:text="|${#lists.size(board.answerList)}개의 답변이 있습니다.|" class="  questionSize"></h4>
 
 		<div>
-			<ul class="list-unstyled">
-				<div class="my-5 mt-5 answer_line" th:each="answer : ${board.answerList}">
+			<ul class="list-unstyled mt-4">
+				<li class=" answer_line" th:each="answer : ${board.answerList}" style="margin-top: 20px;">
 					<div th:id="|answer_${answer.AnswerId}|">
 						<span th:text="${answer.AnswerContent}"></span>
 						<span class="badge badge-pill badge-info mr-2" th:if="${answer.user != null}">
@@ -78,7 +86,7 @@
 						<a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.AnswerId}|}"
 							class="btn btn-danger delete float-right" sec:authorize="isAuthenticated()"
 							th:if="${answer.user != null and #authentication.getPrincipal().getUsername() == answer.user.username}"
-							th:text="답변삭제" style="margin-right: 10px;"></a>
+							th:text="답변삭제"></a>
 
 						<button class="btn btn-success edit-btn float-right" th:data-id="${answer.AnswerId}"
 							th:data-content="${answer.AnswerContent}" sec:authorize="isAuthenticated()"
@@ -92,30 +100,29 @@
 							<button class="btn btn-success mt-2 save-reply-btn">저장</button>
 						</div>
 					</div>
-					<div class="comments">
-					    <p th:if="${answer.comment != null}">
-					        <p th:each="comment : ${answer.comment}" style="margin-left: 20px;">
-					            ㄴ <span th:text="${comment.answerContent}"></span>
-					        </p>
-					    </p>
+					<div class="comments" style="background-color: aliceblue;">
+						<p th:if="${answer.comment != null}">
+						<p th:each="comment : ${answer.comment}" class="commentText">
+							ㄴ <span th:text="${comment.answerContent}"></span>
+						</p>
+						</p>
 					</div>
-				</div>
+				</li>
 			</ul>
 		</div>
 
 		<!-- 답변 작성 -->
 		<form th:action="@{|/answer/create/${board.boardId}|}" method="post" th:object="${answerFormDTO}">
 			<div class="form-group mb-0" style="margin-top: 70px;">
-				<textarea sec:authorize="isAnonymous()"
-					placeholder="로그인한 상태에서 답변 작성 가능합니다."></textarea>
+				<textarea sec:authorize="isAnonymous()" placeholder="로그인한 상태에서 답변 작성 가능합니다."></textarea>
 				<textarea sec:authorize="isAuthenticated()" name="content" id="content" cols="30" rows="10"
-					class="form-control mb-0" th:field="*{content}"></textarea>
+					class="form-control mb-0 answerTextArea" th:field="*{content}"></textarea>
 				<br /><br />
 			</div>
 			<input type="submit" value="답변 등록하기" class="btn btn-warning text-white p-3 mt-0" id="answerText" />
 		</form>
 	</div>
-
+	</div>
 	<!-- 답변 수정 모달 -->
 	<div class="modal" id="editAnswerModal" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
@@ -292,22 +299,17 @@
 			});
 		});
 	});
+	document.addEventListener("DOMContentLoaded", function () {
+	    const answerTextArea = document.querySelector(".answerTextArea"); // textarea 선택
+	    const answerBtn = document.getElementById("answerText");
 
-
-	const answerBtn = document.getElementById("answerText");
-
-	answerBtn.addEventListener("click", function (event) {
-	    event.preventDefault(); // 기본 폼 제출 방지
-
-	    const content = document.getElementById("content").value.trim(); // textarea의 값 가져오기
-
-	    if (!content) {
-	        alert("댓글 내용을 입력해 주세요."); // 내용이 비어있을 경우 알림
-	        document.getElementById("content").focus(); // textarea에 포커스
-	        return; // 함수 종료
-	    }
-
-	    document.forms[0].submit(); // 폼 제출
+	    // 버튼 클릭 이벤트
+	    answerBtn.addEventListener("click", function (event) {
+	        if (!answerTextArea.value.trim()) { // textarea가 비어있을 경우
+	            alert("댓글 내용을 입력해 주세요."); // 경고 메시지
+	            event.preventDefault(); // 기본 폼 제출 방지
+	        }
+	    });
 	});
 </script>
 
