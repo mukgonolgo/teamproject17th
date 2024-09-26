@@ -358,7 +358,14 @@ public class ReviewController {
         return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
     }
 
+    // 리뷰 목록을 정렬하는 API
+    @GetMapping("/list")
+    public ResponseEntity<List<ReviewDto>> getSortedReviews(
+        @RequestParam(required = false, defaultValue = "latest") String sort) {
 
+        List<ReviewDto> reviews = reviewService.getSortedReviews(sort);
+        return ResponseEntity.ok(reviews);
+    }
 
 
     

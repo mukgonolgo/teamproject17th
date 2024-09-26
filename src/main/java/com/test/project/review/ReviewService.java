@@ -329,7 +329,31 @@ public class ReviewService {
     	    return reviewCommentRepository.countByReview(review);
     	}
 
+       public List<ReviewDto> getSortedReviews(String sort) {
+           List<Review> reviews;
 
+           switch (sort) {
+               case "oldest":
+                   reviews = reviewRepository.findAllByOrderByCreateDateAsc();
+                   break;
+               case "rating":
+                   reviews = reviewRepository.findAllByOrderByRatingDesc();
+                   break;
+               case "comments":
+                   reviews = reviewRepository.findAllByOrderByCommentCountDesc();
+                   break;
+               case "likes":
+                   reviews = reviewRepository.findAllByOrderByLikeCountDesc();
+                   break;
+               default:  // 최신순
+                   reviews = reviewRepository.findAllByOrderByCreateDateDesc();
+                   break;
+           }
+
+           return reviews.stream()
+                         .map(review -> new ReviewDto(review))  // Dto로 변환
+                         .collect(Collectors.toList());
+       }
     }
 
 

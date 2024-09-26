@@ -20,4 +20,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	
     // 리뷰 ID로 리뷰를 찾는 메소드
     Optional<Review> findById(Long id);
+    
+    List<Review> findAllByOrderByCreateDateDesc();  // 최신순
+    List<Review> findAllByOrderByCreateDateAsc();   // 오래된순
+    List<Review> findAllByOrderByRatingDesc();      // 별점순
+    List<Review> findAllByOrderByCommentCountDesc();// 댓글 많은 순
+    List<Review> findAllByOrderByLikeCountDesc();   // 좋아요 많은 순
 }
