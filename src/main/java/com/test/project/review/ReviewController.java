@@ -359,6 +359,31 @@ public class ReviewController {
         return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
     }
 
+    
+    @GetMapping("/user_feed/{userId}")
+    public String userFeed(@PathVariable Long userId, Model model) {
+        SiteUser user = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Review> reviews = reviewService.getReviewsByUserId(userId);  // 유저의 리뷰 목록 가져오기
+        List<Map<String, Object>> reviewImages = new ArrayList<>();
+
+        for (Review review : reviews) {
+            List<ReviewImage> images = review.getImages();  // 리뷰의 이미지 리스트 가져오기
+            if (!images.isEmpty()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("imagePath", images.get(0).getFilepath());  // 첫 번째 이미지의 파일 경로
+                map.put("reviewId", review.getId());              // 리뷰 ID
+                reviewImages.add(map);
+            }
+        }
+
+        model.addAttribute("reviewImages", reviewImages);          // 이미지 및 리뷰 ID 데이터 추가
+        model.addAttribute("usernickname", user.getNickname());     // 유저 닉네임 추가
+        model.addAttribute("profileImage", user.getImageUrl());    // 프로필 이미지 추가
+        return "review/review_feed";                               // 피드 페이지로 이동
+    }
+
+
 }
 
 

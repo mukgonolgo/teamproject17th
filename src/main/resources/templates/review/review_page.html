@@ -165,7 +165,7 @@
             <a class="dropdown-item" href="/reviews/sorted?sort=all&direction=desc">전체</a>
             <a class="dropdown-item" href="/reviews/sorted?sort=date&direction=desc">새로 올라온 순</a>
             <a class="dropdown-item" href="/reviews/sorted?sort=date&direction=asc">오래된 순</a>
-            <a class="dropdown-item" href="/reviews/sorted?sort=rating&direction=desc">별점 순</a>
+            <a class="dropdown-item" href="/reviews/sorted?sort=rating&direction=desc">별점 높은 순</a>
             <a class="dropdown-item" href="/reviews/sorted?sort=comments&direction=desc">댓글 많은 순</a>
             <a class="dropdown-item" href="/reviews/sorted?sort=likes&direction=desc">좋아요 순</a>
         </div>
@@ -195,9 +195,10 @@
    <!--card-->
    <div class="section3 mt-5">
       <div class="container my-5 ">
-         <h3 class="mt-5">
+        <h3 class="mt-5 my-3">새로 올라온 후기</h3>
+      <!--    <h3 class="mt-5">
             이번주 <span class="text-danger">🔥HOT한</span> 리뷰
-         </h3>
+         </h3>-->  
          <div class="row S3_review_card">
          <!-- 리뷰 카드 -->
             <div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
@@ -333,11 +334,11 @@
       </div>
       <!--container-->
 
-
+<!-- 
       <div class="container">
          <h3 class="mt-5 my-3">새로 올라온 후기</h3>
 
-      </div>
+      </div>-->
       <!--container-->
    </div>
    <!-- section -->
