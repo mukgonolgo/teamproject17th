@@ -76,13 +76,12 @@ public class ReviewController {
         List<Review> reviewPage = reviewService.getAllReviews();  // 모든 리뷰 가져오기
         Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
 
-       List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
-        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
+        List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
         model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
-        System.out.println("======"+stores.size()); // 로그를 통해 크기 확인
-
 
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
+        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수를 저장하는 Map
+
         for (Review review : reviewPage) {
             Long reviewId = review.getId();
             boolean likedByUser = false;
@@ -94,15 +93,22 @@ public class ReviewController {
 
             LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
             likeStatusMap.put(reviewId, likeStatusDto);
+
+            // 댓글 수 계산
+            long commentCount = reviewcommentService.countCommentsByReviewId(reviewId);
+            commentCountMap.put(reviewId, commentCount);  // 각 리뷰에 대한 댓글 수 저장
         }
 
         model.addAttribute("reviewPage", reviewPage);  // 모든 리뷰 리스트
         model.addAttribute("likeStatusMap", likeStatusMap);  // 각 리뷰의 좋아요 정보
+        model.addAttribute("commentCountMap", commentCountMap);  // 각 리뷰의 댓글 수 정보
 
         return "review/review_page";  // 리뷰 페이지로 이동
     }
 
-    // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
+
+
+ // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Review review = reviewService.findReviewById(id).orElseThrow(() -> new RuntimeException("Review not found"));
@@ -124,6 +130,7 @@ public class ReviewController {
         SiteUser author = userService.getUserById(review.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
         List<CommentResponse> comments = reviewcommentService.getCommentsForReview(id);  // 댓글 조회
+        long commentCount = reviewcommentService.countCommentsByReviewId(id);  // 댓글 수 계산
 
         model.addAttribute("review", review);
         model.addAttribute("likedByUser", likedByUser);
@@ -131,9 +138,11 @@ public class ReviewController {
         model.addAttribute("authorProfileImage", author.getImageUrl());
         model.addAttribute("authorUsername", author.getUsername());
         model.addAttribute("comments", comments);
+        model.addAttribute("commentCount", commentCount);  // 댓글 수 모델에 추가
 
         return "review/review_detail";  // 리뷰 상세 페이지로 이동
     }
+
 
     // 리뷰 작성 폼 페이지로 이동하는 메서드
     @GetMapping("/review_create_form")

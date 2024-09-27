@@ -14,7 +14,7 @@
     font-family: 'Arial', sans-serif;
     font-size: 36px;
     font-weight: bold;
-    color: pink;
+    color: #181818;
     text-align: center;
     position: relative;
     top: -30px;
@@ -25,7 +25,7 @@
 .Log_LoginBox {
     background-color: white;
     padding: 40px;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 400px;
     margin-top: 20px;
@@ -46,7 +46,7 @@
 
 /* 로그인 버튼 스타일 */
 .Log_BtnPrimary {
-    background-color: pink;
+    background-color: #181818 !important;
     color: white;
     border: none;
     padding: 12px;

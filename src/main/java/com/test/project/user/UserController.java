@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,13 +66,18 @@ public class UserController {
    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult,
                         @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) {
        if (bindingResult.hasErrors()) {
-           // 오류 처리...
            return "user/signup_form";
        }
 
        if (!userCreateForm.getPassword().equals(userCreateForm.getConfirmPassword())) {
            model.addAttribute("errorMessage", "패스워드를 일치시켜 주세요.");
            return "user/signup_form";
+       }
+
+       // 이메일 중복 확인
+       if (userService.isEmailTaken(userCreateForm.getEmailDomain())) {
+           model.addAttribute("emailErrorMessage", "이메일이 이미 가입되어있습니다.");
+           return "user/signup_form";  // 이메일 중복 오류가 발생하면 다시 회원가입 폼으로 이동
        }
 
        try {
@@ -90,6 +96,20 @@ public class UserController {
 
        return "redirect:/";
    }
+
+
+   
+// 이메일 중복 체크
+@GetMapping("/checkEmail")
+@ResponseBody
+public String checkEmail(@RequestParam("email") String email) {
+    try {
+        boolean isTaken = userService.isEmailTaken(email);
+        return "{\"isTaken\": " + isTaken + "}";
+    } catch (Exception e) {
+        return "{\"error\": \"서버 오류가 발생했습니다.\"}";
+    }
+}
 
 
 
@@ -424,10 +444,11 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<SiteUser> userPage = null;
 
+        // 검색어가 있는 경우와 없는 경우 처리
         if (search != null && !search.isEmpty()) {
             switch (searchType) {
                 case "id":
-                    userPage = userService.searchById(Long.parseLong(search), pageable);
+                    userPage = userService.searchById(search, pageable);
                     break;
                 case "username":
                     userPage = userService.searchByUsername(search, pageable);
@@ -443,6 +464,11 @@ public class UserController {
             userPage = userService.getAllUsers(pageable);
         }
 
+        // userPage가 null인 경우 빈 페이지로 처리
+        if (userPage == null) {
+            userPage = Page.empty(pageable);
+        }
+
         model.addAttribute("userPage", userPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", userPage.getTotalPages());
@@ -452,7 +478,7 @@ public class UserController {
         return "user/user_list";  // user_list.html 반환
     }
 
-
+   
 
    }
 

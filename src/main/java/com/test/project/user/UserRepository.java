@@ -29,6 +29,17 @@ public interface UserRepository extends JpaRepository<SiteUser, Long> {
  // 닉네임으로 SiteUser 찾기
     Optional<SiteUser> findByNickname(String nickname);
     
+ // 이메일로 사용자 찾기 메서드 추가
+    Optional<SiteUser> findByEmail(String email);
+    
+    
+ // ID로 사용자 검색 (페이징 지원)
+    Page<SiteUser> findById(Long userId, Pageable pageable);
+
+    
+
+    
+    
  
     Page<SiteUser> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
     Page<SiteUser> findByNicknameContainingIgnoreCase(String nickname, Pageable pageable);

@@ -88,4 +88,12 @@ public class ReviewCommentService {
                 .map(CommentResponse::new)
                 .collect(Collectors.toList());
     }
+    
+    // 댓글수 계산 메서드
+    public long countCommentsByReviewId(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new DataNotFoundException("리뷰를 찾을 수 없습니다."));
+        return reviewCommentRepository.countByReview(review);
+    }
+
 }

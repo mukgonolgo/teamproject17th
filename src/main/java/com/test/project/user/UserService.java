@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -190,12 +191,20 @@ public class UserService {
         userRepository.deleteById(userId);  // JPA Repository의 deleteById 메서드를 사용하여 삭제
     }
     
+ // ID로 사용자 검색
     public Page<SiteUser> searchById(String id, Pageable pageable) {
         try {
-            Long userId = Long.parseLong(id);
-            return userRepository.findAllById(userId, pageable);
+            Long userId = Long.parseLong(id);  // 입력받은 ID 값을 Long으로 변환
+            Optional<SiteUser> userOptional = userRepository.findById(userId);  // Optional로 사용자 검색
+
+            if (userOptional.isPresent()) {
+                List<SiteUser> users = List.of(userOptional.get());  // Optional을 List로 변환
+                return new PageImpl<>(users, pageable, users.size());  // List를 Page로 변환
+            } else {
+                return Page.empty(pageable);  // 검색 결과가 없으면 빈 페이지 반환
+            }
         } catch (NumberFormatException e) {
-            return Page.empty(pageable);
+            return Page.empty(pageable);  // 숫자로 변환되지 않으면 빈 페이지 반환
         }
     }
 
@@ -216,6 +225,15 @@ public class UserService {
       // TODO Auto-generated method stub
       return null;
    }
+   
+// 이메일 중복 확인 로직 추가
+public boolean isEmailTaken(String email) {
+    return userRepository.findByEmail(email).isPresent();
+}
+
+
+
+
 
 }
 

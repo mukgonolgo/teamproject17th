@@ -15,35 +15,41 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)  // @PreAuthorize 활성화
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+   // CustomAuthenticationFailureHandler 등록
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/user/list", "/store_alist").hasRole("ADMIN")  // 관리자만 접근 가능
-                .requestMatchers("/**").permitAll())  // 그 외 모든 요청은 접근 허용
-            .csrf((csrf) -> csrf
-                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
-            .headers((headers) -> headers
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
-                .cacheControl().disable())  // 캐시 비활성화
-            .formLogin((form) -> form
-                .loginPage("/user/login")  // 로그인 페이지 설정
-                .defaultSuccessUrl("/")     // 로그인 성공 시 리다이렉트
-                .failureHandler(customAuthenticationFailureHandler))  // 로그인 실패 시 핸들러 지정
-            .logout((logout) -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true));  // 로그아웃 시 세션 무효화
-        return http.build();
-    }
+  
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+	    .authorizeHttpRequests(requests -> requests
+	    		   .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/**")).permitAll() // 인증 없이도 댓글 조회 가능
+	               .anyRequest().permitAll()) // 나머지 요청도 모두 허용
+	    .csrf(csrf -> csrf
+	        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+	    .headers(headers -> headers
+	        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+	        .cacheControl(cache -> cache.disable()))  // 캐시 비활성화
+	    .formLogin(form -> form
+	        .loginPage("/user/login")
+	        .defaultSuccessUrl("/"))
+	    .logout(logout -> logout
+	        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+	        .logoutSuccessUrl("/")
+	        .invalidateHttpSession(true));
+
+	    return http.build();
+	}
+
+   
+  
 
     @Bean
     PasswordEncoder passwordEncoder() {

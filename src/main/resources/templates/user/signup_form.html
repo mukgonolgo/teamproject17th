@@ -81,6 +81,11 @@
                     <input type="hidden" th:field="*{emailDomain}" id="emailFull">
                     <input type="button" value="인증 이메일 발송" onclick="sendEmail()">
                 </div>
+				
+				<!-- 이메일 중복 오류 메시지 표시 -->
+				<div class="Log_SUF_form-group">
+				    <span th:if="${emailErrorMessage}" th:text="${emailErrorMessage}" style="color: red; font-size: 12px;"></span>
+				</div>
 
                 <!-- 인증번호 입력 필드 추가 -->
                 <div class="Log_SUF_form-group">
@@ -285,6 +290,37 @@
             };
             xhr.send();
         }
+		
+		
+		
+		function checkEmail() {
+		    var emailLocalPart = document.getElementById("emailLocalPart").value;
+		    var emailDomainPart = document.getElementById("emailDomainPart").value;
+		    var fullEmail = emailLocalPart + "@" + emailDomainPart;
+
+		    if (fullEmail.trim() === "") {
+		        document.getElementById("emailCheckResult").innerText = "이메일을 입력하세요.";
+		        return;
+		    }
+
+		    var xhr = new XMLHttpRequest();
+		    xhr.open("GET", "/user/checkEmail?email=" + encodeURIComponent(fullEmail), true);
+
+		    // CSRF 토큰 추가
+		    xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="_csrf"]').getAttribute('content'));
+
+		    xhr.onreadystatechange = function () {
+		        if (xhr.readyState === 4 && xhr.status === 200) {
+		            var response = JSON.parse(xhr.responseText);
+		            if (response.isTaken) {
+		                document.getElementById("emailCheckResult").innerText = "이메일이 이미 가입되어있습니다.";
+		            } else {
+		                document.getElementById("emailCheckResult").innerText = "사용 가능한 이메일입니다.";
+		            }
+		        }
+		    };
+		    xhr.send();
+		}
 
         function sample6_execDaumPostcode() {
             new daum.Postcode({
