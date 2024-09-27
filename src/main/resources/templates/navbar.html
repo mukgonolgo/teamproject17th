@@ -41,7 +41,10 @@
 				<!-- 관리자 -->
 				<li class="nav-item d-flex align-items-center"
 					sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
-					<span class="nav-link text-warning" th:text="'admin'"></span> <a
+					 <a
+					th:href="@{/mypage/{userid}(userid=${userid})}"><span class="nav-link text-warning" th:text="'admin'"></span>
+				</a>
+					 <a
 					class="nav-link" th:href="@{/user/list}">회원 리스트</a> <a
 					class="nav-link" th:href="@{/store/store_alist}">가게 리스트</a> <a
 					class="nav-link" th:href="@{/user/logout}">로그아웃</a>
@@ -49,8 +52,10 @@
 				<!-- 승인 대기 중인 사업자 -->
 				<li class="nav-item d-flex align-items-center"
 					sec:authorize="principal.approvalStatus == 2"><a
-					href="/mypage/{userid}"> <span class="nav-link"
+					href="/mypage/{userid}"><a
+					th:href="@{/mypage/{userid}(userid=${userid})}"><span class="nav-link"
 						th:text="${nickname} + ' 님 '"></span>
+				</a> 
 				</a> <a class="nav-link" th:href="@{/user/logout}">로그아웃</a> <a
 					class="nav-link" th:href="@{/user/somePage}">대기 중인 기능</a></li>
 
@@ -65,8 +70,10 @@
 
 				<!-- 보류 중인 사업자 -->
 				<li class="nav-item d-flex align-items-center"
-					sec:authorize="principal.approvalStatus == 4"><span
-					class="nav-link" th:text="${nickname} + ' 님'"></span> <a
+					sec:authorize="principal.approvalStatus == 4"><a
+					th:href="@{/mypage/{userid}(userid=${userid})}"><span
+					class="nav-link" th:text="${nickname} + ' 님'"></span>
+				</a> <a
 					class="nav-link" th:href="@{/user/logout}">로그아웃</a> <a
 					class="nav-link" th:href="@{/user/confirmPassword}">내 정보 수정</a>
 					<form th:action="@{/user/reapply}" method="post"
@@ -78,8 +85,10 @@
 
 				<!-- 일반 사용자 -->
 				<li class="nav-item d-flex align-items-center"
-					sec:authorize="principal.approvalStatus == 1"><span
-					class="nav-link" th:text="${nickname} + ' 님'"></span> <a
+					sec:authorize="principal.approvalStatus == 1"><a
+					th:href="@{/mypage/{userid}(userid=${userid})}"><span
+					class="nav-link" th:text="${nickname} + ' 님'"></span>
+				</a> <a
 					class="nav-link" th:href="@{/user/logout}">로그아웃</a> </li>
 
 

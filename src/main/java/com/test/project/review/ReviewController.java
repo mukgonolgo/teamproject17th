@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -358,8 +359,7 @@ public class ReviewController {
         return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
     }
 
-
+}
 
 
     
-}

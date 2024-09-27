@@ -329,9 +329,5 @@ public class ReviewService {
     	    return reviewCommentRepository.countByReview(review);
     	}
 
-
-    }
-
-
-
-
+     
+}
