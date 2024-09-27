@@ -24,7 +24,7 @@ var, video {
     background: #181818;
     z-index: 0;
     padding-top: 11vw;
-    padding-bottom: 25vw;
+    padding-bottom: 5vw;
     height: auto;
     bottom: 0px;
 }
@@ -76,7 +76,7 @@ var, video {
 }
 .Fu1_c1_a{
     font-family: Pretendard-Medium;
-    font-size: 3.9vw;
+    font-size: 2.5vw;
     text-transform: uppercase;
     position: relative;
     color: #fff;
@@ -167,7 +167,7 @@ var, video {
     font-family: proxima-nova, Dotum;
     font-weight: 800;
     font-style: normal;
-    font-size: 3.9vw;
+    font-size: 20px;
     line-height: 1;
 }
 .Fu1_c2_a2_a a{
@@ -181,13 +181,12 @@ var, video {
     padding-bottom: 5.5vw;
 }
 .expanded {
-    max-height: 50vw; 
+    max-height: 40vw; 
 }
 
 
 .Fu2{
     display: grid;
-
     position: relative;
     margin: 0 auto;
     padding: 0 5.5vw;
@@ -206,8 +205,8 @@ var, video {
 .Fu2_a1_b{
     position: relative;
     display: flex;
-    padding-top: 29vw;
-    padding-bottom: 13vw;
+    padding-top: 20vw;
+    padding-bottom: 9vw;
     right: 0;
     bottom: 0;
 }
@@ -225,14 +224,14 @@ var, video {
 .Fu2_a3{
     font-family: Pretendard-Medium;
     font-style: normal;
-    font-size: 2.8vw;
+    font-size: 2vw;
     line-height: 1.5;
     color: #fff;
     margin-top: 4.2vw;
 }
 .Fu2_a4{
     font-family: Pretendard-Medium;
-    font-size: 2.8vw;
+    font-size: 2vw;
     line-height: 1.5;
     color: #fff;
     margin-top: 0vw;
@@ -538,7 +537,7 @@ var, video {
     }
 
     .Fu2{
-        padding: 0 3.125vw;
+        padding: 0 1.125vw;
         grid-template-columns: repeat(1, minmax(0, 1fr));
         column-gap: 2.9vw;
         row-gap: 0vw;
@@ -549,7 +548,8 @@ var, video {
     }
     .Fu2_a1_b{
         position: absolute;
-        padding-top: 0;
+		line-height: 1.6;
+        padding-top: 0px;
         padding-bottom: 0;
         padding: 0;
     }

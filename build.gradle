@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.3'
+   id 'org.springframework.boot' version '3.1.2'  // 안정적인 버전으로 변경
     id 'io.spring.dependency-management' version '1.1.6'
 }
 
@@ -36,8 +36,16 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.commonmark:commonmark:0.18.0'
 
-    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.springframework.security:spring-security-config:6.1.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    
+
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+
     runtimeOnly 'com.h2database:h2'
+
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
@@ -49,6 +57,14 @@ tasks.named('test') {
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << '-parameters'
+    options.compilerArgs += ['-parameters']
 }
 
+
+task printJavaHome {
+    description = 'Prints the JAVA_HOME environment variable.'
+    doLast {
+        println "JAVA_HOME: ${System.getenv('JAVA_HOME')}"
+        logger.lifecycle("JAVA_HOME: ${System.getenv('JAVA_HOME')}")
+    }
+}

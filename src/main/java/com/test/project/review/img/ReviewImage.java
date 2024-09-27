@@ -27,4 +27,5 @@ public class ReviewImage {
 
     @Column(name = "filepath")
     private String filepath; // 파일주소
+
 }

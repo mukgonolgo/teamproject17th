@@ -87,10 +87,10 @@ public class StoreController {
         Store store = storeService.getStore(storeId);
         model.addAttribute("store", store);
         
-        // SiteUser의 username을 모델에 추가
-        if (store.getSiteUser() != null) {
-            model.addAttribute("username", store.getSiteUser().getUsername());
-        }
+//        // SiteUser의 username을 모델에 추가 에러 발생
+//        if (store.getSiteUser() != null) {
+//            model.addAttribute("username", store.getSiteUser().getUsername());
+//        }
 
         return "store/store_detail"; // 상세 페이지 템플릿
     }

@@ -27,12 +27,13 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/user/list", "/store_alist").hasRole("ADMIN")  // /user/list는 관리자만 접근 가능
+                .requestMatchers("/user/list", "/store_alist").hasRole("ADMIN")  // 관리자만 접근 가능
                 .requestMatchers("/**").permitAll())  // 그 외 모든 요청은 접근 허용
             .csrf((csrf) -> csrf
                 .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
             .headers((headers) -> headers
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+                .cacheControl().disable())  // 캐시 비활성화
             .formLogin((form) -> form
                 .loginPage("/user/login")  // 로그인 페이지 설정
                 .defaultSuccessUrl("/")     // 로그인 성공 시 리다이렉트
@@ -40,7 +41,7 @@ public class SecurityConfig {
             .logout((logout) -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 .logoutSuccessUrl("/")
-                .invalidateHttpSession(true));
+                .invalidateHttpSession(true));  // 로그아웃 시 세션 무효화
         return http.build();
     }
 
