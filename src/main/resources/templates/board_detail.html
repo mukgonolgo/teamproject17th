@@ -179,7 +179,7 @@
 
 					const content = document.getElementById("editAnswerContent").value;
 
-					fetch(`/question/modify/${answerId}`, {
+					fetch(`/answer/modify/${answerId}`, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -193,6 +193,7 @@
 								if (answerElement) {
 									answerElement.querySelector("span").textContent = content; // 내용 업데이트
 								}
+								alert("답변을 수정하였습니다.");
 								$('#editAnswerModal').modal('hide'); // 모달 닫기
 								location.reload(); // 페이지 새로 고침
 							} else {
