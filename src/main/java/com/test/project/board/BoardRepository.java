@@ -39,5 +39,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findByUser_UsernameContainingIgnoreCase(String keyword, Pageable pageable); // user와 username의 관계
 
 	
+	
 
 }

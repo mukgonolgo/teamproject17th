@@ -1,15 +1,27 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 변수 초기화
-    var stompClient = null;
-    var roomId = ''; // 빈 문자열로 초기화
-    var username = ''; // 문자열
-    var userID = ''; // 사용자 ID, 사용자 로그인 시 설정해야 함
+	const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Fetch and initialize username and userID
-    username = document.querySelector('meta[name="username"]').getAttribute('content');
-    userID = document.querySelector('meta[name="user-id"]').getAttribute('content');
-    console.log('Username:', username);
-    console.log('User ID:', userID);
+    var stompClient = null;
+    var roomId = '';
+	var username = document.querySelector('meta[name="username"]').getAttribute('content');
+	 var userID = document.querySelector('meta[name="userID"]').getAttribute('content');
+
+    // Fetch and initialize username and userID using AJAX
+	fetch('/api/user/info')
+	    .then(response => {
+	        if (!response.ok) {
+	            throw new Error('Network response was not ok');
+	        }
+	        return response.json();
+	    })
+	    .then(data => {
+
+	        console.log('Username:', username);
+	        console.log('User ID:', userID);
+	        alert(username + ":" + userID);
+	    })
+	    .catch(error => console.error('Error fetching user info:', error));
 
     // Handle modals
     document.querySelectorAll('.trigger').forEach(trigger => {
@@ -38,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');	  
             const userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-            const username = document.querySelector('meta[name="username"]').getAttribute('content');
             
             console.log('@@@@@@@@@');
             console.log('User ID:', userId);
@@ -54,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify({
                     userId: userId,
                     username: username
+					
                 })
             })
             .then(response => {
@@ -73,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
             roomId = roomElement.getAttribute('data-room-id');
             if (roomId) {
                 selectChatRoom(roomId);
-                const modal = document.getElementById('chatModal'); // 특정 모달을 선택
+                const modal = document.getElementById('chatModal');
                 modal.classList.add('show-modal');
             } else {
                 console.error('Room ID is missing');
@@ -85,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.exists) {
                         console.log('채팅방이 이미 존재합니다.');
                         alert(`채팅방 '${roomId}'이(가) 이미 존재합니다.`);
-                        // 방에 참여하도록 설정
                         roomId = data.roomId;
                         selectChatRoom(roomId);
                     } else {
@@ -95,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': getCsrfToken()
                             },
-                            body: JSON.stringify({ roomId: roomId, name: roomName })
+                            body: JSON.stringify({ roomId: roomId })
                         })
                         .then(response => response.json())
                         .then(data => {
@@ -119,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function selectChatRoom(roomId) {
         console.log(`채팅방 데이터 가져오기: ${roomId}`);
 
-        // 채팅 데이터 가져오기
         fetch(`/chat/api/${roomId}`)
             .then(response => response.json())
             .then(data => {
@@ -132,17 +142,16 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('채팅방 데이터 가져오기 오류:', error));
 
-        // 채팅방 정보 가져오기
         $.getJSON('/room/' + roomId + '/info')
             .done(function(data) {
                 console.log('받은 데이터:', data);
 
-                $('#roomName').text(data.roomName); // 채팅방 이름
-                $('#currentMembers_' + roomId).text(data.currentMembers); // 현재 멤버 수
-                $('#maxMembers_' + roomId).text(data.maxMembers); // 최대 멤버 수
+                $('#roomName').text(data.roomName);
+                $('#currentMembers_' + roomId).text(data.currentMembers);
+                $('#maxMembers_' + roomId).text(data.maxMembers);
 
                 var membersList = $('#membersList_' + roomId);
-                membersList.empty(); // 기존 목록 비우기
+                membersList.empty();
 
                 data.members.forEach(function(member) {
                     console.log('멤버:', member);
@@ -167,19 +176,16 @@ document.addEventListener('DOMContentLoaded', function () {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             
-            // 채팅 메시지 수신
             stompClient.subscribe('/topic/' + roomId, function (chatMessage) {
                 console.log('Received message: ', chatMessage.body);
                 showChat(JSON.parse(chatMessage.body));
             });
 
-            // 채팅방 정보 수신
             stompClient.subscribe('/topic/' + roomId + '/info', function (roomInfo) {
                 console.log('Received room info: ', roomInfo.body);
                 updateRoomInfo(JSON.parse(roomInfo.body));
             });
             
-            // 방에 참여
             joinRoom();
         }, function (error) {
             console.error('Error: ' + error);
@@ -188,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendChat() {
         var message = $("#message").val();
+        console.log("Sending message from User ID:", userID);
         if (message !== "" && stompClient && stompClient.ws && stompClient.ws.readyState === WebSocket.OPEN && roomId) {
             stompClient.send("/app/chat/" + roomId, {}, JSON.stringify({
                 'roomId': roomId,
@@ -233,24 +240,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateRoomInfo(data) {
-        $('#currentMembers_' + roomId).text(data.currentMembers); // 현재 멤버 수
-        $('#maxMembers_' + roomId).text(data.maxMembers); // 최대 멤버 수
+        $('#currentMembers_' + roomId).text(data.currentMembers);
+        $('#maxMembers_' + roomId).text(data.maxMembers);
         
         var membersList = $('#membersList_' + roomId);
-        membersList.empty(); // 기존 목록을 비움
+        membersList.empty();
         
-        // 데이터가 배열인지 확인
         if (Array.isArray(data.members)) {
             data.members.forEach(function(member) {
-                console.log('Member:', member); // 멤버 데이터 확인
-                var listItem = $('<li>').text(member.username); // 사용자 이름으로 목록 아이템 생성
+                console.log('Member:', member);
+                var listItem = $('<li>').text(member.username);
                 membersList.append(listItem);
             });
         } else {
             console.error('Members data is not an array:', data.members);
         }
         
-        // 확인용 alert (필요시 삭제 가능)
         alert('Room info updated');
     }
 

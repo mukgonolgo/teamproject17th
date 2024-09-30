@@ -47,8 +47,8 @@ public class ChatController {
     private final ChatRoomService chatRoomService;
     private final SiteUserRepository SiteuserRepository;
     // 채팅 페이지 렌더링
-    @GetMapping("/chat")
-    public String getChatPage(Model model, @RequestParam(required = false) String id, Authentication authentication, HttpSession session) {
+    @GetMapping("/chat/{id}")
+    public String getChatPage(Model model, @RequestParam(required = false , name="id") String id, Authentication authentication, HttpSession session) {
         // 사용자 정보 가져오기
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();       
@@ -61,7 +61,7 @@ public class ChatController {
         
 
             model.addAttribute("username", user.getUsername());
-            model.addAttribute("userID", userId);
+            model.addAttribute("userID",  user.getId());
             model.addAttribute("current_username", currentUser.getUsername());
             model.addAttribute("current_userID", currentUser.getId());
             
@@ -77,9 +77,14 @@ public class ChatController {
         }
 
         // 채팅 리스트 가져오기
+
+        model.addAttribute("current_username", currentUser.getUsername());
+        model.addAttribute("current_userID", currentUser.getId());
+      
         model.addAttribute("chatList", chatService.getChatList(id)); // 특정 채팅방의 채팅 리스트
-        
+        logger.info(" Username: {}, User ID: {}", user.getUsername(), user.getId());
         // 채팅 페이지 템플릿 반환
+        
         return "eat_friends"; // chat.html 템플릿을 반환
     }
 

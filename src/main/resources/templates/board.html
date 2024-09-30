@@ -45,6 +45,12 @@
 						class="ri-question-mark"></i>질문</a>
 				<a href="#" class="badge badge-success board_tag" data-tag="친구찾기"> <i
 						class="ri-search-2-line"></i>친구찾기</a>
+						
+						<select name="" id="">
+							<option value="">이름순</option>
+							<option value="">등록순</option>
+							<option value="">댓글순</option>
+						</select>
 			</span>
 
 			<table class="board_table" id="posts-table">
@@ -64,11 +70,7 @@
 							<a th:href="@{|/board_detail/${board.boardId}|}" class="text-dark boardLink"
 								th:text="${board.boardTitle}">
 						</td>
-						<!--                        <td> isprivate부분 있는 코드 
-                            <a th:href="@{|/board_detail/${board.boardId}|}" class="text-warning"
-							th:text="${board.isPrivate() && board.username != principal.username ? '비밀글입니다.' : board.boardTitle}"></a> 	
-							<span class="badge badge-pill badge-info ml-2" th:text="${board.answerList != null ? board.answerList.size() : 0}"></span>
-                        </td>-->
+		
 						<td>
 							<span th:if="${board.username != null}" th:text="${board.username}"></span>
 
@@ -87,32 +89,7 @@
 			<a class="float-right button button-primary" th:href="@{/boardwrite/{id}(id=${userId})}"><button
 					type="button" class="btn btn-primary">게시글 작성</button></a>
 
-			<!-- 페이지네이션 -->
-			<!--<nav th:if="${!board.isEmpty()}">
-				<ul class="pagination justify-content-center">
-					<li class="page-item" th:classappend="${!boardPage.hasPrevious()} ? 'disabled'">
-						<a th:href="@{/board/{id}(id=${id}, page=${boardPage.number-1}, kw=${kw})}" class="page-link"
-							th:text="이전">
 
-						</a>
-					</li>
-					<li th:each="page: ${#numbers.sequence(1, boardPage.totalPages)}" th:if="
-						${
-						page <= boardPage.number + 1 + 4 and page >= boardPage.number + 1||
-						
-						page >= boardPage.number + 1 - 4 and page <= boardPage.number + 1
-						}" th:classappend="${page == boardPage.number + 1} ? 'active'" class="page-item">
-						<a th:href="@{/board/{id}(id=${id}, page=${page - 1}, kw=${kw})}" class="page-link"
-							th:text="${page}"></a>
-					</li>
-					<li class="page-item" th:classappend="${!boardPage.hasNext()} ? 'disabled'">
-						<a th:href="@{/board/{id}(id=${id}, page=${boardPage.number + 1}, kw=${kw})}" class="page-link"
-							th:text="다음">
-						</a>
-					</li>
-				</ul>
-			</nav>
--->
 <nav th:if="${!board.isEmpty()}">
 	    <ul class="pagination justify-content-center">
 	        <li class="page-item" th:classappend="${!boardPage.hasPrevious()} ? 'disabled'">
@@ -142,7 +119,7 @@
 	</nav>
 		</div>
 	</div>
-	<script layout:fragment="script">
+	<script layout:fragment="script" th:inline="javascript">
 		document.addEventListener("DOMContentLoaded", function () {
 			// 검색 버튼 클릭 이벤트
 			const btn_search = document.getElementById("btn_search");
@@ -213,6 +190,7 @@
 
 					paginatedData.forEach((board, index) => {
 						const row = document.createElement('tr');
+						row.className=('board_text');
 						row.innerHTML = `
                         <td>${startIndex + index + 1}</td>
                         <td>
@@ -239,6 +217,11 @@
 		// 페이지네이션 업데이트 함수
 		function updatePagination(totalPosts) {
 			const paginationContainer = document.querySelector('.pagination');
+			
+			var boardPage = {
+				number: '[[${boardPage.number}]]',
+				hasPrevious: '[[${boardPage.hasPrevious}]]'
+			};
 			paginationContainer.innerHTML = ''; // 기존 페이지네이션 초기화
 
 			const totalPages = Math.ceil(totalPosts / 5);

@@ -224,6 +224,7 @@ public class BoardController {
            @RequestParam(value="boardTag", defaultValue = "") String boardTag,
            @RequestParam(value ="page", defaultValue = "1") int page,
            @RequestParam(value = "size", defaultValue = "5") int size
+           
    ) {
        System.out.println("Received boardTag: " + boardTag);
        Pageable pageable = PageRequest.of(page - 1, size);
