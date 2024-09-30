@@ -51,7 +51,8 @@ implementation 'org.webjars:jquery:3.6.4'
     implementation 'org.projectlombok:lombok:1.18.24' // Lombok 추가
     implementation 'org.slf4j:slf4j-api:2.0.0' // SLF4J API 추가
     runtimeOnly 'ch.qos.logback:logback-classic:1.2.6' // Logback 추가
-        implementation 'org.hibernate:hibernate-core:5.4.32.Final'
+        implementation 'org.hibernate:hibernate-core:6.1.0.Final'
+        
 
 
 }

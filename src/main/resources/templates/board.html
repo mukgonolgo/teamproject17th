@@ -45,12 +45,7 @@
 						class="ri-question-mark"></i>질문</a>
 				<a href="#" class="badge badge-success board_tag" data-tag="친구찾기"> <i
 						class="ri-search-2-line"></i>친구찾기</a>
-						
-						<select name="" id="">
-							<option value="">이름순</option>
-							<option value="">등록순</option>
-							<option value="">댓글순</option>
-						</select>
+			
 			</span>
 
 			<table class="board_table" id="posts-table">
@@ -86,8 +81,8 @@
 			<table class="table table-striped" id="posts-container">
 
 			</table>
-			<a class="float-right button button-primary" th:href="@{/boardwrite/{id}(id=${userId})}"><button
-					type="button" class="btn btn-primary">게시글 작성</button></a>
+			<a class="float-right button button-primary" th:href="@{/boardwrite/{id}(id=${userId})}" >
+				<button type="button" class="btn btn-primary">게시글 작성</button></a>
 
 
 <nav th:if="${!board.isEmpty()}">

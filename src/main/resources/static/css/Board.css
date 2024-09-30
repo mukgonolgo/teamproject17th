@@ -139,9 +139,6 @@
 	}
 /*게시판 기본 CSS end*/
 
-
-/*borad_detail css*/
-
 .hidden {
     display: none;
 }
@@ -149,6 +146,11 @@
 .shown{
     display: block;
 }
+
+/*borad_detail css*/
+
+
+
 
 .questionBody{
 	width: 100%;	

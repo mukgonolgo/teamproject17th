@@ -11,8 +11,6 @@ public class boardWriteDTO  {
 
 	private String tag = "일반";
 	
-	private String imageFile;
-	
 	@NotEmpty(message="제목을 입력해주세요")
 	@Size(max=50)
 	private String title;

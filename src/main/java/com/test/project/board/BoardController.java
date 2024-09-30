@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
@@ -134,8 +135,7 @@ public class BoardController {
         System.out.println("******************************************************************************");
       this.boardService.create
       (
-            boardWriteDTO.getTag(),
-            boardWriteDTO.getImageFile(),   
+            boardWriteDTO.getTag(),           
             boardWriteDTO.getTitle(),
             boardWriteDTO.getContent(),
       siteuser,
@@ -178,7 +178,7 @@ public class BoardController {
     @PreAuthorize("isAuthenticated()")
        @PostMapping("/question/modify/{id}")
     @ResponseBody
-       public String answerModify(@Valid AnswerFormDTO answerFormDTO, BindingResult bindingResult,
+       public String questionrModify(@RequestBody @Valid AnswerFormDTO answerFormDTO, BindingResult bindingResult,
                @PathVariable("id") Long id, Principal principal, Model model) {
            if (bindingResult.hasErrors()) {
                return "";

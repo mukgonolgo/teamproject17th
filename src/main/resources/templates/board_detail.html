@@ -179,7 +179,7 @@
 
 					const content = document.getElementById("editAnswerContent").value;
 
-					fetch(`/answer/modify/${answerId}`, {
+					fetch(`/question/modify/${answerId}`, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
@@ -217,7 +217,7 @@
 
 			// 질문 수정 폼 제출 이벤트
 			const editQuestionForm = document.getElementById("editQuestionForm");
-
+		
 			editQuestionForm.onsubmit = function (event) {
 				event.preventDefault(); // 기본 폼 제출 방지
 				const newContent = document.getElementById("editQuestionContent").value; // 새 질문 내용
@@ -234,6 +234,7 @@
 					.then(response => {
 						if (response.ok) {
 							document.querySelector('.question').textContent = newContent; // 질문 내용 업데이트
+							console.log("전송할 내용: ", newContent);
 							$('#editQuestionModal').modal('hide'); // 모달 닫기
 						} else {
 							alert("수정에 실패했습니다.");

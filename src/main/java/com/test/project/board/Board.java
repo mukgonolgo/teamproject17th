@@ -59,8 +59,7 @@ public class Board {
         this.boardCreateDate = LocalDateTime.now(); // 자동으로 현재 시간을 설정
     }
 
-    @Column(name = "board_image", length = 255)
-    private String boardImage;
+
 
     @Column(name = "board_tag")
     private String boardTag;

@@ -44,7 +44,7 @@ public class BoardService {
    }
 
    
-   public void create(String tag,String image, String content, String title, SiteUser user, Principal principal, boolean isPrivate) {
+   public void create(String tag, String content, String title, SiteUser user, Principal principal, boolean isPrivate) {
           System.out.println("서비스에서 받은 isPrivate 값: " + isPrivate);
          if (user == null) {
               System.out.println("User is null!");
@@ -56,8 +56,7 @@ public class BoardService {
          SiteUser siteUser = this.userService.getUser(principal.getName());
       Board b = new Board();
       b.setBoardTag(tag);
-      b.setBoardCreateDate(LocalDateTime.now());
-      b.setBoardImage(image);      
+      b.setBoardCreateDate(LocalDateTime.now());      
       b.setBoardContent(content);
       b.setBoardTitle(title);
       b.setUser(user);
@@ -87,7 +86,10 @@ public class BoardService {
 
    public void modify(Board board, String content) {
       board.setBoardContent(content);
-      this.boardRepository.save(board);      
+      System.out.println("수정할 content 값: " + content); // 추가된 로깅
+      
+      this.boardRepository.save(board);
+      
    }
 
    public void delete(Board board) {
