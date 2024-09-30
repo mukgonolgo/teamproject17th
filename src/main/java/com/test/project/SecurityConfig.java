@@ -22,27 +22,30 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(requests -> requests
-                .requestMatchers(new AntPathRequestMatcher("/comments/reviews/**")).authenticated()  // 댓글 작성 엔드포인트 인증 필요
-                .requestMatchers(new AntPathRequestMatcher("/detail/**")).permitAll() // 모든 사용자 접근 가능
-                .anyRequest().permitAll()) // 그 외의 요청은 모두 허용
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**"))) // H2 콘솔에 대한 CSRF 예외 처리
-            .headers(headers -> headers
-                .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))) // H2 콘솔 사용을 위한 설정
-            .formLogin(form -> form
-                .loginPage("/user/login") // 커스텀 로그인 페이지
-                .defaultSuccessUrl("/") // 로그인 성공 후 이동 경로
-                .failureHandler(customAuthenticationFailureHandler)) // 로그인 실패 핸들러
-            .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout")) // 로그아웃 URL
-                .logoutSuccessUrl("/") // 로그아웃 성공 시 이동 경로
-                .invalidateHttpSession(true)); // 세션 무효화
 
-        return http.build();
+  
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+	    .authorizeHttpRequests(requests -> requests
+	    		   .requestMatchers(AntPathRequestMatcher.antMatcher("/comments/reviews/**")).permitAll() // 인증 없이도 댓글 조회 가능
+	               .anyRequest().permitAll()) // 나머지 요청도 모두 허용
+	    .csrf(csrf -> csrf
+	        .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+	    .headers(headers -> headers
+	        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+	        .cacheControl(cache -> cache.disable()))  // 캐시 비활성화
+	    .formLogin(form -> form
+	        .loginPage("/user/login")
+	        .defaultSuccessUrl("/"))
+	    .logout(logout -> logout
+	        .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+	        .logoutSuccessUrl("/")
+	        .invalidateHttpSession(true));
+
+	    return http.build();
+	
+ 
     }
 
     @Bean

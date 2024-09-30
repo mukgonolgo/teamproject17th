@@ -7,6 +7,9 @@
 </head>
 <body>
 	<div layout:fragment="content">
+	
+	
+	   <div class=" form_container">
 		<form id="reviewForm"
 			th:action="@{/review_update/{id}(id=${review.id})}" method="post"
 			enctype="multipart/form-data">
@@ -19,6 +22,10 @@
 
 			<!-- 제목 필드 (기존 리뷰 제목 표시) -->
 			<div class="S3_rw">
+			
+			<div class="Log_Logo text-center mb-5">
+                <img src="/img/logo/logo (1).png" alt="login_logo" />
+            </div>   
 				<label for="title">제목</label> <input type="text" id="title"
 					name="title" th:value="${review.title}" placeholder="제목을 입력하세요...">
 
@@ -37,13 +44,14 @@
 					</div>
 					<!-- 이미지 미리보기 영역 -->
 					<!-- 기존 이미지를 로드하고 삭제 이벤트 추가 -->
-<!-- 기존 이미지를 출력하는 부분 -->
-<ul>
-    <li th:each="image : ${imageData}" class="mx-1 existing-image">
+					<!-- 기존 이미지를 출력하는 부분 -->
+				<!-- 기존 이미지를 출력하는 부분 -->
+<div class="d-flex flex-wrap">
+    <span th:each="image : ${imageData}" class="mx-1 existing-image">
         <img th:src="@{${image.filepath}}" alt="이미지 미리보기"
-             style="max-width: 100px; max-height: 100px;" class="img-fluid" />
-    </li>
-</ul>
+             style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;" class="img-fluid" />
+    </span>
+</div>
 
 
 
@@ -89,6 +97,7 @@
 				<button type="submit" class="btn btn-dark">수정</button>
 			</div>
 		</form>
+		</div>
 
 
 		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>

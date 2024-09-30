@@ -105,7 +105,7 @@ public class StoreService {
 //	별점 계산
     public double getStoreForstar(Integer storeId) {
         // 스토어에 해당하는 리뷰 조회
-        List<Review> reviews = reviewRepository.findAllByStoreId(storeId);
+        List<Review> reviews = reviewRepository.findAllByStore_StoreId(storeId);
         
         // 리뷰의 평점 평균 계산
         return reviews.stream()

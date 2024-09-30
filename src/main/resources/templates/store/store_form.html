@@ -1,101 +1,128 @@
 <html layout:decorate="~{layout}">
-	<div layout:fragment="content">
+<head>
+<script
+	src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<link rel="stylesheet" href="/css/store/store_form.css">
+</head>
+<div layout:fragment="content">
 
-		<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-		<link rel="stylesheet" href="/css/store/store_form.css">
+
+	<script
+		src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<link rel="stylesheet" href="/css/store/store_form.css">
 	<body>
-		
-		<!-- CSRF 토큰을 제대로 설정하기 위해 name="_csrf"로 변경 -->
-		    <form id="storeForm" th:action="@{/store/create}" method="post">
-		        <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
-		        <div class="S1_d_cr">
+
+		<div class="store_form_container my-5">
+			<!-- CSRF 토큰을 제대로 설정하기 위해 name="_csrf"로 변경 -->
+			<form id="storeForm" th:action="@{/store/create}" method="post">
+				<input type="hidden" name="_csrf" value="${_csrf.token}" />
+
+				<div class="S1_d_cr">
+
 					<h2 class="S1_d_cr_title">식당 등록</h2>
 					<!-- 식당 이름 필드 -->
 					<!-- 프리미엄 광고 여부 선택 -->
-					    <div class="form-group input">
-					        <h5>프리미엄 광고 여부</h5>
-					        <div>
-					            <input type="radio" id="premiumYes" name="isPremium" value="true">
-					            <label for="premiumYes">예</label>
-					            
-					            <input type="radio" id="premiumNo" name="isPremium" value="false">
-					            <label for="premiumNo">아니오</label>
-					        </div>
-					    </div>
+					<div class="form-group input">
+						<h5>프리미엄 광고 여부</h5>
+						<div>
+							<input type="radio" id="premiumYes" name="isPremium" value="true">
+							<label for="premiumYes">예</label> <input type="radio"
+								id="premiumNo" name="isPremium" value="false"> <label
+								for="premiumNo">아니오</label>
+						</div>
+					</div>
 
 					<div class="form-group input">
-						<label for="storeName"><h5>식당 이름</h5></label>
-						<input type="text" id="storeName" name="storeName" placeholder="제목을 입력하세요...">
+						<label for="storeName"><h5>식당 이름</h5></label> <input type="text"
+							id="storeName" name="storeName" placeholder="제목을 입력하세요...">
 					</div>
 
 					<!-- 파일 업로드 필드 -->
 					<div class="form-group input">
 						<div class="file-upload">
-						    <div class="icon-container">
-						        <div class="icon" id="add-icon" onclick="document.getElementById('file-upload').click();">
-						            <span id="file-icon" style="font-size: 50px; color: #d0d0d0;">+</span>
-						        </div>
-						        <input type="file" id="file-upload" name="imageFiles" accept="image/*" onchange="addImage(event)" style="display: none;" multiple>
-						    </div>
+							<div class="icon-container">
+								<div class="icon" id="add-icon"
+									onclick="document.getElementById('file-upload').click();">
+									<span id="file-icon" style="font-size: 50px; color: #d0d0d0;">+</span>
+								</div>
+								<input type="file" id="file-upload" name="imageFiles"
+									accept="image/*" onchange="addImage(event)"
+									style="display: none;" multiple>
+							</div>
 						</div>
 						<div class="uploaded-images"></div>
-		            </div>
+					</div>
 
 					<!-- 전화번호 입력 -->
 					<div class="form-group input">
-						<label for="storeNumber" class="mb-3"><h5>전화번호</h5></label>
-						<input type="text" id="storeNumber" name="storeNumber" placeholder="'-'빼고 입력해 주세요">
+						<label for="storeNumber" class="mb-3"><h5>전화번호</h5></label> <input
+							type="text" id="storeNumber" name="storeNumber"
+							placeholder="'-'빼고 입력해 주세요">
 					</div>
 
 					<!-- 영업시간 -->
-		            <div class="storetimegroup input">
+					<div class="storetimegroup input">
 						<h5 class="mb-3">영업시간</h5>
-		                <div class="time_check row">
-		                    <div class="form-group col-9 col-md-5 d-flex m-1 align-items-center" style="white-space: nowrap;">
-		                        <label for="StoreStarttime">시작 시간:</label>
-		                        <input class="ml-2 pl-2 mb-2 time-input" type="text" name="StoreStarttime" id="StoreStarttime" placeholder="00:00 형식으로 입력" oninput="generateButtons()" />
-		                    </div>              
-		                    <p class="d-none d-md-flex mt-1 align-items-center">~</p>
-		                    <div class="form-group col-9 col-md-5 d-flex m-1 align-items-center" style="white-space: nowrap;">
-		                        <label for="StoreEndTime">마감 시간:</label>
-		                        <input class="ml-2 pl-2 mb-2 time-input" type="text" name="StoreEndTime" id="StoreEndTime" placeholder="00:00 형식으로 입력" oninput="generateButtons()" />
-		                    </div>
-		                </div>
-		                <div class="error-message" id="error1" style="display: none;"></div>
-		            </div>
+						<div class="time_check row">
+							<div
+								class="form-group col-9 col-md-5 d-flex m-1 align-items-center"
+								style="white-space: nowrap;">
+								<label for="StoreStarttime">시작 시간:</label> <input
+									class="ml-2 pl-2 mb-2 time-input" type="text"
+									name="StoreStarttime" id="StoreStarttime"
+									placeholder="00:00 형식으로 입력" oninput="generateButtons()" />
+							</div>
+							<p class="d-none d-md-flex mt-1 align-items-center">~</p>
+							<div
+								class="form-group col-9 col-md-5 d-flex m-1 align-items-center"
+								style="white-space: nowrap;">
+								<label for="StoreEndTime">마감 시간:</label> <input
+									class="ml-2 pl-2 mb-2 time-input" type="text"
+									name="StoreEndTime" id="StoreEndTime"
+									placeholder="00:00 형식으로 입력" oninput="generateButtons()" />
+							</div>
+						</div>
+						<div class="error-message" id="error1" style="display: none;"></div>
+					</div>
 
 					<!-- 주소 입력 -->
 					<div class="storaddress input">
 						<h5 class="mb-3">주소 입력</h5>
 						<!-- 우편번호 -->
 						<div class="form-group m-1">
-						    <label class="mb-4"><span class="required">*</span>우편 번호</label>
-						    <input type="text" id="postcode" name="postcode" class="ml-2 col-6 col-md-3" readonly required>
-						    <button type="button" class="address-button ml-2 col-3 col-md-2" onclick="sample6_execDaumPostcode()">주소 찾기</button>
+							<label class="mb-4"><span class="required">*</span>우편 번호</label>
+							<input type="text" id="postcode" name="postcode"
+								class="ml-2 col-6 col-md-3" readonly required>
+							<button type="button" class="address-button ml-2 col-3 col-md-2"
+								onclick="sample6_execDaumPostcode()">주소 찾기</button>
 						</div>
 						<!-- 기본 주소 -->
 						<div class="form-group m-1">
-						    <label class="mb-4"><span class="required">*</span>기본 주소</label>
-						    <input type="text" id="basicAddress" name="basicAddress" class="ml-2 col-9 col-md-5" readonly required>
+							<label class="mb-4"><span class="required">*</span>기본 주소</label>
+							<input type="text" id="basicAddress" name="basicAddress"
+								class="ml-2 col-9 col-md-5" readonly required>
 						</div>
 
 						<!-- 상세 주소 -->
 						<div class="form-group m-1">
-						    <label class="mb-4"><span class="required">*</span>상세 주소</label>
-						    <input type="text" id="detailAddress" name="detailAddress" class="ml-2 col-9 col-md-5" required>
+							<label class="mb-4"><span class="required">*</span>상세 주소</label>
+							<input type="text" id="detailAddress" name="detailAddress"
+								class="ml-2 col-9 col-md-5" required>
 						</div>
-						
+
 						<!-- 위도 및 경도 필드 -->
 						<div class="">
-						    <div class="form-group">
-						        <label class="mb-4"><span class="required">*</span>위도</label>
-						        <input type="text" id="storeLatitude" name="storeLatitude" class="col-12 col-md-5" readonly>
-						    </div>
-						    <div class="form-group">
-						        <label class="mb-4"><span class="required">*</span>경도</label>
-						        <input type="text" id="storeLongitude" name="storeLongitude" class="col-12 col-md-5" readonly>
-						    </div>
+							<div class="form-group">
+								<label class="mb-4"><span class="required">*</span>위도</label> <input
+									type="text" id="storeLatitude" name="storeLatitude"
+									class="col-12 col-md-5" readonly>
+							</div>
+							<div class="form-group">
+								<label class="mb-4"><span class="required">*</span>경도</label> <input
+									type="text" id="storeLongitude" name="storeLongitude"
+									class="col-12 col-md-5" readonly>
+							</div>
 						</div>
 						<p id="result"></p>
 					</div>
@@ -103,47 +130,73 @@
 					<!-- 설명 입력 -->
 					<div class="form-group input">
 						<label for="storeContent" class="mb-3"><h5>내용</h5></label>
-						<textarea id="storeContent" name="storeContent" placeholder="내용을 입력하세요..."></textarea>
+						<textarea id="storeContent" name="storeContent"
+							placeholder="내용을 입력하세요..."></textarea>
 					</div>
-					
+
 					<!-- 카테고리 태그 -->
 					<div class="form-group input">
-						<label for="kategorieInput" class="mb-3"><h5>어떤 맛집인가요?</h5></label>
+						<label for="kategorieInput" class="mb-3"><h5>어떤
+								맛집인가요?</h5></label>
 						<div id="kategorieGroup" class="cateGroup">
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '한식', 'kategorieInput')">한식</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '중식', 'kategorieInput')">중식</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '일식', 'kategorieInput')">일식</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '양식', 'kategorieInput')">양식</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '오마카세', 'kategorieInput')">오마카세</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '고기', 'kategorieInput')">고기</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '집맛', 'kategorieInput')">집맛</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '백반', 'kategorieInput')">백반</a>
+							<a type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '한식', 'kategorieInput')">한식</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '중식', 'kategorieInput')">중식</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '일식', 'kategorieInput')">일식</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '양식', 'kategorieInput')">양식</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '오마카세', 'kategorieInput')">오마카세</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '고기', 'kategorieInput')">고기</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '집맛', 'kategorieInput')">집맛</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '백반', 'kategorieInput')">백반</a>
 						</div>
-						<input type="text" id="kategorieInput" name="kategorieInput" class="form-control" placeholder="#태그명" readonly>
+						<input type="text" id="kategorieInput" name="kategorieInput"
+							class="form-control" placeholder="#태그명" readonly>
 					</div>
 
 					<!-- 자랑거리 태그 -->
 					<div class="form-group input">
 						<label for="tagInput" class="mb-3"><h5>자랑거리</h5></label>
 						<div id="tagGroup" class="tagGroup">
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '주차가능', 'tagInput')">주차가능</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '음식', 'tagInput')">음식</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, 'wifi', 'tagInput')">wifi</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '놀이시설', 'tagInput')">놀이시설</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '최고 맛집', 'tagInput')">최고 맛집</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '방송 출연', 'tagInput')">방송 출연</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '빨간맛', 'tagInput')">빨간맛</a>
-						    <a type="button" class="btn tag-btn" onclick="toggleTag(this, '최고인기', 'tagInput')">최고인기</a>
+							<a type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '주차가능', 'tagInput')">주차가능</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '음식', 'tagInput')">음식</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, 'wifi', 'tagInput')">wifi</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '놀이시설', 'tagInput')">놀이시설</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '최고 맛집', 'tagInput')">최고 맛집</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '방송 출연', 'tagInput')">방송 출연</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '빨간맛', 'tagInput')">빨간맛</a> <a
+								type="button" class="btn tag-btn"
+								onclick="toggleTag(this, '최고인기', 'tagInput')">최고인기</a>
 						</div>
-						<input type="text" id="tagInput" name="tagInput" class="form-control" placeholder="#태그명" readonly>
+						<input type="text" id="tagInput" name="tagInput"
+							class="form-control" placeholder="#태그명" readonly>
 					</div>
 
 
-		            <button type="submit" class="btn store_btn btn-dark">등록</button>
-		        </div>
-		    </form>
+					<button type="submit" class="btn store_btn btn-dark">등록</button>
+				</div>
+			</form>
+		</div>
 
-	    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	    <script src="/js/store/store_form.js"></script>
-</head>
+
+
+		<script src="/js/store/store_form.js"></script>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/store/store_form.js"></script>
+
 </html>

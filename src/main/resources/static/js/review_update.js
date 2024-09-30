@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // 이미지 추가 함수
-// 이미지 추가 함수
 function addImage(event) {
     const files = Array.from(event.target.files);
 
@@ -85,24 +84,24 @@ function addImage(event) {
             return;  // 중복된 파일이므로 추가하지 않음
         }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('img-container');
+		const reader = new FileReader();
+		        reader.onload = function(e) {
+		            const imgContainer = document.createElement('div');
+		            imgContainer.classList.add('img-container'); // 이미지 컨테이너 클래스 추가
 
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('uploaded-image');
-            img.style.cursor = 'pointer';
+		            const img = document.createElement('img');
+		            img.src = e.target.result;
+		            img.classList.add('uploaded-image'); // 이미지 클래스 추가
+		            img.style.cursor = 'pointer';
 
-            imgContainer.appendChild(img);
-            const iconContainer = document.querySelector('.icon-container');
-            iconContainer.appendChild(imgContainer);
+		            imgContainer.appendChild(img); // 이미지 컨테이너에 이미지 추가
+		            const iconContainer = document.querySelector('.icon-container');
+		            iconContainer.appendChild(imgContainer); // icon-container에 imgContainer 추가
 
-            // 파일을 추가
-            imageFiles.push(file); // 새로 추가된 파일을 저장
-            console.log("파일이 추가되었습니다:", file.name);
-        };
+		            // 파일을 추가
+		            imageFiles.push(file); // 새로 추가된 파일을 저장
+		            console.log("파일이 추가되었습니다:", file.name);
+		        };
         reader.readAsDataURL(file);
     });
 }
@@ -204,17 +203,15 @@ document.getElementById('reviewForm').addEventListener('submit', function(event)
 
     let formData = new FormData(this);
 
-	
+    // 서버로 전송할 파일 개수 확인
+    console.log("서버로 전송될 파일 개수:", imageFiles.length);
 
-	console.log("서버로 전송될 파일 개수:", imageFiles.length); // 서버로 보낼 파일 개수 확인
-    // 새 이미지 파일 추가
-	imageFiles.forEach(function(file, index) {  // index를 두 번째 인자로 추가
-	    console.log("Index: " + index);  // 이제 index가 올바르게 정의됨
-	    console.log("File: " + file.name);
-		formData.append('fileUpload', file, file.name); // 새 파일 추가
-	});
-     
-
+    // 새 이미지 파일 추가 및 로그 출력
+    imageFiles.forEach(function(file, index) {
+        console.log("Index: " + index);  // 인덱스 출력
+        console.log("File: " + file.name);  // 파일 이름 출력
+        formData.append('fileUpload', file, file.name); // 새 파일 추가
+    });
 
     // 기존 이미지 경로를 추가하여 서버로 전송
     formData.append('existingImages', existingImagesArray.join(','));  // 서버에서 처리할 상대 경로
