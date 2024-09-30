@@ -28,7 +28,7 @@
 											<h3
 												th:text="${user.nickname} + ' (' + ${user.username} + ')'"></h3>
 
-											<small class="nav-link text-muted"
+											<small class="nav-link text-white badge  badge-secondary "
 												th:text="'등급: ' + 
 									                (${user.approvalStatus == 0} ? '관리자' :
 									                (${user.approvalStatus == 1} ? '일반 사용자' :
