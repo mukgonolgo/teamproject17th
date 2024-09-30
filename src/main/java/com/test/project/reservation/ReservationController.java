@@ -80,7 +80,7 @@ public class ReservationController {
 	    List<Store> stores = storeService.getStoresByOwner(siteUser);
 
 	    // 페이징 설정
-	    Pageable pageable = PageRequest.of(page, 10);
+	    Pageable pageable = PageRequest.of(page, 1);
 
 	    // 검색어와 검색 유형에 따른 예약 리스트 필터링
 	    Page<Reservation> reservationPage;
@@ -116,6 +116,45 @@ public class ReservationController {
 	    model.addAttribute("search", search);
 
 	    return "reservation/reservation_list";
+	}
+
+	// 일반회원의 예약 리스트를 확인할 수 있는 메서드 추가
+	@GetMapping("/mylist")
+	@PreAuthorize("isAuthenticated()")
+	public String myReservationList(Model model, 
+	                                @RequestParam(value = "page", defaultValue = "0") int page,
+	                                @RequestParam(value = "searchType", required = false) String searchType,
+	                                @RequestParam(value = "search", required = false) String search,
+	                                Principal principal) {
+
+	    // 로그인한 사용자 정보 가져오기
+	    SiteUser siteUser = userService.getUser(principal.getName());
+
+	    // 페이지네이션 설정
+	    Pageable pageable = PageRequest.of(page, 10);
+	    Page<Reservation> reservationPage;
+
+	    // 검색 조건에 따른 예약 리스트 필터링
+	    if (search != null && !search.isEmpty()) {
+	        if ("reservationId".equals(searchType)) {
+	            Integer reservationId = Integer.parseInt(search);
+	            reservationPage = reservationService.searchByUserAndReservationId(siteUser, reservationId, pageable);
+	        } else if ("storeName".equals(searchType)) {
+	            reservationPage = reservationService.searchByUserAndStoreName(siteUser, search, pageable);
+	        } else {
+	            reservationPage = reservationService.getReservationsByUser(siteUser, pageable);
+	        }
+	    } else {
+	        reservationPage = reservationService.getReservationsByUser(siteUser, pageable);
+	    }
+
+	    model.addAttribute("reservationPage", reservationPage);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", reservationPage.getTotalPages());
+	    model.addAttribute("searchType", searchType);
+	    model.addAttribute("search", search);
+
+	    return "reservation/my_reservation_list";
 	}
 
 

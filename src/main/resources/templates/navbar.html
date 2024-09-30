@@ -262,11 +262,18 @@
 
 				<!-- 일반 사용자 -->
 				<li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 1">
-					<a th:href="@{/mypage/{userid}(userid=${userid})}">
-						<span class="nav-link" th:text="${nickname} + ' 님'"></span>
-					</a>
-					
+				    <a th:href="@{/mypage/{userid}(userid=${userid})}">
+				        <span class="nav-link" th:text="${nickname} + ' 님'"></span>
+				    </a>
 				</li>
+
+				<!-- 예약 리스트 추가 -->
+				<li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 1">
+				    <a th:href="@{/reservation/mylist}">
+				        <span class="nav-link">내 예약 리스트</span>
+				    </a>
+				</li>
+
 
 
 			</ul>

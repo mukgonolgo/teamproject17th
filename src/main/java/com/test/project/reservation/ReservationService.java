@@ -89,6 +89,20 @@ public class ReservationService {
         return reservationRepository.findByStoreIn(stores, pageable);
     }
 	
+ // 사용자별 예약 조회
+    public Page<Reservation> getReservationsByUser(SiteUser user, Pageable pageable) {
+        return reservationRepository.findByUser(user, pageable);
+    }
+
+    // 사용자와 예약 ID로 검색
+    public Page<Reservation> searchByUserAndReservationId(SiteUser user, Integer reservationId, Pageable pageable) {
+        return reservationRepository.findByUserAndReservationid(user, reservationId, pageable);
+    }
+
+    // 사용자와 가게 이름으로 검색
+    public Page<Reservation> searchByUserAndStoreName(SiteUser user, String storeName, Pageable pageable) {
+        return reservationRepository.findByUserAndStore_StoreNameContaining(user, storeName, pageable);
+    }
 
 
 

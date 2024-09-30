@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.test.project.store.Store;
+import com.test.project.user.SiteUser;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer>{
 	 boolean existsByReservationNumber(String reservationNumber);
@@ -24,5 +25,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
 	    // 가게 목록에 대한 예약을 가져오는 메서드
 	    Page<Reservation> findByStoreIn(List<Store> stores, Pageable pageable);
+	    
+	 // 사용자별 예약 조회
+	    Page<Reservation> findByUser(SiteUser user, Pageable pageable);
+
+	    // 사용자와 예약 ID로 검색
+	    Page<Reservation> findByUserAndReservationid(SiteUser user, Integer reservationId, Pageable pageable);
+
+	    // 사용자와 가게 이름으로 검색
+	    Page<Reservation> findByUserAndStore_StoreNameContaining(SiteUser user, String storeName, Pageable pageable);
+
 	    
 }
