@@ -14,8 +14,9 @@
 <link rel="stylesheet" href="/css/review_page.css">
 <link rel="stylesheet" href="/css/category.css">
 
-<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
-<script src="js/review_page_category.js"></script>
+   <!-- 지도 API 포함 -->
+   <script type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
 
    <!-- 지도 API 포함 -->
    <script type="text/javascript"
@@ -77,42 +78,28 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content">
-	<!-- 검색란 -->
-	<div class="section1 container mt-5">
-		<div class="row d-flex justify-content-end">
-			<!--지역선택-->
-			<div class="col-auto">
-				<select name="h_area1" onChange="cat1_change(this.value)"
-					class="h_area1 form-control">
-					<option>-지역선택-</option>
-					<option value='1'>서울</option>
-					<option value='2'>부산</option>
-					<option value='3'>대구</option>
-					<option value='4'>인천</option>
-					<option value='5'>광주</option>
-					<option value='6'>대전</option>
-					<option value='7'>울산</option>
-					<option value='8'>강원</option>
-					<option value='9'>경기</option>
-					<option value='10'>경남</option>
-					<option value='11'>경북</option>
-					<option value='12'>전남</option>
-					<option value='13'>전북</option>
-					<option value='14'>제주</option>
-					<option value='15'>충남</option>
-					<option value='16'>충북</option>
-				</select>
-			</div>
-			<!--지역선택 끝-->
+	 <!-- 검색란 -->
+   <div class="section1 container mt-5">
+      <div class="row d-flex justify-content-end">
+         <!--지역선택-->
+         <div class="col-auto">
+            <select name="h_area1" id="region1" onChange="updateSubRegion()" class="h_area1 form-control">
+               <option>-지역선택-</option>
+               <option value="seoul">서울</option>
+               <option value="busan">부산</option>
+               <option value="gyeonggi">경기도</option>
+               <option value="daegu">대구</option>
+               <!-- 기타 지역들 추가 -->
+            </select>
+         </div>
 
-			<!--동네 선택-->
-			<div class="col-auto">
-				<select name="h_area2" onChange="cat2_change(this.value)"
-					class="form-control">
-					<option>-선택-</option>
-				</select>
-			</div>
-			<!--동네 선택 끝-->
+
+
+<div class="col-auto">
+    <select name="h_area2" id="region2" class="form-control">
+        <option>-선택-</option>
+    </select>
+</div>
 
 			<!--인원수 선택-->
 			<div class="col-auto">
@@ -197,19 +184,25 @@
 			</div>
 			<!--메뉴 선택 끝-->
 
-			<!--지도 선택-->
-			<div class="col-auto">
-				<button class="btn text-secondary bg-white  category_btn">
-					지도<i class="fa-solid fa-map ml-1"></i>
-				</button>
-			</div>
-			<!--지도 선택 끝-->
-		</div>
-		<!--row-->
-		<hr>
-	</div>
+
+         <!-- 지도 선택 -->
+         <div class="col-auto">
+            <button class="btn text-secondary bg-white category_btn" onclick="showMap()">
+               지도 선택<i class="fa-solid fa-map ml-1"></i>
+            </button>
+         </div>
+     
+  </div>
+      <hr>
+  <div id="map"></div>
+   
+   <button id="closeMap" onclick="closeMap()">지도 닫기</button>
+
+    </div>
 	<!-- section1 끝 -->
 
+   <!-- 지도 요소 -->
+ 
 
 	<!--중간 긴 캐로셀-->
 	<div class="section2 my-5">
@@ -290,7 +283,7 @@
 				이번주 <span class="text-danger">🔥HOT한</span> 리뷰
 			</h3>
 			<div class="row S3_review_card">
-				<!-- 리뷰 카드 -->
+			<!-- 리뷰 카드 -->
 				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
 					<div class="card S3_card h-100 custom-border mx-auto">
 						<a th:href="@{/review_detail/{id}(id=${review.id})}"
@@ -303,7 +296,7 @@
 									style="width: 50px; height: 50px">
 								<!-- 리뷰 작성자 사용자명 -->
 								<span class="d-flex align-items-center mx-2"
-									th:text="${review.user.username}"></span>
+									th:text="${review.user.nickname}"></span>
 							</h5>
 						</a>
 
@@ -372,7 +365,7 @@
 								</div>
 
 
-								<!-- 식당정보 -->
+									<!-- 식당정보 -->
 								<!-- 서버에서 리뷰 리스트를 반복해서 출력 -->
 								<p class="col-12 S3_store mb-1" th:each="review : ${reviews}">
 									<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
@@ -424,6 +417,7 @@
 		</div>
 		<!--container-->
 
+
 		<div class="container">
 			<h3 class="mt-5 my-3">새로 올라온 후기</h3>
 
@@ -433,7 +427,16 @@
 	<!-- section -->
 
 
+ <!-- 지도 데이터 표시 -->
+   <div th:each="store : ${stores}">
+       <input type="hidden" class="store-lat" th:value="${store.storeLatitude}" />
+       <input type="hidden" class="store-lng" th:value="${store.storeLongitude}" />
+       <input type="hidden" class="store-name" th:value="${store.storeName}" />
+   </div>
 	<script src="/js/review_page_like.js"></script>
+  
+<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
+<script src="js/review_page_category.js"></script>
 
 
 

@@ -57,6 +57,10 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")  // 외래키를 "user_id"로 설정
     private SiteUser user;  // 작성자 (SiteUser와 연관)
+    
+    @ManyToOne
+    @JoinColumn(name = "store_id")  // 
+    private SiteUser store;  // 작성자 (store와 연관)
 
     // 이미지와의 관계 설정
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)

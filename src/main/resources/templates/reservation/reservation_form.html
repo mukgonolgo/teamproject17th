@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <title>가게 상세 정보</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet" />
+    <!-- 커스텀 CSS 추가 -->
+    <link rel="stylesheet" href="/css/reservation/reservation_form.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <section class="Re_modyfy pt-5 pb-5">
+            <div class="container ">
+                <div class="row justify-content-center">
+                    <div class="main col-12 m-0 col-lg-8" >
+                        <div class="d-block">
+                            <div class="restaurant_mo_re_object" >
+                                <div class="restaurant_re_title d-flex justify-content-between align-items-center">
+                                    <h3 class="mt-3 ml-2 .text-light">예약 하기</h3>
+                                </div>
+                                <div class="accordion S1_d_Check" id="selectAccordion">
+                                    <!-- 테이블 날짜 체크 -->
+                                    <div class="card">
+                                        <div class="card-header" id="headingDay">
+                                            <div class="d-flex align-items-center" data-toggle="collapse" data-target="#collapseDay" aria-expanded="true" aria-controls="collapseDay">
+                                                <label class="check_title col-4 col-xl-4 col-lg-5 mt-2 ">날짜 선택</label>
+                                                <input type="text" class="col form-control selected-date-input setDay" th:value="${reservation.reservationDay}"/>
+                                            </div>
+                                        </div>
+                                        <div id="collapseDay" class="collapse show col" aria-labelledby="headingDay" data-parent="#selectAccordion">
+                                            <div class="card-body calendar-container">
+                                                <div class="calendar"></div>
+                                                <div class="input-container">
+                                                    <input type="hidden" placeholder="선택된 날짜" class="form-control mb-2 selected-date-input" />
+                                                </div>
+                                                <div class="Day-error-message Day-error-message-container"></div> <!-- 오류 메시지 영역 -->
+                                            </div>
+                                        </div>
+										</div>
+                                    <!-- 테이블 시간 체크 -->
+                                    <div class="card">
+                                        <div class="card-header" id="headingTime">
+                                            <div class="d-flex align-items-center " data-toggle="collapse" data-target="#collapseTime" aria-expanded="true" aria-controls="collapseTime">
+                                                <label class="check_title col-4 col-xl-4 col-lg-5 mt-2">시간 선택</label>
+                                                <input type="text" class="form-control selected-time setTime"th:value="${reservation.reservationtime}" />
+                                            </div>
+                                        </div>
+                                        <div id="collapseTime" class="collapse time_show" aria-labelledby="headingTime" data-parent="#selectAccordion">
+											
+											
+											<div class="card-body">
+											    <div class="time_check row justify-content-center">
+													<div class="col d-flex align-items-center" style="white-space: nowrap;">
+													    <label for="startTime2">시작 시간:</label>
+													    <input class="ml-2 pl-2 mb-2 time-input" type="text" id="startTime1" th:value="${store.storeStarttime}" placeholder="00:00 형식으로 입력" />
+													</div>
+													<div class="col d-flex align-items-center">
+													    <label for="endTime2">마감 시간:</label>
+													    <input class="ml-2 pl-2 mb-2 time-input" type="text" id="endTime1" th:value="${store.storeEndTime}" placeholder="00:00 형식으로 입력" />
+													</div>
+											    </div>
+											</div>
+
+												
+												
+                                                <div class="error-message" id="error1">시작 시간이 끝나는 시간보다 빨라야 하며, 형식은 HH:MM이어야 합니다.</div>
+                                                <div class="mt-3 mb-5  time-buttons-container" id="timeButtons1"></div> <!-- 추가된 부분 -->
+												<input type="hidden" class="form-control selected-time setTime"th:value="${reservation.reservationtime}" />
+                                            </div>
+                                        </div>
+                            
+                                    <!-- 테이블 인원 체크 -->
+                                    <div class="card">
+                                        <div class="card-header" id="headingMember">
+                                            <div class="d-flex align-items-center" data-toggle="collapse" data-target="#collapseMemver" aria-expanded="true" aria-controls="collapseMemver">
+                                                <label class="check_title col-4 col-xl-4 col-lg-5 mt-2">인원 선택</label>
+                                                <input type="text" class="form-control selected-Memver setMember" th:value="${reservation.reservationMember}"/>
+                                            </div>
+                                        </div>
+                                        <div id="collapseMemver" class="collapse" aria-labelledby="headingMember" data-parent="#selectAccordion">
+                                            <div class="card-body">
+                                                <div class="button-container col-12">
+                                                    <button class="btn btn-secondary decrementBtn" onclick="decrement()">-</button>
+                                                    <span class="count col-10" id="count">1</span>
+                                                    <button class="btn btn-secondary incrementBtn" onclick="increment()">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+								<div class="re-error-message" id="reformError" style="display: none;">*모두 선택하여 주시기 바랍니다</div>
+                                <a href="#" class="col restaurant_re_btn">예약하기</a>
+                            </div>
+                        </div>
+						
+						
+
+                        <!-- 영업시간 -->
+                        <div class="restaurant_section card col">
+
+
+
+                            <a class="btn btn-link mt-2" id="more-button" style="display: none;">더보기</a>
+                            <div class="menuCreate input-group mt-2">
+                                <input type="text" class="form-control" id="menu-name" placeholder="메뉴 이름을 입력하세요">
+                                <input type="text" class="form-control" id="menu-price" placeholder="가격을 입력하세요" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <div class="menuCreateAppend input-group-append">
+                                    <button class="btn btn-outline-secondary" id="add-button">추가</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+			<div id="reservationModal" class="modal"  role="dialog">
+			    <div class="modal-dialog" role="document">
+			        <div class="modal-content">
+						<form id="reservationForm" th:action="@{/reservation/modify/{reservationId}(reservationId=${reservation.reservationid})}" method="post">
+			            <div class="modal-header">
+			                <h5 class="modal-title">예약 확인</h5>
+			                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                </button>
+			            </div>
+			            <div class="modal-body">
+			                <p>예약을 수정하시겠습니까?</p>
+							
+								<div class="form-group d-flex mt-2" >
+								    <label class="modyfys" for=" reservationDay">선택한 날짜:</label>
+								    <input type="text" id="reservationDay" name="reservationDay" class="form-control" readonly>
+								</div>
+								<div class="form-group d-flex">
+								    <label class="modyfys" for="reservationtTime">선택한 시간:</label>
+								    <input type="text" id="reservationtTime" name="reservationtTime" class="form-control" readonly>
+								</div>
+								<div class="form-group d-flex">
+								    <label class="modyfys" for="reservationMember">인원수:</label>
+								    <input type="text" id="reservationMember" name="reservationMember" class="form-control" readonly>
+								</div>
+									
+							
+			            </div>
+			            <div class="modal-footer d-flex ">
+							<button type="submit" class="btn btn-primary" id="confirmReservation">확인</button>
+			                <buttaon type="button" class="btn btn-secondary" data-dismiss="modal">취소</buttaon>
+			            </div>
+						</form>	
+			        </div>
+			    </div>
+			</div>
+
+            <script src="/js/store/reservation_form.js"></script>
+        </section>
+    </div>
+</body>
+
+</html>

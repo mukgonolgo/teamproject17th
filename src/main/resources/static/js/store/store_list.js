@@ -8,13 +8,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (carouselItems.length <= 1) {
             carousel.classList.remove('carousel'); // 캐로셀 클래스를 제거
-            prevButton.style.display = 'none';
-            nextButton.style.display = 'none';
+            /*prevButton.style.display = 'none';
+            nextButton.style.display = 'none';*/
         }
     });
-	const button = document.querySelectorAll('.heart');
+   const button = document.querySelector('.heart');
 
-	button.addEventListener('click', () => {
-	    button.classList.toggle('active');
-	});
+   button.addEventListener('click', () => {
+       button.classList.toggle('active');
+   });
 });
