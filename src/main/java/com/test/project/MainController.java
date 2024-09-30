@@ -3,6 +3,7 @@ package com.test.project;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.test.project.notice.Notice;
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
+import com.test.project.store.Store;
+import com.test.project.store.StoreService;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserService;
 
@@ -30,18 +33,21 @@ public class MainController {
 	
 	private final ReservationService reservationService;
 	private final UserService userService;
+	
+	@Autowired
+	private StoreService storeService;
 	@GetMapping("/")
 	public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        List<Store> storeList = storeService.getAllStore();
+        model.addAttribute("storeList", storeList);
 		if(userDetails != null) {
 			SiteUser user = userService.getUser(userDetails.getUsername());
-
 			model.addAttribute("profileImage",user.getImageUrl());
 			model.addAttribute("username",user.getUsername());
 			model.addAttribute("nickname",user.getNickname());
 			model.addAttribute("userid",user.getId());
-
-
 		}
+		
 		return "index";
 	}
 	@GetMapping("/mypage/{userid}")
