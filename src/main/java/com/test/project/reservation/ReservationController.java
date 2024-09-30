@@ -65,30 +65,60 @@ public class ReservationController {
 		return "reservation/reservation_completed";
 	}
 
-	  @GetMapping("/list")
-	    @PreAuthorize("isAuthenticated()")
-	    public String list(Model model, 
-	                       @RequestParam(value = "page", defaultValue = "0") int page,
-	                       Principal principal) {
+	@GetMapping("/list")
+	@PreAuthorize("isAuthenticated()")
+	public String list(Model model, 
+	                   @RequestParam(value = "page", defaultValue = "0") int page,
+	                   @RequestParam(value = "searchType", required = false) String searchType,
+	                   @RequestParam(value = "search", required = false) String search,
+	                   Principal principal) {
 
-	        // 로그인한 사용자 정보를 가져옴
-	        SiteUser siteUser = userService.getUser(principal.getName());
+	    // 로그인한 사용자 정보를 가져옴
+	    SiteUser siteUser = userService.getUser(principal.getName());
 
-	        // 사용자가 소유한 가게들을 가져옴
-	        List<Store> stores = storeService.getStoresByOwner(siteUser);
+	    // 사용자가 소유한 가게들을 가져옴
+	    List<Store> stores = storeService.getStoresByOwner(siteUser);
 
-	        // 해당 가게들의 예약 리스트를 가져옴
-	        Pageable pageable = PageRequest.of(page, 10);
-	        Page<Reservation> reservationPage = reservationService.getReservationsByStores(stores, pageable);
+	    // 페이징 설정
+	    Pageable pageable = PageRequest.of(page, 10);
 
-	        // 모델에 예약 정보를 추가
-	        model.addAttribute("reservationPage", reservationPage);
-	        model.addAttribute("currentPage", page);
-	        model.addAttribute("totalPages", reservationPage.getTotalPages());
+	    // 검색어와 검색 유형에 따른 예약 리스트 필터링
+	    Page<Reservation> reservationPage;
 
-	        return "reservation/reservation_list";
+	    try {
+	        if (search != null && !search.isEmpty()) {
+	            if ("reservationId".equals(searchType)) {
+	                // 예약 ID로 검색 (String -> Integer 변환)
+	                Integer reservationIdInt = Integer.parseInt(search);
+	                reservationPage = reservationService.searchByReservationId(stores, reservationIdInt, pageable);
+	            } else if ("storeName".equals(searchType)) {
+	                // 가게 이름으로 검색
+	                reservationPage = reservationService.searchByStoreName(stores, search, pageable);
+	            } else {
+	                // 기본 예약 리스트 가져오기 (검색어 없음)
+	                reservationPage = reservationService.getReservationsByStores(stores, pageable);
+	            }
+	        } else {
+	            // 기본 예약 리스트 가져오기 (검색어 없음)
+	            reservationPage = reservationService.getReservationsByStores(stores, pageable);
+	        }
+	    } catch (NumberFormatException e) {
+	        // 예약 ID 검색 시, 잘못된 형식의 예약 ID 입력 처리
+	        reservationPage = reservationService.getReservationsByStores(stores, pageable);
+	        model.addAttribute("searchError", "예약 ID는 숫자여야 합니다.");
 	    }
-    
+
+	    // 모델에 예약 정보를 추가
+	    model.addAttribute("reservationPage", reservationPage);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("totalPages", reservationPage.getTotalPages());
+	    model.addAttribute("searchType", searchType);
+	    model.addAttribute("search", search);
+
+	    return "reservation/reservation_list";
+	}
+
+
 
 
 

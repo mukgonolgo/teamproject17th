@@ -68,15 +68,16 @@ public class ReservationService {
 		}
 	}
 	
-	// 예약 ID로 검색
-    public Page<Reservation> searchByReservationId(String reservationId, Pageable pageable) {
-        return reservationRepository.findByReservationidContaining(reservationId, pageable);
-    }
+	public Page<Reservation> searchByReservationId(List<Store> stores, Integer reservationid, Pageable pageable) {
+	    return reservationRepository.findByStoreInAndReservationid(stores, reservationid, pageable);
+	}
 
-    // 가게 이름으로 검색
-    public Page<Reservation> searchByStoreName(String storeName, Pageable pageable) {
-        return reservationRepository.findByStore_StoreNameContaining(storeName, pageable);
-    }
+
+
+	public Page<Reservation> searchByStoreName(List<Store> stores, String storeName, Pageable pageable) {
+	    return reservationRepository.findByStoreInAndStore_StoreNameContaining(stores, storeName, pageable);
+	}
+
 
     // 전체 예약 리스트 조회
     public Page<Reservation> getReservationList(Pageable pageable) {

@@ -12,12 +12,12 @@ import com.test.project.store.Store;
 public interface ReservationRepository extends JpaRepository<Reservation, Integer>{
 	 boolean existsByReservationNumber(String reservationNumber);
 	 
-	 
-	// 예약 ID로 검색
-	    Page<Reservation> findByReservationidContaining(String reservationId, Pageable pageable);
+	// 예약 ID로 검색 (여러 Store에 대해서)
+	 Page<Reservation> findByStoreInAndReservationid(List<Store> store, Integer reservationid, Pageable pageable);
 
-	    // 가게 이름으로 검색
-	    Page<Reservation> findByStore_StoreNameContaining(String storeName, Pageable pageable);
+	    
+	    Page<Reservation> findByStoreInAndStore_StoreNameContaining(List<Store> stores, String storeName, Pageable pageable);
+
 	    
 	 // 사용자가 등록한 가게의 예약 리스트 가져오기
 	    Page<Reservation> findByStoreIn(Set<Store> stores, Pageable pageable);
