@@ -28,7 +28,7 @@ public class StoreService {
     @Autowired
     private final StoreRepository storeRepository;
 
-    private static final String UPLOAD_DIR = "src/main/resources/static/img/store/";
+    private static final String UPLOAD_DIR = "src/main/resources/static/img/store";
     private final ReviewRepository reviewRepository;
     // 가게 정보 조회
     public Store getStore(Integer storeId) {
@@ -40,7 +40,7 @@ public class StoreService {
     public Store saveStore(String storeName, String postcode, String basicAddress, String detailAddress,
                            double storeLatitude, double storeLongitude, String storeContent, String kategorieGroup,
                            String storeTagGroups, String storeNumber, String storeStarttime, String storeEndTime,
-                           Boolean storeAdvertisement, SiteUser siteUser, boolean isPremium) throws IOException {
+                           Boolean storeAdvertisement, SiteUser siteUser, boolean isPremium,MultipartFile imageFile) throws IOException {
         Store store = new Store();
         store.setStoreName(storeName);
         store.setPostcode(postcode);
@@ -62,7 +62,18 @@ public class StoreService {
             store.setApprovalStatus(4); // 프리미엄 승인 대기중
         } else {
             store.setApprovalStatus(1); // 일반 광고 승인 대기중
-        }
+        }		if(!imageFile.isEmpty()) {
+			//고유한 이미지 이름 생성
+			String fileName = UUID.randomUUID().toString()+"_"+imageFile.getOriginalFilename();
+			//파일 저장 경로
+			Path filePath = Paths.get(UPLOAD_DIR, fileName);
+			//디렉토리가 없으면 생성
+			Files.createDirectories(filePath.getParent());
+			//파일 저장
+			Files.write(filePath,imageFile.getBytes());
+			//사용자 엔티티에 이미지 경로 설정
+			store.setImageUrl("/img/store/"+fileName);
+		}
         
         return storeRepository.save(store);
     

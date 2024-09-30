@@ -6,7 +6,7 @@
 	<body>
 		
 		<!-- CSRF 토큰을 제대로 설정하기 위해 name="_csrf"로 변경 -->
-		    <form id="storeForm" th:action="@{/store/create}" method="post">
+		    <form id="storeForm" th:action="@{/store/create}" method="post" enctype="multipart/form-data">
 		        <input type="hidden" name="_csrf" value="${_csrf.token}" />
 
 		        <div class="S1_d_cr">
@@ -31,16 +31,16 @@
 
 					<!-- 파일 업로드 필드 -->
 					<div class="form-group input">
-						<div class="file-upload">
-						    <div class="icon-container">
-						        <div class="icon" id="add-icon" onclick="document.getElementById('file-upload').click();">
-						            <span id="file-icon" style="font-size: 50px; color: #d0d0d0;">+</span>
-						        </div>
-						        <input type="file" id="file-upload" name="imageFiles" accept="image/*" onchange="addImage(event)" style="display: none;" multiple>
-						    </div>
-						</div>
-						<div class="uploaded-images"></div>
-		            </div>
+					    <div class="file-upload">
+					        <div class="icon-container">
+					            <div class="icon" id="add-icon" onclick="document.getElementById('file-upload').click();">
+					                <span id="file-icon" style="font-size: 50px; color: #d0d0d0;">+</span>
+					            </div>
+					            <input type="file" id="file-upload" name="imageFile" accept="image/*" onchange="addImage(event)" style="display: none;">
+					        </div>
+					    </div>
+					    <div class="uploaded-images"></div>
+					</div>
 
 					<!-- 전화번호 입력 -->
 					<div class="form-group input">

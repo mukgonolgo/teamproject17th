@@ -66,6 +66,7 @@ public class StoreController {
         @RequestParam("StoreEndTime") String storeEndTime,
         @RequestParam(value = "storeAdvertisement", required = false) Boolean storeAdvertisement,
         @RequestParam(value = "isPremium", defaultValue = "false") boolean isPremium,
+        @RequestParam("imageFile") MultipartFile imageFile,
         @AuthenticationPrincipal UserDetails userDetails
     ) throws IOException {
         if (userDetails == null) {
@@ -78,7 +79,7 @@ public class StoreController {
         // 가게 정보 저장
         Store store = storeService.saveStore(storeName, postcode, basicAddress, detailAddress, 
             storeLatitude, storeLongitude, storeContent, kategorieGroup, storeTagGroups, 
-            storeNumber, storeStarttime, storeEndTime, storeAdvertisement, siteUser, isPremium);
+            storeNumber, storeStarttime, storeEndTime, storeAdvertisement, siteUser, isPremium,imageFile);
         
 
 
@@ -95,6 +96,7 @@ public class StoreController {
 //        // SiteUser의 username을 모델에 추가 에러 발생
         if (store.getSiteUser() != null) {
             model.addAttribute("username", store.getSiteUser().getUsername());
+            model.addAttribute("storeImage",store.getImageUrl());
         }
         // 평균 평점 및 리뷰 수 계산
         double averageRating = storeService.getStoreForstar(storeId);
