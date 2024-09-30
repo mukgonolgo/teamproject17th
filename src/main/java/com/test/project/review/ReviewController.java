@@ -71,25 +71,33 @@ public class ReviewController {
     private UserService userService;
 
     // 리뷰 목록 페이지를 반환하는 메서드
+ // 리뷰 목록 페이지를 반환하는 메서드 (검색 기능 추가)
     @GetMapping("/review")
-    public String reviewPage(Model model) {
+    public String reviewPage(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<Review> reviewPage;
 
-        List<Review> reviewPage = reviewService.getAllReviews();  // 모든 리뷰 가져오기
-        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+        if (query != null && !query.isEmpty()) {
+            // 검색어가 있을 경우, 해당 검색어로 리뷰를 검색
+            reviewPage = reviewService.searchReviews(query);
+        } else {
+            // 검색어가 없을 경우, 모든 리뷰를 가져오기
+            reviewPage = reviewService.getAllReviews();
+        }
 
-        List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
-        model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
+        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자 ID
+        List<Store> stores = storeService.getAllStore();  // 모든 가게 가져오기
+        model.addAttribute("stores", stores);  // 가게 리스트 추가
 
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
-        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수를 저장하는 Map
+        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수 저장할 Map
 
         for (Review review : reviewPage) {
             Long reviewId = review.getId();
             boolean likedByUser = false;
-            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수
+            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수 가져오기
 
             if (userId != null) {
-                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 로그인된 경우 좋아요 여부 확인
+                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 사용자가 좋아요를 눌렀는지 확인
             }
 
             LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
@@ -97,15 +105,17 @@ public class ReviewController {
 
             // 댓글 수 계산
             long commentCount = reviewcommentService.countCommentsByReviewId(reviewId);
-            commentCountMap.put(reviewId, commentCount);  // 각 리뷰에 대한 댓글 수 저장
+            commentCountMap.put(reviewId, commentCount);  // 각 리뷰별 댓글 수 저장
         }
 
-        model.addAttribute("reviewPage", reviewPage);  // 모든 리뷰 리스트
-        model.addAttribute("likeStatusMap", likeStatusMap);  // 각 리뷰의 좋아요 정보
-        model.addAttribute("commentCountMap", commentCountMap);  // 각 리뷰의 댓글 수 정보
+        // 모델에 데이터 추가
+        model.addAttribute("reviewPage", reviewPage);  // 필터링된 리뷰 목록 추가
+        model.addAttribute("likeStatusMap", likeStatusMap);  // 좋아요 상태 정보 추가
+        model.addAttribute("commentCountMap", commentCountMap);  // 댓글 수 정보 추가
 
         return "review/review_page";  // 리뷰 페이지로 이동
     }
+
 
 
 

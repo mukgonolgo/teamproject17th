@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
 
 @Repository
@@ -36,4 +37,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByOrderByLikeCountDesc();
     
     List<Review> findByTitleContainingOrContentContaining(String title, String content);
+    
+    List<Review> findAllByStore_StoreId(Integer storeId);
+
+
+ // 특정 스토어에 속한 리뷰의 개수를 반환하는 메소드
+    long countByStore(Store store);
+    
+    
+ // 최신순으로 상위 6개의 리뷰를 가져오는 쿼리
+    List<Review> findTop6ByOrderByCreateDateDesc();
+
+
 }

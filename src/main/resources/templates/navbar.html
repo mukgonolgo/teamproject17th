@@ -1,7 +1,7 @@
-
 <nav
 	class="navbar navbar-expand-lg navbar-dark container-fiuid p-2 cs-bg-black"
-	th:fragment="navBarFragment">
+th:fragment="navBarFragment">
+
 	<div class="container">
 		<a class="navbar-brand" href="/"><img src="/img/logo+(3).svg"
 			alt="logo"><span class="sr-only">먹고놀고</span></a>
@@ -41,7 +41,7 @@
 				<!-- 관리자 -->
 				<li class="nav-item d-flex align-items-center"
 					sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
-					 <a
+	 <a
 					th:href="@{/mypage/{userid}(userid=${userid})}"><span class="nav-link text-warning" th:text="'admin'"></span>
 				</a>
 					 <a
@@ -88,9 +88,7 @@
 					sec:authorize="principal.approvalStatus == 1"><a
 					th:href="@{/mypage/{userid}(userid=${userid})}"><span
 					class="nav-link" th:text="${nickname} + ' 님'"></span>
-				</a> <a
-					class="nav-link" th:href="@{/user/logout}">로그아웃</a> </li>
-
+				</a> 
 
 			</ul>
 		</div>

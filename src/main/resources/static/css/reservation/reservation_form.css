@@ -5,6 +5,7 @@
             color: #000;
         }
         .S1_d{
+
             width: 100%;
             height: 100%;
             position: relative;
@@ -33,48 +34,32 @@
             padding: 0;
             object-fit: cover; /* 이미지 비율 유지하면서 잘리도록 설정 */
         }
-     
-        .restaurant_section{
-            margin: 1px 0 1px;
-            
-        }
-        #more-button{
-            height: 50px;
-        }
-     
-        .dots {
-            flex-grow: 1;
-            text-align: center;
-            position: relative;
-            white-space: nowrap;
-        }
-        #more-menu {
-            max-height: 150px;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-        #more-menu.show {
-            max-height: 1000px; /* 충분히 큰 값으로 설정 */
-        }
-        .dots::after {
-            content: "";
-            border-top: 2px dashed #222228;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            overflow: hidden;
-            white-space: nowrap;
-            width: 100%;
-        }
-        
-        .delete-button, .menuCreate {
-            display: none;
-        }
 
+		#more-menu {
+		    max-height: 150px;
+		    overflow: hidden;
+		    transition: max-height 0.5s ease;
+		}
+		#more-menu.show {
+		    max-height: 1000px; /* 충분히 큰 값으로 설정 */
+		}
+		.dots::after {
+		    content: "";
+		    border-top: 2px dashed #222228;
+		    position: absolute;
+		    left: 0;
+		    right: 0;
+		    top: 50%;
+		    transform: translateY(-50%);
+		    overflow: hidden;
+		    white-space: nowrap;
+		    width: 100%;
+		}
 
-
+		.delete-button, .menuCreate {
+		    display: none;
+		}
+		
         /*---------------------
                 예약css
          ---------------------*/
@@ -200,9 +185,12 @@
         .time_check{
             display: none;
         }
+		.align-items-center{
+			text-align: center;
+		}
         .form-control{
 			display: flex;
-
+			text-align: center;
             font-weight: bold;
             border: none; 
             color: inherit; 
@@ -241,23 +229,23 @@
             margin-top: 10px; /* 여백 추가 */
         }
 
-		/* 예약 버튼 */
-		.restaurant_re_btn {
-		    text-decoration: none;
-		    background-color: #cccc;
-		    color: black;
-		    padding: 13px;
-		    display: flex;
-		    font-size: 17px;
-		    justify-content: center;
+        /* 예약 버튼 */
+        .restaurant_re_btn {
+            text-decoration: none;
+            background-color: #cccc;
+            color: black;
+            padding: 13px;
+            display: flex;
+            font-size: 17px;
+            justify-content: center;
 			border: none;			
-		    
-		}
-		.restaurant_re_btn:hover {
-		    background-color: black;
-		    color: white;
-		    text-decoration: none;
-		}
+            
+        }
+        .restaurant_re_btn:hover {
+            background-color: black;
+            color: white;
+            text-decoration: none;
+        }
 		.modal{
 			overflow: hidden;
 		}

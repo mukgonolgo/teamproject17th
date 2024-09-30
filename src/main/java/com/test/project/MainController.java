@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLikeService;
+import com.test.project.store.Store;
+import com.test.project.store.StoreService;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 import com.test.project.user.UserService;
@@ -29,21 +31,28 @@ import lombok.RequiredArgsConstructor;
 public class MainController {
 	
 		@Autowired
-	    private final ReviewLikeService reviewLikeService;
-	
+	    private final ReviewLikeService reviewLikeService;	
 	    private final UserService userService;
 	   
+	    
+	    @Autowired
+		private StoreService storeService;
+	    
 	@GetMapping("/")
 	public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        List<Store> storeList = storeService.getAllStore();
+        model.addAttribute("storeList", storeList);
+        
+        
 		if(userDetails != null) {
 			SiteUser user = userService.getUser(userDetails.getUsername());
-
 			model.addAttribute("profileImage",user.getImageUrl());
 			model.addAttribute("username",user.getUsername());
 			model.addAttribute("nickname",user.getNickname());
 			model.addAttribute("userid",user.getId());
 
 		}
+		
 		return "index";
 	}
 	

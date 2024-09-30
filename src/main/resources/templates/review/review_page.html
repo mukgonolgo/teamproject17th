@@ -4,10 +4,7 @@
 
 <!-- moment.js 포함 (필수) -->
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<!-- daterangepicker CSS 포함 -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<!-- daterangepicker JS 포함 -->
+
 <script
 	src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- 커스텀 CSS 추가 -->
@@ -23,6 +20,7 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content">
+
 	<!-- 검색란 -->
 	<div class="section1 container my-5">
 		<div class="row d-flex justify-content-end">
@@ -55,12 +53,13 @@
 
 
 
+
+
 			<div class="col-auto">
 				<select name="h_area2" id="region2" class="form-control">
 					<option>-선택-</option>
 				</select>
 			</div>
-
 
 
 			<!--메뉴 선택-->
@@ -114,25 +113,18 @@
 			</div>
 			<!--메뉴 선택 끝-->
 
-
-			<!-- 지도 선택 -->
-			<div class="col-auto">
-				<button class="btn text-secondary bg-white category_btn"
-					onclick="showMap()">
-					지도 선택<i class="fa-solid fa-map ml-1"></i>
-				</button>
-			</div>
-
-		</div>
-		<hr>
-		<div id="map"></div>
-
-		<button id="closeMap" onclick="closeMap()">지도 닫기</button>
-
-	</div>
-	<!-- section1 끝 -->
-
-	<!-- 지도 요소 -->
+         <!-- 지도 선택 -->
+         <div class="col-auto">
+            <button class="btn text-secondary bg-white category_btn" onclick="showMap()">
+               지도 선택<i class="fa-solid fa-map ml-1"></i>
+            </button>
+         </div>
+     
+  </div>
+      <hr>
+  <div id="map"></div>
+   
+   <button id="closeMap" onclick="closeMap()">지도 닫기</button>
 
 
 	<!--중간 긴 캐로셀-->
@@ -227,7 +219,7 @@
             이번주 <span class="text-danger">🔥HOT한</span> 리뷰
          </h3>-->
 			<div class="row S3_review_card">
-				<!-- 리뷰 카드 -->
+			<!-- 리뷰 카드 -->
 				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
 					<div class="card S3_card h-100 custom-border mx-auto">
 						<a th:href="@{/review_detail/{id}(id=${review.id})}"
@@ -310,7 +302,7 @@
 								</div>
 
 
-								<!-- 식당정보 -->
+									<!-- 식당정보 -->
 								<!-- 서버에서 리뷰 리스트를 반복해서 출력 -->
 								<p class="col-12 S3_store mb-1" th:each="review : ${reviews}">
 									<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
@@ -362,14 +354,10 @@
 		</div>
 		<!--container-->
 
-		<!-- 
-      <div class="container">
-         <h3 class="mt-5 my-3">새로 올라온 후기</h3>
 
-      </div>-->
-		<!--container-->
 	</div>
 	<!-- section -->
+
 
 
 	<!-- 지도 데이터 표시 -->
@@ -379,10 +367,12 @@
 			class="store-lng" th:value="${store.storeLongitude}" /> <input
 			type="hidden" class="store-name" th:value="${store.storeName}" />
 	</div>
-	<script src="/js/review_page_like.js"></script>
 
-	<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
-	<script src="js/review_page_category.js"></script>
+	<script src="/js/review_page_like.js"></script>
+  
+<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
+<script src="js/review_page_category.js"></script>
+
 
 
 </div>

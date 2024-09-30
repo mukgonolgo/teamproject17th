@@ -10,6 +10,7 @@ import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLike;
 import com.test.project.review.tag.ReviewTagMap;
+import com.test.project.store.Store;
 import com.test.project.review.comment.ReviewComment;  // 댓글 클래스 import
 import com.test.project.user.SiteUser;
 
@@ -58,6 +59,11 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private SiteUser user;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageMap> reviewImageMap = new ArrayList<>();
