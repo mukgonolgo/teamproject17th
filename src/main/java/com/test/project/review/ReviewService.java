@@ -328,6 +328,12 @@ public class ReviewService {
     	    // 리뷰 객체로 댓글 수 계산
     	    return reviewCommentRepository.countByReview(review);
     	}
+       
+       public List<Review> searchReviews(String query) {
+    	    return reviewRepository.findByTitleContainingOrContentContaining(query, query);
+    	}
+
+
 
      
 }

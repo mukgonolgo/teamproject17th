@@ -34,4 +34,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 좋아요 많은 순으로 정렬
     List<Review> findAllByOrderByLikeCountDesc();
+    
+    List<Review> findByTitleContainingOrContentContaining(String title, String content);
 }
