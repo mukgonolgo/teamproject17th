@@ -4,134 +4,63 @@
 
 <!-- moment.js 포함 (필수) -->
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<!-- daterangepicker CSS 포함 -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<!-- daterangepicker JS 포함 -->
+
 <script
 	src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- 커스텀 CSS 추가 -->
 <link rel="stylesheet" href="/css/review_page.css">
 <link rel="stylesheet" href="/css/category.css">
 
-   <!-- 지도 API 포함 -->
-   <script type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
+<!-- 지도 API 포함 -->
+<script type="text/javascript"
+	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
 
-   <!-- 지도 API 포함 -->
-   <script type="text/javascript"
-      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
-
-   <style>
-      #map {
-         display: none;
-         /* 초기에는 지도가 보이지 않도록 설정 */
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         z-index: 1000;
-      }
-     
-     #test{
-      width: 200px;
-      height: 200px;
-      position: absolute;
-      z-index: 999999999;
-     }
-
-      #closeMap {
-         display: none;
-         /* 초기에는 버튼이 보이지 않도록 설정 */
-         position: fixed;
-         top: 10px;
-         right: 10px;
-         z-index: 1001;
-         background-color: #fff;
-         border: none;
-         padding: 10px 20px;
-         font-size: 16px;
-         cursor: pointer;
-      }
-	  .card-body {
-	      padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
-	      height: auto; /* 높이를 자동으로 조정 */
-	  }
-
-	  .card {
-	      height: auto; /* 카드 전체 높이를 자동으로 조정 */
-	      display: flex;
-	      flex-direction: column;
-	      justify-content: space-between; /* 내용들이 균등하게 분포되도록 조정 */
-	  }
-
-	  .card-title {
-	      font-size: 20px; /* 텍스트 크기를 적절하게 조정 */
-		  margin-top: 20px;
-	      margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
-	  }
-
-   </style>   
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content">
-	 <!-- 검색란 -->
-   <div class="section1 container mt-5">
-      <div class="row d-flex justify-content-end">
-         <!--지역선택-->
-         <div class="col-auto">
-            <select name="h_area1" id="region1" onChange="updateSubRegion()" class="h_area1 form-control">
-               <option>-지역선택-</option>
-               <option value="seoul">서울</option>
-               <option value="busan">부산</option>
-               <option value="gyeonggi">경기도</option>
-               <option value="daegu">대구</option>
-               <!-- 기타 지역들 추가 -->
-            </select>
-         </div>
 
-
-
-<div class="col-auto">
-    <select name="h_area2" id="region2" class="form-control">
-        <option>-선택-</option>
-    </select>
-</div>
-
-			<!--인원수 선택-->
+	<!-- 검색란 -->
+	<div class="section1 container my-5">
+		<div class="row d-flex justify-content-end">
+			<!--지역선택-->
 			<div class="col-auto">
-				<!--People Count Button-->
-				<button class="btn text-secondary bg-white  P_C_button category_btn"
-					id="toggleButton">
-					인원수<i class="fa-solid fa-user ml-1"></i>
-				</button>
-				<!--인원수 박스-->
-				<div class="card ml-5 mt-5 hide_box" id="rangeBox"
-					style="width: 300px;">
-					<div class="card-body text-center">
-						<span>인원</span> <label id="rangeValue" for="customRange2">1</label><span>명</span>
-						<input type="range" class="custom-range" min="1" max="10"
-							value="1" id="customRange2">
-					</div>
-					<button class="btn btn-dark ca_button w-100">인원수 적용</button>
-				</div>
-			</div>
-			<!--인원수 선택 끝-->
+				<select name="h_area1" id="region1" onChange="updateSubRegion()"
+					class="h_area1 form-control">
+					       <option value="">지역</option>
+        <option value="seoul">서울특별시</option>
+        <option value="busan">부산광역시</option>
+        <option value="gyeonggi">경기도</option>
+        <option value="daegu">대구광역시</option>
+        <option value="incheon">인천광역시</option>
+        <option value="daejeon">대전광역시</option>
+        <option value="gwangju">광주광역시</option>
+        <option value="ulsan">울산광역시</option>
+        <option value="sejong">세종특별자치시</option>
+        <option value="gangwon">강원도</option>
+        <option value="chungbuk">충청북도</option>
+        <option value="chungnam">충청남도</option>
+        <option value="jeonbuk">전라북도</option>
+        <option value="jeonnam">전라남도</option>
+        <option value="gyeongbuk">경상북도</option>
+        <option value="gyeongnam">경상남도</option>
+        <option value="jeju">제주특별자치도</option>
 
-			<!-- 날짜 선택 -->
+
+				</select>
+			</div>
+
+
+
+
+
 			<div class="col-auto">
-				<button id="calendar-btn"
-					class="btn btn-out bg-white text-secondary category_btn">
-					날짜 선택 <i class="fa-solid fa-calendar-days"></i>
-				</button>
-				<input type="button" name="datetimes" id="calendar-input" disabled
-					class="btn" />
-
+				<select name="h_area2" id="region2" class="form-control">
+					<option>-선택-</option>
+				</select>
 			</div>
-			<!-- 날짜 선택 끝 -->
+
 
 			<!--메뉴 선택-->
 			<div class="col-auto">
@@ -184,7 +113,6 @@
 			</div>
 			<!--메뉴 선택 끝-->
 
-
          <!-- 지도 선택 -->
          <div class="col-auto">
             <button class="btn text-secondary bg-white category_btn" onclick="showMap()">
@@ -198,11 +126,6 @@
    
    <button id="closeMap" onclick="closeMap()">지도 닫기</button>
 
-    </div>
-	<!-- section1 끝 -->
-
-   <!-- 지도 요소 -->
- 
 
 	<!--중간 긴 캐로셀-->
 	<div class="section2 my-5">
@@ -247,24 +170,36 @@
 					<button class="btn bg-white dropdown-toggle" type="button"
 						data-toggle="dropdown" aria-expanded="false">전체</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="#">전체</a> <a class="dropdown-item"
-							href="#">새로 올라온 순</a> <a class="dropdown-item" href="#">오래된 순</a>
-						<a class="dropdown-item" href="#">별점 순</a> <a
-							class="dropdown-item" href="#">댓글 많은 순</a> <a
-							class="dropdown-item" href="#">좋아요 순</a>
+						<a class="dropdown-item"
+							href="/reviews/sorted?sort=all&direction=desc">전체</a> <a
+							class="dropdown-item"
+							href="/reviews/sorted?sort=date&direction=desc">새로 올라온 순</a> <a
+							class="dropdown-item"
+							href="/reviews/sorted?sort=date&direction=asc">오래된 순</a> <a
+							class="dropdown-item"
+							href="/reviews/sorted?sort=rating&direction=desc">별점 높은 순</a> <a
+							class="dropdown-item"
+							href="/reviews/sorted?sort=comments&direction=desc">댓글 많은 순</a> <a
+							class="dropdown-item"
+							href="/reviews/sorted?sort=likes&direction=desc">좋아요 순</a>
 					</div>
 				</div>
 				<!--dropdown-->
 			</div>
 			<div class="col-auto d-flex align-items-center">
-				<!-- 검색란 -->
-				<div class="d-flex align-items-center">
-					<!-- 동그란 끝부분을 가진 검색바 -->
-					<input type="text" class="form-control custom-search-bar"
-						placeholder="검색어를 입력하세요">
-					<button class="btn btn-dark ml-2" style="width: 70px;">검색</button>
-					<!-- 검색 버튼 -->
-				</div>
+				
+					<!-- 검색란 -->
+					<div class="d-flex align-items-center">
+						<form action="/review" method="get">
+    <div class="d-flex align-items-center">
+        <input type="text" class="form-control custom-search-bar" name="query" placeholder="검색어를 입력하세요">
+        <button type="submit" class="btn btn-dark ml-2" style="width: 70px;">검색</button>
+    </div>
+</form>
+
+					</div>
+			
+
 			</div>
 		</div>
 		<!--row-->
@@ -279,9 +214,10 @@
 	<!--card-->
 	<div class="section3 mt-5">
 		<div class="container my-5 ">
-			<h3 class="mt-5">
-				이번주 <span class="text-danger">🔥HOT한</span> 리뷰
-			</h3>
+			<h3 class="mt-5 my-3">새로 올라온 후기</h3>
+			<!--    <h3 class="mt-5">
+            이번주 <span class="text-danger">🔥HOT한</span> 리뷰
+         </h3>-->
 			<div class="row S3_review_card">
 			<!-- 리뷰 카드 -->
 				<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
@@ -347,7 +283,8 @@
 									<div class="d-flex align-items-center ">
 										<img src="/img/icon/chat.png" alt="comment"
 											style="width: 20px;" /> <span class="text-dark mx-1"
-											style="margin-top: 2px;">566</span>
+											style="margin-top: 2px;"
+											th:text="${commentCountMap[review.id]}"></span>
 									</div>
 
 									<!-- 좋아요 -->
@@ -418,21 +355,19 @@
 		<!--container-->
 
 
-		<div class="container">
-			<h3 class="mt-5 my-3">새로 올라온 후기</h3>
-
-		</div>
-		<!--container-->
 	</div>
 	<!-- section -->
 
 
- <!-- 지도 데이터 표시 -->
-   <div th:each="store : ${stores}">
-       <input type="hidden" class="store-lat" th:value="${store.storeLatitude}" />
-       <input type="hidden" class="store-lng" th:value="${store.storeLongitude}" />
-       <input type="hidden" class="store-name" th:value="${store.storeName}" />
-   </div>
+
+	<!-- 지도 데이터 표시 -->
+	<div th:each="store : ${stores}">
+		<input type="hidden" class="store-lat"
+			th:value="${store.storeLatitude}" /> <input type="hidden"
+			class="store-lng" th:value="${store.storeLongitude}" /> <input
+			type="hidden" class="store-name" th:value="${store.storeName}" />
+	</div>
+
 	<script src="/js/review_page_like.js"></script>
   
 <!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->

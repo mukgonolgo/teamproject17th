@@ -32,7 +32,7 @@ public class CommentResponse {
         this.createDate = comment.getCreateDate();
         this.updatedAt = comment.getUpdatedAt();
         this.userId = comment.getUser().getId();
-        this.username = comment.getUser().getUsername();
+        this.username = comment.getUser().getNickname();
         this.userImage = comment.getUser().getImageUrl();
 
         // 대댓글이 있을 경우 응답에 포함

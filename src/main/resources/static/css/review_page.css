@@ -50,8 +50,13 @@ a {
 }
 .S3_store{
 
+<<<<<<< HEAD
+	margin: 0;
+	padding: 0;
+=======
    margin: 0;
    padding: 0;
+>>>>>>> branch 'develop' of https://github.com/mukgonolgo/teamproject17th.git
 }
 
 .S3_custom-card-img {
@@ -180,6 +185,25 @@ a {
          font-size: 16px;
          cursor: pointer;
       }
+<<<<<<< HEAD
+	  .m_card-body {
+	      padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
+	      height: auto; /* 높이를 자동으로 조정 */
+	  }
+
+	  .m_card {
+	      height: auto; /* 카드 전체 높이를 자동으로 조정 */
+	      display: flex;
+	      flex-direction: column;
+	      justify-content: space-between; /* 내용들이 균등하게 분포되도록 조정 */
+	  }
+
+	  .m_card-title {
+	      font-size: 20px; /* 텍스트 크기를 적절하게 조정 */
+		  margin-top: 20px;
+	      margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
+	  }
+=======
      .m_card-body {
          padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
          height: auto; /* 높이를 자동으로 조정 */
@@ -198,4 +222,5 @@ a {
          margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
      }
 
+>>>>>>> branch 'develop' of https://github.com/mukgonolgo/teamproject17th.git
 

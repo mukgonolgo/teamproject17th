@@ -72,14 +72,19 @@
 			<div class="col-xl-8 col-sm-12 ">
 				<div class="card custom-border p-3">
 					<div class="d-flex align-items-center mx-3 my-2">
-						<a th:href="@{/review_feed}"
+						<a
+								th:href="@{/user_feed/{userId}(userId=${review.user.id})}"
+								
 							class="text-dark d-flex align-items-center"
 							style="text-decoration: none;"> <img
 							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
 							alt="" class="rounded-circle"
 							style="width: 50px; height: 50px; object-fit: cover;"> <span
-							class="ml-3">
-								<h4 th:text="${authorUsername}"></h4>
+							class="ml-3"> 
+									<h4 th:text="${review.user.nickname}"></h4>
+							</a>
+
+
 
 						</span>
 						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
@@ -89,7 +94,7 @@
 
 
 
-
+					<!-- 음식사진 -->
 					<div th:id="'S3_d_review_carouselExample' + ${review.id}"
 						class="carousel slide">
 						<div class="carousel-inner S3_d_review_carousel-inner">
@@ -124,8 +129,9 @@
 								class="col-3 text-right d-flex justify-content-end align-items-center mb-2">
 
 								<!-- 댓글 -->
-								<img src="/img/icon/chat.png" alt="" style="width: 20px"
-									class="tap_btn" /> <span class="text-dark mx-1"></span>
+								<img src="/img/icon/chat.png" alt="comment" style="width: 20px"
+									class="tap_btn" /> <span class="text-dark mx-1"
+									th:text="${commentCount != null ? commentCount : 0}"></span>
 
 								<!-- 좋아요 -->
 								<div id="like-container">
@@ -197,7 +203,7 @@
 
 
 						<!-- 내용  -->
-						<p class="card-text S3_card-text mt-2" style="height: 100px;"
+						<p class="card-text S3_card-text mt-4" style="height: 100px;"
 							th:text="${review.content}"></p>
 
 
@@ -209,80 +215,92 @@
 							</span>
 
 							<!-- 업데이트 시간  -->
-							<div class="row ">
+							<div class="row mt-2">
 								<div class="col">
-									<p class="card-text">
-										<small class="text-muted"> <span
-											th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}"></span>
-											업데이트
-										</small>
-									</p>
+
+									<small class="text-muted"> <!-- 업데이트 시간이 존재할 때 업데이트 시간 표시 -->
+										<span th:if="${review.updatedAt != null}"
+										th:text="${#temporals.format(review.updatedAt, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
+										<!-- 업데이트 시간이 없을 때 생성 시간 표시 --> <span
+										th:if="${review.updatedAt == null}"
+										th:text="${#temporals.format(review.createDate, 'yyyy.MM.dd HH:mm')}+' UPDATE'"></span>
+									</small>
+
 								</div>
+
+
 								<div class="col text-right">
-									<!-- 리뷰 수정 버튼 -->
-									<a th:href="@{/review_update_form/{id}(id=${review.id})}"
-										class="text-primary btn btn-outline-primary btn-sm"><small>수정</small></a>
-									<!-- 리뷰 삭제 버튼 -->
-									<button id="deleteReviewButton" data-review-id="${review.id}"
-										class="btn btn-outline-danger btn-sm">
-										<small>삭제</small>
-									</button>
+									<!-- 로그인한 유저와 리뷰 작성자가 동일할 때만 버튼 표시 -->
+									<div th:if="${loggedInUserId == review.user.id}">
+										<!-- 리뷰 수정 버튼 -->
+										<a th:href="@{/review_update_form/{id}(id=${review.id})}"
+											class="text-primary btn btn-outline-primary btn-sm"> <small>수정</small>
+										</a>
+										<!-- 리뷰 삭제 버튼 -->
+										<button id="deleteReviewButton" data-review-id="${review.id}"
+											class="btn btn-outline-danger btn-sm">
+											<small>삭제</small>
+										</button>
+									</div>
 								</div>
-
-
+								<!-- col -->
 							</div>
-							<!-- 태그 -->
-
-							<div class="comments-list">
-
-								<!-- 기존 댓글들이 여기에 추가됩니다 -->
-							</div>
-
-							<!-- 댓글 작성 버튼은 로그인한 사용자만 볼 수 있도록 설정 -->
-							<div class="comment-input mt-4">
-								<form id="commentForm"
-									th:action="@{/comments/reviews/{reviewId}(reviewId=${review.id})}"
-									method="post">
-									<input type="hidden" th:name="${_csrf.parameterName}"
-										th:value="${_csrf.token}" />
-
-									<!-- 리뷰 ID 숨김 필드 -->
-									<input type="hidden" id="reviewId" name="reviewId"
-										th:value="${review.id}" />
-
-
-									<div class="d-flex align-items-center mt-3">
-										<textarea class="form-control ml-2" id="commentContent"
-											name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
-									</div>
-									<div class="btn-container mt-2 text-right">
-										<button type="button" id="submitComment"
-											class="btn btn-dark mt-2">댓글 작성</button>
-									</div>
-								</form>
-							</div>
+							<!-- 업데이트시간 -->
 
 						</div>
-						<!--card-body-->
-					</div>
-					<!--card-->
-				</div>
+						<!-- 태그 -->
 
+						<div class="comments-list">
+
+							<!-- 기존 댓글들이 여기에 추가됩니다 -->
+						</div>
+
+						<!-- 댓글 작성 폼 -->
+						<div class="comment-input mt-4">
+							<form id="commentForm"
+								th:action="@{/comments/reviews/{reviewId}(reviewId=${review.id})}"
+								method="post">
+								<input type="hidden" th:name="${_csrf.parameterName}"
+									th:value="${_csrf.token}" />
+
+								<!-- 리뷰 ID 숨김 필드 -->
+								<input type="hidden" id="reviewId" name="reviewId"
+									th:value="${review.id}" />
+
+
+								<div class="d-flex align-items-center mt-3">
+									<textarea class="form-control ml-2" id="commentContent"
+										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
+								</div>
+								<div class="btn-container mt-2 text-right">
+
+									<button type="button" id="submitComment"
+										class="btn btn-dark mt-2">댓글 작성</button>
+								</div>
+							</form>
+						</div>
+
+					</div>
+					<!--card-body-->
+				</div>
+				<!--card-->
 			</div>
-			<!-- row -->
 
 		</div>
-		<!-- container -->
+		<!-- row -->
+
+	</div>
+	<!-- container -->
 
 
-		<script th:inline="javascript">
+	<script th:inline="javascript">
 		var likedByUser = /*[[${likedByUser}]]*/ false;  // 서버에서 받은 값 설정
 		var reviewId = /*[[${review.id}]]*/ 0;  // 현재 리뷰 ID 설정
 	</script>
 
-		<script src="/js/review_detail.js"></script>
-		<script src="/js/reviewLike.js"></script>
-	</div>
-	<!-- content -->
+	<script src="/js/review_detail.js"></script>
+	<script src="/js/reviewLike.js"></script>
+</div>
+<!-- content -->
 </html>
 

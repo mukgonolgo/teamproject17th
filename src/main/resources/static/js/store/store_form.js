@@ -1,3 +1,4 @@
+
 let imageCount = 0;
 const maxImages = 5;
 const imageFiles = []; // 파일들을 저장할 배열

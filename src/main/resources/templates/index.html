@@ -1,7 +1,13 @@
 <html layout:decorate="~{layout}">
-<div layout:fragment="content">
-	<link rel="stylesheet" href="/mystyle.css">
+<head>
+<link rel="stylesheet" href="/css/review_page.css">
+<link rel="stylesheet" href="/css/category.css">
+<link rel="stylesheet" href="/mystyle.css">
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+</head>
+<div layout:fragment="content">
+	
 	<section class="M_s1">
 		<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
 			<div class="carousel-indicators">
@@ -112,134 +118,42 @@
 					<div class="swiper-pagination pagination_bullet">
 					</div>
 				</div>
+				
+				
+				
+				
 				<div class="M_s2_a2">
-							<h3 class="my-5">
-								이번주 <span class="text-danger">🔥HOT한</span> 리뷰
-							</h3>
-							<div class="row M_s2_a2_review_card">
-								<!-- 리뷰 카드 -->
-								<div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
-									<div class="card M_s2_a2_card h-100 custom-border mx-auto">
-										<a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
-											<h5 class="d-flex align-items-center mt-3 ml-3 mb-2">
-												<!-- 리뷰 작성자 프로필 이미지 -->
-												<img th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}"
-													alt="user_img" class="rounded-circle" style="width: 50px; height: 50px">
-												<!-- 리뷰 작성자 사용자명 -->
-												<span class="d-flex align-items-center mx-2"
-													th:text="${review.user.nickname}"></span>
-											</h5>
-										</a>
+				
+			
+    <div class="container my-5">
+        <h3 class="mt-4 my-3">최신 리뷰</h3>
+        <div class="row">
+            <div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
+                <div class="card h-100 custom-border mx-auto">
+                    <a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
+                        <h5 class="d-flex align-items-center mt-3 ml-3 mb-2">
+                            <img th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}" 
+                                 alt="user_img" class="rounded-circle" style="width: 50px; height: 50px">
+                            <span class="d-flex align-items-center mx-2" th:text="${review.user.nickname}"></span>
+                        </h5>
+                    </a>
+                    <div class="carousel slide px-2" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img th:src="@{${review.reviewImageMap[0].reviewImage.filepath}}" class="d-block w-100" alt="Review Image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${review.title}"></h5>
+                        <p class="card-text" th:text="${review.content}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-										<div th:id="'M_s2_a2_review_carouselExample' + ${review.id}"
-											class="carousel slide carousel-fade px-2" data-ride="carousel">
-											<div class="carousel-inner M_s2_a2_carousel-inner">
-												<a th:href="@{/review_detail/{id}(id=${review.id})}">
-													<div class="carousel-item M_s2_a2_carousel-item"
-														th:each="imageMap, iterStat : ${review.reviewImageMap}"
-														th:classappend="${iterStat.index == 0} ? ' active'">
-														<img th:src="@{${imageMap.reviewImage.filepath}}"
-															alt="Review detail Image"
-															class="d-block w-100 M_s2_a2_custom-card-img">
-													</div>
-												</a>
-											</div>
-											<!-- 캐러셀 제어 버튼 -->
-											<div class="d-block d-lg-none">
-												<a class="carousel-control-prev M_s2_a2_hover_btn"
-													th:href="'#M_s2_a2_review_carouselExample' + ${review.id}" role="button"
-													data-slide="prev"> <span class="carousel-control-prev-icon"
-														aria-hidden="true"></span> <span class="sr-only">Previous</span>
-												</a> <a class="carousel-control-next M_s2_a2_hover_btn"
-													th:href="'#M_s2_a2_review_carouselExample' + ${review.id}" role="button"
-													data-slide="next"> <span class="carousel-control-next-icon"
-														aria-hidden="true"></span> <span class="sr-only">Next</span>
-												</a>
-											</div>
-										</div>
-
-
-										<div class="card-body d-flex flex-column">
-											<div class="row p-3 M_s2_a2_text-box ">
-												<!-- 리뷰 제목 -->
-												<div class="col-8 mx-0">
-													<a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
-														<h5 class="card-title M_s2_a2_card-title" th:text="${review.title}"></h5>
-													</a>
-												</div>
-
-												<!-- 댓글과 좋아요가 한 줄에 배치된 부분 -->
-												<div class="col-4 text-right d-flex justify-content-end"
-													style="margin-top: -35px;">
-													<!-- 댓글 -->
-													<div class="d-flex align-items-center ">
-														<img src="/img/icon/chat.png" alt="comment" style="width: 20px;" />
-														<span class="text-dark mx-1" style="margin-top: 2px;">566</span>
-													</div>
-
-													<!-- 좋아요 -->
-													<div class="d-flex align-items-center like_box ml-1">
-														<!-- 리뷰 ID를 동적으로 설정 -->
-														<input type="hidden" class="review-id" th:value="${review.id}">
-														<!-- likedByUser 상태를 동적으로 설정 -->
-														<input type="hidden" class="liked-by-user"
-															th:value="${likeStatusMap[review.id].liked}"> <i
-															th:id="'like-btn-' + ${review.id}"
-															class="tap_btn like_btn fa-regular fa-heart"></i> <span
-															class="like-count ml-1"
-															th:text="${likeStatusMap[review.id].likeCount}"></span>
-													</div>
-												</div>
-
-
-												<!-- 식당정보 -->
-												<!-- 서버에서 리뷰 리스트를 반복해서 출력 -->
-												<p class="col-12 M_s2_a2_store mb-1" th:each="review : ${reviews}">
-													<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
-												<div class="starRating" th:data-review-id="${review.id}"></div>
-												<a href="" style="text-decoration: none;"> <small class="text-muted"> <i
-															class="fa-solid fa-location-dot mx-2"
-															style="color: #000000;"></i>
-														<span class="font-weight-bold">수원역 근처</span> <span>돼지냠냠</span>
-													</small>
-												</a>
-												</p>
-
-												<!-- 리뷰내용 -->
-												<p class="card-text M_s2_a2_card-text mt-2 col-12 mb-2"
-													th:text="${review.content}">
-												</p>
-
-
-												<!-- 리뷰태그 -->
-												<div class="mb-3 M_s2_a2_tag_box ml-1">
-													<span th:each="tagMap : ${review.tagMaps}" calss="M_s2_a2_tag_box">
-														<span class="badge badge-pill border border-dark"
-															th:text="'#'+${tagMap.reviewTag.name}"> </span>
-													</span>
-
-													<p class="card-text mt-2">
-														<small class="text-muted"> <span
-																th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}"></span>
-															업데이트
-														</small>
-													</p>
-												</div>
-												<!--tag-->
-
-											</div>
-											<!--row-->
-
-										</div>
-										<!--card-body-->
-
-									</div>
-									<!--card-->
-
-								</div>
-								<!--col-lg-4-->
-
-							</div>
+				
 						</div>
 
 						<!-- 케로셀 버튼 추가 -->
@@ -250,6 +164,8 @@
 				<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 				<script src="myscript.js"></script>
 	</section>
+	
+		<script src="/js/review_page_like.js"></script>
 </div>
 <!--layout:fragment="content"  -->
 
