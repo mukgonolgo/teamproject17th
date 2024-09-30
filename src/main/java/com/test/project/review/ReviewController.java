@@ -178,7 +178,9 @@ public class ReviewController {
     public ResponseEntity<Map<String, Object>> likeReview(@PathVariable Long id) {
         Long userId = reviewService.getCurrentUserId();
 
-        reviewLikeService.toggleLike(id, userId);
+        reviewLikeService.toggleLike(id
+        		
+        		, userId);
 
         Long likeCount = reviewLikeService.countLikes(id);
         boolean likedByUser = reviewLikeService.isLikedByUser(id, userId);

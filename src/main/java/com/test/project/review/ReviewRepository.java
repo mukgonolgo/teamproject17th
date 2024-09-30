@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
 
 @Repository
@@ -20,4 +21,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	
     // 리뷰 ID로 리뷰를 찾는 메소드
     Optional<Review> findById(Long id);
+    
+    List<Review> findAllByStoreId(Integer storeId);
+ // 특정 스토어에 속한 리뷰의 개수를 반환하는 메소드
+    long countByStore(Store store);
 }

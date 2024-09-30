@@ -284,7 +284,7 @@ $(window).resize(function() {
 });
 
 
-		function checkOpenHours() {
+      function checkOpenHours() {
            const startTime = document.getElementById('startTime1').value;
            const endTime = document.getElementById('endTime1').value;
 
@@ -296,9 +296,9 @@ $(window).resize(function() {
            if (startTime && endTime) {
                if (currentTime >= startTime && currentTime < endTime) {
                    statusElement.textContent = "영업중";
-               } else {
+               } /*else {
                    statusElement.textContent = "영업 마감";
-               }
+               }*/
            } else {
                statusElement.textContent = "가게 준비중 입니다";
            }
@@ -310,12 +310,13 @@ $(window).resize(function() {
        // 페이지 로드 시 초기 상태 확인
        checkOpenHours();
 
-       // 입력값이 변경될 때마다 상태를 업데이트
-       document.getElementById('startTime').addEventListener('input', checkOpenHours);
-       document.getElementById('endTime').addEventListener('input', checkOpenHours);
-	   
+      // 예약 확정 함수
+      function confirmReservation() {
+          alert('예약이 완료되었습니다!');
+          $('#reservationModal').modal('hide'); // 모달 닫기
+      }
 
 
 
-	   
-	   
+      
+      

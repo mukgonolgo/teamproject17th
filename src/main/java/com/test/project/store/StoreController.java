@@ -8,12 +8,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.test.project.review.Review;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/store")
@@ -22,6 +26,7 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
     private final UserService userService;
+
     
     @GetMapping("/store_alist_full")
     public String getStoreListForAdminWithoutPagination(Model model) {
@@ -62,7 +67,7 @@ public class StoreController {
         @RequestParam(value = "storeAdvertisement", required = false) Boolean storeAdvertisement,
         @RequestParam(value = "isPremium", defaultValue = "false") boolean isPremium,
         @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    ) throws IOException {
         if (userDetails == null) {
             return "redirect:/login"; // 인증되지 않은 경우 로그인 페이지로 리다이렉트
         }
@@ -74,23 +79,28 @@ public class StoreController {
         Store store = storeService.saveStore(storeName, postcode, basicAddress, detailAddress, 
             storeLatitude, storeLongitude, storeContent, kategorieGroup, storeTagGroups, 
             storeNumber, storeStarttime, storeEndTime, storeAdvertisement, siteUser, isPremium);
+        
+
 
         // 등록 후 상세 페이지로 리디렉션
         return "redirect:/store/detail/" + store.getStoreId();
     }
 
-    // 가게 상세 페이지
+ // 가게 상세 페이지
     @GetMapping("/detail/{storeId}")
-    public String detail(@AuthenticationPrincipal UserDetails userDetails,Model model, @PathVariable("storeId") Integer storeId) {
+    public String detail(Model model, @PathVariable("storeId") Integer storeId) {
         Store store = storeService.getStore(storeId);
         model.addAttribute("store", store);
         
-		if(userDetails != null) {
-			SiteUser user = userService.getUser(userDetails.getUsername());
-			model.addAttribute("profileImage",user.getImageUrl());
-			model.addAttribute("username",user.getUsername());
-			model.addAttribute("userid",user.getId());
-		}
+//        // SiteUser의 username을 모델에 추가 에러 발생
+        if (store.getSiteUser() != null) {
+            model.addAttribute("username", store.getSiteUser().getUsername());
+        }
+        // 평균 평점 및 리뷰 수 계산
+        double averageRating = storeService.getStoreForstar(storeId);
+        model.addAttribute("averageRating", averageRating);
+
+
         return "store/store_detail"; // 상세 페이지 템플릿
     }
 
@@ -171,5 +181,7 @@ public class StoreController {
 
         return "store/store_alist";
     }
+
+
     
 }

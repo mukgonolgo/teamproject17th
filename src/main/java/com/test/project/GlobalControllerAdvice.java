@@ -23,9 +23,10 @@ public class GlobalControllerAdvice {
         if (userDetails != null) {
             userService.getUserByUsername(userDetails.getUsername())
                 .ifPresent(user -> {
-                    model.addAttribute("profileImage", user.getImageUrl());
-                    model.addAttribute("username", user.getUsername());
-                    model.addAttribute("userid",user.getId());
+                	model.addAttribute("profileImage",user.getImageUrl());
+        			model.addAttribute("username",user.getUsername());
+        			model.addAttribute("nickname",user.getNickname());
+        			model.addAttribute("userid",user.getId());
                 });
         }
     }

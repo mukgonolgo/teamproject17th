@@ -24,10 +24,9 @@ import lombok.Setter; // 추가
 @Entity
 public class Reservation {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer reservationid;
 	
-	private String reservationNumber;
 	@Column(columnDefinition = "TEXT")
 	private String reservationDay;
 	@Column(columnDefinition = "TEXT")
@@ -41,4 +40,7 @@ public class Reservation {
 	@ManyToOne
     @JoinColumn(name = "user_id") 
 	private SiteUser user;
+	// 예약 취소 값 1. 취소 대기 2. 사용자 취소 선택 3. 사업자 취소 확인
+    @Column(nullable = false)
+    private Integer reservationStatus = 1; // 기본값 1 삭제버튼 누르기 전
 }

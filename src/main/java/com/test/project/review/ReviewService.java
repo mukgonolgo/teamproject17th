@@ -184,6 +184,7 @@ public class ReviewService {
 
         // 서버로 전달된 파일 개수 출력
         System.out.println("서버가 수신한 파일 개수: " + imageFiles.size());
+        System.out.println("이미지 저장 경로: " + imagePath);  // 저장 경로 확인
 
         // 각 파일 이름 출력
         for (int i = 0; i < imageFiles.size(); i++) {
@@ -191,38 +192,29 @@ public class ReviewService {
             System.out.println("서버에서 받은 파일 " + (i + 1) + ": " + file.getOriginalFilename());
         }
 
-        // 기존 이미지 경로를 Set으로 변환
-        Set<String> existingImagesSet = new HashSet<>();
-        if (existingImages != null && !existingImages.isEmpty()) {
-            existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
-        }
-
-        // 현재 이미지 맵 가져오기
-        List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
-        List<ReviewImageMap> imagesToRemove = new ArrayList<>();
-
-        // 새로운 이미지 파일 처리
         for (MultipartFile file : imageFiles) {
             if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
                 continue;  // 파일이 비어있거나 잘못된 경우는 건너뜀
             }
 
-            // 중복 파일 처리 방지 로직 추가
-            if (reviewImageRepository.existsByFilename(file.getOriginalFilename())) {
-                System.out.println("중복된 파일이 발견되었습니다: " + file.getOriginalFilename());
-                continue;  // 중복된 파일이면 추가하지 않음
+            // 중복 파일 처리 방지 로직 개선
+            String filenameWithUUID = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            File dest = new File(imagePath + filenameWithUUID);
+            
+            // 파일 저장 로직에 try-catch 추가
+            try {
+                file.transferTo(dest);
+                System.out.println("파일이 성공적으로 저장되었습니다: " + filenameWithUUID);
+            } catch (IOException e) {
+                System.err.println("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
+                e.printStackTrace();
+                continue;  // 파일 저장에 실패한 경우 해당 파일 건너뜀
             }
-
-            // 파일 저장
-            String uuid = UUID.randomUUID().toString();
-            String filename = uuid + "_" + file.getOriginalFilename();
-            File dest = new File(imagePath + filename);
-            file.transferTo(dest);
 
             // 이미지 객체 생성 및 저장
             ReviewImage image = new ReviewImage();
-            image.setFilename(filename);
-            image.setFilepath("/img/upload/" + filename);
+            image.setFilename(filenameWithUUID);
+            image.setFilepath("/img/upload/" + filenameWithUUID);
             reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
 
             // 이미지와 리뷰의 매핑
@@ -233,12 +225,19 @@ public class ReviewService {
         }
 
         // 기존 이미지 처리: 유지할 이미지 경로만 남기고 나머지 이미지를 삭제
+        Set<String> existingImagesSet = new HashSet<>();
+        if (existingImages != null && !existingImages.isEmpty()) {
+            existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
+        }
+
+        List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
+        List<ReviewImageMap> imagesToRemove = new ArrayList<>();
+
         for (ReviewImageMap imageMap : currentImageMaps) {
             String fullPath = imageMap.getReviewImage().getFilepath();
 
-            // 만약 이미지 경로가 existingImages에 포함되어 있지 않으면 삭제 대상
             if (!existingImagesSet.contains(fullPath)) {
-                // 실제 파일 삭제
+                // 파일 삭제 시도
                 File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + fullPath);
                 if (fileToDelete.exists()) {
                     if (fileToDelete.delete()) {
@@ -248,8 +247,7 @@ public class ReviewService {
                     }
                 }
 
-                // 삭제할 이미지 매핑 저장
-                imagesToRemove.add(imageMap);
+                imagesToRemove.add(imageMap);  // 삭제할 이미지 매핑 추가
             }
         }
 
@@ -259,9 +257,6 @@ public class ReviewService {
         // 새로운 이미지를 추가한 후, 해당 이미지를 리뷰에 매핑
         currentImageMaps.addAll(reviewImageMaps);
 
-        // 이미지 리스트를 추가할 때 순서대로 추가하는 것을 보장하기 위해 새로운 리스트로 갱신
-        review.setReviewImageMap(currentImageMaps);
-
         // 리뷰 저장
         reviewRepository.save(review);
 
@@ -270,10 +265,6 @@ public class ReviewService {
 
 
 
-
-
-
-       
        @Transactional
        public void processTags(List<String> tags, Review review) {
            // 1. 기존 태그를 불러옴
@@ -319,11 +310,6 @@ public class ReviewService {
 
            reviewRepository.save(review);  // 리뷰 저장
        }
-
-
-
-
-
 
 
    

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.project.DataNotFoundException;
+import com.test.project.store.Store;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,35 +25,35 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final JavaMailSender mailSender;
-	private static final String UPLOAD_DIR = "src/main/resources/static/img/user/";
+   private final UserRepository userRepository;
+   private final PasswordEncoder passwordEncoder;
+   private final JavaMailSender mailSender;
+   private static final String UPLOAD_DIR = "src/main/resources/static/img/user/";
 
-	// 회원가입 로직
-	public SiteUser create(String username, String emailDomain, String password, String postcode, String basicAddress,
-			String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name,
-			String nickname,String userType) throws IOException {
+   // 회원가입 로직
+   public SiteUser create(String username, String emailDomain, String password, String postcode, String basicAddress,
+         String detailAddress, String phoneNumber, String snsAgree, MultipartFile imageFile, String name,
+         String nickname,String userType) throws IOException {
 
-		SiteUser user = new SiteUser();
-		user.setUsername(username);
-		user.setEmail(emailDomain);
-		user.setPostcode(postcode);
-		user.setBasicAddress(basicAddress);
-		user.setDetailAddress(detailAddress);
-		user.setPhoneNumber(phoneNumber);
-		user.setPassword(passwordEncoder.encode(password));
-		user.setSnsAgree(snsAgree);
-		user.setName(name);
-		user.setNickname(nickname); // 닉네임 저장
-		user.setUserType(userType); // userType 저장
-		
-		 // userType에 따른 approvalStatus 설정
-	    if (userType.equals("일반회원")) {
-	        user.setApprovalStatus(1); // 일반회원
-	    } else if (userType.equals("사업자")) {
-	        user.setApprovalStatus(2); // 승인 대기 중인 사업자
-	    }
+      SiteUser user = new SiteUser();
+      user.setUsername(username);
+      user.setEmail(emailDomain);
+      user.setPostcode(postcode);
+      user.setBasicAddress(basicAddress);
+      user.setDetailAddress(detailAddress);
+      user.setPhoneNumber(phoneNumber);
+      user.setPassword(passwordEncoder.encode(password));
+      user.setSnsAgree(snsAgree);
+      user.setName(name);
+      user.setNickname(nickname); // 닉네임 저장
+      user.setUserType(userType); // userType 저장
+      
+       // userType에 따른 approvalStatus 설정
+       if (userType.equals("일반회원")) {
+           user.setApprovalStatus(1); // 일반회원
+       } else if (userType.equals("사업자")) {
+           user.setApprovalStatus(2); // 승인 대기 중인 사업자
+       }
 
 // 프로필 이미지 저장 로직
 
@@ -85,6 +86,11 @@ public class UserService {
       } else {
          throw new DataNotFoundException("해당 회원이 없습니다.");
       }
+   }
+
+   public SiteUser getUserId(Long id) {
+       return userRepository.findById(id)
+               .orElseThrow(() -> new DataNotFoundException("User not found"));
    }
 
    // 아이디 중복 확인 로직
@@ -163,8 +169,8 @@ public class UserService {
    }
    //다른페이지에서도 네브바 프로필사진과 닉네임이 뜨게 하기 위해 작성 
    public Optional<SiteUser> getUserByUsername(String username) {
-	    return userRepository.findByUsername(username);
-	}
+       return userRepository.findByUsername(username);
+   } 
 
 
    public boolean checkPassword(String rawPassword, String encodedPassword) {
@@ -177,15 +183,15 @@ public class UserService {
    }
 
 // 닉네임 중복 확인 로직
-	public boolean isNicknameTaken(String nickname) {
-		return userRepository.findByNickname(nickname).isPresent();
-	}
-	
-	public List<SiteUser> findAllUsers() {
-	    return userRepository.findAll(); // DB에서 모든 사용자 조회
-	}
-	
-	 // 회원 삭제
+   public boolean isNicknameTaken(String nickname) {
+      return userRepository.findByNickname(nickname).isPresent();
+   }
+   
+   public List<SiteUser> findAllUsers() {
+       return userRepository.findAll(); // DB에서 모든 사용자 조회
+   }
+   
+    // 회원 삭제
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);  // JPA Repository의 deleteById 메서드를 사용하여 삭제
     }
@@ -212,10 +218,10 @@ public class UserService {
         return userRepository.findAll(pageable);  // 모든 유저 정보를 페이지네이션으로 반환
     }
 
-	public Page<SiteUser> searchById(long long1, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+   public Page<SiteUser> searchById(long long1, Pageable pageable) {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
 }
 
