@@ -142,6 +142,7 @@ a {
    cursor: pointer;
 }
 .S3_btn_box{
+
    margin-top: -50px !important;
 }
 
@@ -196,4 +197,5 @@ a {
         margin-top: 20px;
          margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
      }
+
 

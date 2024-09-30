@@ -144,6 +144,7 @@ var map;
          overlays = [];  // 오버레이 배열 초기화
      }
 
+
 //인원수, 달력, 메뉴 제이쿼리
 $(document).ready(function() {
     const $rangeInput = $('#customRange2');
@@ -241,9 +242,146 @@ $(document).ready(function() {
         $(this).closest('.dropdown').find('.dropdown-toggle').text(selectedText);
     });
 });
+var map;
+    var markers = [];
+    var overlays = [];
+    var currentOverlay = null;  // 현재 표시 중인 오버레이 저장
 
+    // 서브 지역을 업데이트하는 함수
+    function updateSubRegion() {
+        var region1 = document.getElementById('region1').value;
+        var region2 = document.getElementById('region2');
+        region2.innerHTML = '';  // 기존 옵션 초기화
+
+        // 선택된 지역에 따라 하위 지역을 동적으로 추가
+        if (region1 === 'seoul') {
+            var options = [
+                {name: '강남구', value: '37.517236,127.047325'},
+                {name: '서초구', value: '37.530125,126.975403'}
+            ];
+        } else if (region1 === 'busan') {
+            var options = [
+                {name: '해운대구', value: '35.179554,129.075641'},
+                {name: '수영구', value: '35.127329,128.980051'}
+            ];
+        } else if (region1 === 'gyeonggi') {
+            var options = [
+                {name: '권선구', value: '37.2414248,127.0161908'},
+                {name: '수영구', value: '35.127329,128.980051'}
+            ];
+        }
+
+        // 새로운 옵션을 추가
+        for (var i = 0; i < options.length; i++) {
+            var option = document.createElement('option');
+            option.value = options[i].value;
+            option.text = options[i].name;
+            region2.add(option);
+        }
+    }
+
+    // 지도를 띄우고 마커를 표시하는 함수
+    function showMap() {
+        var mapDiv = document.getElementById('map');
+        var closeButton = document.getElementById('closeMap');
+        mapDiv.style.display = 'block';  // 지도를 보여줌
+        closeButton.style.display = 'block';  // 닫기 버튼도 표시
+
+        // 지도가 아직 생성되지 않은 경우에만 생성
+        if (!map) {
+            var container = mapDiv;
+            var options = {
+                center: new kakao.maps.LatLng(37.517236, 127.047325),  // 기본 좌표 (서울)
+                level: 5
+            };
+            map = new kakao.maps.Map(container, options);  // 지도를 생성
+        }
+
+        // 기존 마커와 오버레이를 모두 삭제
+        markers.forEach(marker => marker.setMap(null));
+        overlays.forEach(overlay => overlay.setMap(null));  // 모든 오버레이 닫기
+        markers = [];
+        overlays = [];
+        currentOverlay = null;  // 현재 오버레이 초기화
+
+        // 페이지에 있는 가게 정보 가져오기
+        var latElements = document.querySelectorAll('.store-lat');
+        var lngElements = document.querySelectorAll('.store-lng');
+        var nameElements = document.querySelectorAll('.store-name');  // 가게 이름 가져옴
+
+        // 마커 생성 및 클릭 이벤트 추가
+        for (let i = 0; i < latElements.length; i++) {
+            var lat = parseFloat(latElements[i].value);
+            var lng = parseFloat(lngElements[i].value);
+            var storeName = nameElements[i].value;  // 가게 이름
+
+            // 위도와 경도 값이 유효한 경우에만 마커 생성
+            if (!isNaN(lat) && !isNaN(lng)) {
+                var markerPosition = new kakao.maps.LatLng(lat, lng);
+                var marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+
+                marker.setMap(map);
+                markers.push(marker);
+
+                // 오버레이 내용 생성 (카드 형식)
+                var content = `
+                    <div class="card" style="width: 15rem;">
+                      <img src="https://via.placeholder.com/150" class="card-img-top" alt="가게 이미지">
+                      <div class="card-body">
+                        <h5 class="card-title">` + storeName + `</h5>
+                      </div>
+                    </div>
+                `;
+
+                // 오버레이 생성
+                var overlay = new kakao.maps.CustomOverlay({
+                    content: content,
+                    position: markerPosition,
+                    yAnchor: 1.12  // 오버레이가 마커 위에 나타나도록 위치 조정
+                });
+
+                // 오버레이를 토글 방식으로 표시
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    if (currentOverlay === overlay) {
+                        currentOverlay.setMap(null);  // 클릭 시 현재 오버레이 닫기
+                        currentOverlay = null;  // 오버레이 초기화
+                    } else {
+                        if (currentOverlay) {
+                            currentOverlay.setMap(null);  // 기존 오버레이 닫기
+                        }
+                        overlay.setMap(map);  // 새로운 오버레이 표시
+                        currentOverlay = overlay;  // 현재 오버레이로 설정
+                    }
+                });
+
+                overlays.push(overlay);  // 오버레이를 배열에 추가하여 추적
+            }
+        }
+
+        // 마지막 마커로 지도의 중심을 이동
+        if (markers.length > 0) {
+            var lastMarkerPosition = markers[markers.length - 1].getPosition();
+            map.setCenter(lastMarkerPosition);
+        }
+    }
+
+    // 지도를 닫는 함수
+    function closeMap() {
+        var mapDiv = document.getElementById('map');
+        var closeButton = document.getElementById('closeMap');
+        mapDiv.style.display = 'none';  // 지도를 숨김
+        closeButton.style.display = 'none';  // 닫기 버튼 숨김
+
+        // 지도 닫을 때 오버레이도 모두 제거
+        overlays.forEach(overlay => overlay.setMap(null));
+        currentOverlay = null;  // 현재 오버레이 초기화
+        overlays = [];  // 오버레이 배열 초기화
+		}
 
 document.addEventListener('DOMContentLoaded',
+
             function() {
                const carouselItems = document
                      .querySelectorAll('.carousel-item');
@@ -261,3 +399,4 @@ document.addEventListener('DOMContentLoaded',
             });
             
                      
+
