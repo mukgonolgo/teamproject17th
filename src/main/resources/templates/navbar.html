@@ -243,11 +243,11 @@
 
 				<!-- 승인받은 사업자 -->
 				<li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 3">
-					<a th:href="@{/mypage/{userid}(userid=${userid})}">
-						<span class="nav-link" th:text="${nickname} + ' 님 '"></span>
-					</a>
-					
-
+				    <a th:href="@{/mypage/{userid}(userid=${userid})}">
+				        <span class="nav-link" th:text="${nickname} + ' 님 '"></span>
+				    </a>
+				    <!-- 추가된 예약 리스트 확인 링크 -->
+				    <a class="nav-link" th:href="@{/reservation/list}">예약 리스트 확인</a>
 				</li>
 
 				<!-- 보류 중인 사업자 -->

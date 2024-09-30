@@ -1,7 +1,11 @@
 package com.test.project.reservation;
 
 import java.security.Principal;
+import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.test.project.store.StoreService;
@@ -60,6 +65,29 @@ public class ReservationController {
 		return "reservation/reservation_completed";
 	}
 
+	  @GetMapping("/list")
+	    @PreAuthorize("isAuthenticated()")
+	    public String list(Model model, 
+	                       @RequestParam(value = "page", defaultValue = "0") int page,
+	                       Principal principal) {
+
+	        // 로그인한 사용자 정보를 가져옴
+	        SiteUser siteUser = userService.getUser(principal.getName());
+
+	        // 사용자가 소유한 가게들을 가져옴
+	        List<Store> stores = storeService.getStoresByOwner(siteUser);
+
+	        // 해당 가게들의 예약 리스트를 가져옴
+	        Pageable pageable = PageRequest.of(page, 10);
+	        Page<Reservation> reservationPage = reservationService.getReservationsByStores(stores, pageable);
+
+	        // 모델에 예약 정보를 추가
+	        model.addAttribute("reservationPage", reservationPage);
+	        model.addAttribute("currentPage", page);
+	        model.addAttribute("totalPages", reservationPage.getTotalPages());
+
+	        return "reservation/reservation_list";
+	    }
     
 
 

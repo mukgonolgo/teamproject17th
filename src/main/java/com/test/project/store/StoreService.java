@@ -89,5 +89,21 @@ public class StoreService {
         return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
     }
 
+	public Store getStoreByUser(SiteUser siteUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	public Store getStoreByOwner(SiteUser siteUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	 // 로그인한 사용자의 가게 리스트 반환
+    public List<Store> getStoresByOwner(SiteUser siteUser) {
+        return storeRepository.findBySiteUser(siteUser);
+    }
     
 }

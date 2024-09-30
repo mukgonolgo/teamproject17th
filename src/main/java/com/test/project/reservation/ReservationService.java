@@ -1,8 +1,11 @@
 package com.test.project.reservation;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.test.project.store.StoreService;
@@ -65,7 +68,25 @@ public class ReservationService {
 		}
 	}
 	
+	// 예약 ID로 검색
+    public Page<Reservation> searchByReservationId(String reservationId, Pageable pageable) {
+        return reservationRepository.findByReservationidContaining(reservationId, pageable);
+    }
 
+    // 가게 이름으로 검색
+    public Page<Reservation> searchByStoreName(String storeName, Pageable pageable) {
+        return reservationRepository.findByStore_StoreNameContaining(storeName, pageable);
+    }
+
+    // 전체 예약 리스트 조회
+    public Page<Reservation> getReservationList(Pageable pageable) {
+        return reservationRepository.findAll(pageable);
+    }
+
+ // 가게 리스트에 해당하는 예약 정보 가져오기
+    public Page<Reservation> getReservationsByStores(List<Store> stores, Pageable pageable) {
+        return reservationRepository.findByStoreIn(stores, pageable);
+    }
 	
 
 
