@@ -62,7 +62,8 @@ public class StoreService {
             store.setApprovalStatus(4); // 프리미엄 승인 대기중
         } else {
             store.setApprovalStatus(1); // 일반 광고 승인 대기중
-        }		if(!imageFile.isEmpty()) {
+        }		
+        if(!imageFile.isEmpty()) {
 			//고유한 이미지 이름 생성
 			String fileName = UUID.randomUUID().toString()+"_"+imageFile.getOriginalFilename();
 			//파일 저장 경로
