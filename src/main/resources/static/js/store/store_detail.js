@@ -310,7 +310,3 @@ setInterval(checkOpenHours, 1800000);
 // 페이지 로드 시 초기 상태 확인
 checkOpenHours();
 
-
-
-
-

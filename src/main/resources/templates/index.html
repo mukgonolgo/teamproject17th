@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="/css/review_page.css">
+
 <link rel="stylesheet" href="/css/category.css">
 <link rel="stylesheet" href="/mystyle.css">
 <link rel="stylesheet"
@@ -12,9 +12,9 @@
 <div layout:fragment="content">
 
 	<section class="M_s1">
-		<div id="carouselExampleCaptions" class="carousel slide"
-			data-bs-ride="carousel">
-			<div class="carousel-indicators">
+
+		<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+			<div class="carousel-indicators d-none" >
 				<!-- Indicators will be dynamically added here -->
 			</div>
 			<div class="carousel-inner">
@@ -23,7 +23,7 @@
 					<img src="/img/carousel_1.png" class="d-block w-100 img-fluid"
 						alt="...">
 					<div class="carousel-caption d-none d-md-block">
-						<h5 class="text-title t-shadow">우린 그냥 먹고놀고</h5>
+						<h5 class="text-title t-shadow" >우린 그냥 먹고놀고</h5>
 						<p class="content t-shadow">당신이 찾던 맛집 사이트</p>
 					</div>
 				</div>
@@ -87,7 +87,7 @@
 		</div>
 	</section>
 	<section class="M_s2">
-		<div class="container my-5">
+		<div class="container my-5" style="overflow: hidden;">
 			<div class="M_s2_a1">
 				<h3 class="mt-4 my-3">인기 있는 맛집</h3>
 				<div class="swiper-container" th:if="${storeList != null}">
@@ -99,8 +99,7 @@
 										data-ride="carousel">
 										<div class="carousel-inner">
 											<div class="carousel-item active">
-												<img src="img/food/food1_1.jpg" class="card-img-top"
-													alt="가게 이미지 1">
+												<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="card-img-top" alt="가게 이미지" />
 											</div>
 										</div>
 									</div>

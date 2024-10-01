@@ -52,6 +52,7 @@ textarea {
 }
 
 
+
 .d-flex {
     display: flex;
     align-items: center; /* 세로 정렬 */
@@ -59,6 +60,7 @@ textarea {
 
 input[type="radio"] {
     margin:0 5px 10px 
+
 }
 .product-info {
     display: flex;
@@ -177,4 +179,6 @@ select {
 	    box-shadow: none;
 	}
 
+
 }
+

@@ -116,7 +116,6 @@ p {
 	border: none;
 }
 
-
 .like_title {
     overflow: hidden;          /* 내용이 넘칠 경우 숨김 처리 */
     white-space: nowrap;      /* 텍스트가 줄 바꿈되지 않도록 설정 */

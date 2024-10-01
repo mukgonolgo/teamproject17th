@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
+
 import com.test.project.review.Review;
 import com.test.project.review.ReviewService;
 import com.test.project.review.img.ReviewImage;
@@ -31,12 +32,9 @@ import com.test.project.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-
-
 @RequiredArgsConstructor
 @Controller
-public class MainController {
-	
+public class MainController {	
 		@Autowired
 	    private final ReviewLikeService reviewLikeService;	
 	    private final UserService userService;
@@ -123,7 +121,4 @@ public class MainController {
 	    }
 
 
-	
-
 }
-
