@@ -100,7 +100,7 @@
 												<div
 													class="swiper-slide card mr-2 d-flex align-items-center">
 													<div class="like_img"
-														style="border-radius: 10px; width: 100%; height: 60%; background-color: aqua;">
+														style="border-radius: 10px; width: 100%; height: 60%; ">
 														<!-- <img src="이미지_주소.jpg" alt="이미지 설명" style="width: 100%; height: auto;"> -->
 													</div>
 													<div class="like_title">
@@ -132,7 +132,7 @@
 													th:each="reservation : ${reservations}">
 
 													<div class="reservation_img"
-														style="border-radius: 10px; width: 100%; height: 55%; background-color: aqua;">
+														style="border-radius: 10px; width: 100%; height: 55%; ">
 														<a
 															th:href="@{/reservation/completed/{reservationid}(reservationid=${reservation.reservationid})}"
 															style="width: 100%; height: 100%;"> <img
@@ -144,7 +144,10 @@
 																<p th:text="${reservation.store.storeName}">식당 이름:</p>
 																<p th:text="${reservation.reservationDay}">예약 날짜:</p>
 																<span class="badge text-center"> <!-- mx-auto 추가 -->
-																	<a href="#">리뷰쓰기</a>
+																	<a th:href="@{/review_create_form(storeId=${reservation.store.storeId}, storeName=${reservation.store.storeName})}">
+    리뷰쓰기
+</a>
+
 																</span>
 															</div>
 														</a>
