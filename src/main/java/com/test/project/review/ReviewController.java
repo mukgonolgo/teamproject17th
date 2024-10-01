@@ -69,16 +69,19 @@ public class ReviewController {
 
     @Autowired
     private UserService userService;
-
-    // 리뷰 목록 페이지를 반환하는 메서드(검색기능추가)
     @GetMapping("/review")
-    public String reviewPage(@RequestParam(value = "query", required = false) String query, Model model) {
+    public String reviewPage(@RequestParam(value = "query", required = false) String query, 
+                             @RequestParam(value = "region", required = false) String region, 
+                             Model model) {
         List<Review> reviewPage;
 
-        if (query != null && !query.isEmpty()) {
-            reviewPage = reviewService.searchReviews(query);
+        // 지역이 선택된 경우
+        if (region != null && !region.isEmpty()) {
+            reviewPage = reviewService.getReviewsByRegion(region); // 지역에 따른 리뷰 검색
+        } else if (query != null && !query.isEmpty()) {
+            reviewPage = reviewService.searchReviews(query); // 검색어에 따른 리뷰 검색
         } else {
-            reviewPage = reviewService.getAllReviews();
+            reviewPage = reviewService.getAllReviews(); // 전체 리뷰 가져오기
         }
 
         Long userId = reviewService.getCurrentUserId();
@@ -86,12 +89,12 @@ public class ReviewController {
         model.addAttribute("stores", stores); // 가게 리스트 추가
         model.addAttribute("reviewPage", reviewPage); // 리뷰 목록 추가
 
-        // 리뷰의 각 스토어에 대해 주소를 "시"까지만 잘라서 설정
+        // 리뷰의 각 스토어에 대해 주소를 설정
         for (Review review : reviewPage) {
             Store store = review.getStore();
             if (store != null) {
                 String shortAddress = getShortAddress(store.getBasicAddress());
-                review.getStore().setBasicAddress(shortAddress); // 잘린 주소를 설정
+                store.setBasicAddress(shortAddress); // 잘린 주소 설정
             }
         }
 
@@ -130,7 +133,6 @@ public class ReviewController {
 
 
 
- // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Review review = reviewService.findReviewById(id).orElseThrow(() -> new RuntimeException("Review not found"));
@@ -155,12 +157,10 @@ public class ReviewController {
         long commentCount = reviewcommentService.countCommentsByReviewId(id);  // 댓글 수 계산
 
         // 스토어 정보를 모델에 추가
-
         Store store = review.getStore();  // 리뷰와 연결된 스토어 정보 가져오기
         model.addAttribute("storeName", store.getStoreName());  // 스토어 이름 추가
         model.addAttribute("storeAddress", store.getBasicAddress());  // 스토어 주소 추가
         model.addAttribute("storeImage", store.getImageUrl());  // 스토어 이미지 추가
-
 
         model.addAttribute("review", review);
         model.addAttribute("likedByUser", likedByUser);
@@ -172,6 +172,7 @@ public class ReviewController {
 
         return "review/review_detail";  // 리뷰 상세 페이지로 이동
     }
+
 
 
 

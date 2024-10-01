@@ -22,52 +22,41 @@
 <div layout:fragment="content">
 
 	<!-- 검색란 -->
-	<div class="section1 container my-5">
-		<div class="row d-flex justify-content-end">
-			<!--지역선택-->
-			<div class="col-auto">
-				<select name="h_area1" id="region1" onChange="updateSubRegion()"
-					class="h_area1 form-control">
-					<option value="">지역</option>
-					<option value="seoul">서울특별시</option>
-					<option value="busan">부산광역시</option>
-					<option value="gyeonggi">경기도</option>
-					<option value="daegu">대구광역시</option>
-					<option value="incheon">인천광역시</option>
-					<option value="daejeon">대전광역시</option>
-					<option value="gwangju">광주광역시</option>
-					<option value="ulsan">울산광역시</option>
-					<option value="sejong">세종특별자치시</option>
-					<option value="gangwon">강원도</option>
-					<option value="chungbuk">충청북도</option>
-					<option value="chungnam">충청남도</option>
-					<option value="jeonbuk">전라북도</option>
-					<option value="jeonnam">전라남도</option>
-					<option value="gyeongbuk">경상북도</option>
-					<option value="gyeongnam">경상남도</option>
-					<option value="jeju">제주특별자치도</option>
-				</select>
-			</div>
+  <div class="section1 container my-5">
+        <div class="row d-flex justify-content-end">
+            <!-- 지역 선택 드롭다운 -->
+            <div class="col-auto">
+                <select name="h_area1" id="region1" onchange="updateSubRegion()" class="h_area1 form-control">
+                    <option value="">지역</option>
+                    <option value="seoul">서울특별시</option>
+                    <option value="busan">부산광역시</option>
+                    <option value="gyeonggi">경기도</option>
+                    <option value="daegu">대구광역시</option>
+                    <option value="incheon">인천광역시</option>
+                    <option value="daejeon">대전광역시</option>
+                    <option value="gwangju">광주광역시</option>
+                    <option value="ulsan">울산광역시</option>
+                    <option value="sejong">세종특별자치시</option>
+                    <option value="gangwon">강원도</option>
+                    <option value="chungbuk">충청북도</option>
+                    <option value="chungnam">충청남도</option>
+                    <option value="jeonbuk">전라북도</option>
+                    <option value="jeonnam">전라남도</option>
+                    <option value="gyeongbuk">경상북도</option>
+                    <option value="gyeongnam">경상남도</option>
+                    <option value="jeju">제주특별자치도</option>
+                </select>
+            </div>
 
-			<div class="col-auto">
-				<select name="h_area2" id="region2" class="form-control">
-					<option>-선택-</option>
-				</select>
-			</div>
+           <div class="col-auto">
+    <select name="h_area2" id="region2" class="form-control" onchange="filterReviews()">
+        <option value="">-선택-</option> <!-- 기본 선택 옵션 -->
+        <option value="전체">전체</option> <!-- 전체 옵션 추가 -->
+    </select>
+</div>
 
-			<!-- 지도 선택 -->
-			<div class="col-auto">
-				<button class="btn text-secondary bg-white category_btn"
-					onclick="showMap()">
-					지도 선택<i class="fa-solid fa-map ml-1"></i>
-				</button>
-			</div>
-
-		</div>
-		<hr>
-		<div id="map"></div>
-
-		<button id="closeMap" onclick="closeMap()">지도 닫기</button>
+        </div>
+    </div>
 
 
 		<!--중간 긴 캐로셀-->
@@ -257,8 +246,8 @@
 											th:text="${review.store.basicAddress}"
 											style="font-weight: bold;">Store Address</span> <span
 											th:if="${review.store != null}"
-											th:text="${review.store.storeName}"
-											>Store Name</span>
+											th:text="${review.store.storeName}">Store
+												Name</span>
 
 									</small>
 									</a>
@@ -325,5 +314,4 @@
 
 
 
-	</div>
-</html>
+	</div></html>

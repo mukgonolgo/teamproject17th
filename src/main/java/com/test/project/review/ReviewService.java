@@ -280,5 +280,11 @@ public class ReviewService {
 	    return reviewRepository.findAll(pageable).getContent();
 	}
 
+	
+	   public List<Review> getReviewsByRegion(String region) {
+	        // 지역 정보가 포함된 리뷰를 검색
+	        return reviewRepository.findByStoreBasicAddressContaining(region);
+	    }
+
 
 }

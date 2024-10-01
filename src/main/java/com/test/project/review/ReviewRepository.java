@@ -47,6 +47,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     
  // 최신순으로 상위 6개의 리뷰를 가져오는 쿼리
     List<Review> findTop6ByOrderByCreateDateDesc();
+    
+ //ReviewRepository 수정 - 지역 검색 메서드 추가   
+    List<Review> findByStoreBasicAddressContaining(String region); // 지역을 포함하는 리뷰 검색 메서드
 
 
 }

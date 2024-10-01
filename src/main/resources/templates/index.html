@@ -140,14 +140,10 @@
 			<div class="M_s2_a2">
 				<div class="section3 mt-5">
 					<div class="container my-5">
-
-						<div class="d-flex align-items-center justify-content-between">
-							<h3 class="mt-5 my-3 ml-2">새로 올라온 후기</h3>
-							<a href="/review" class="mt-5"> <small> 더 보러가기</small>
-							</a>
+						<div class="d-flex align-items-center">
+							<h3 class="mt-5 my-3 ml-2  mr-2">새로 올라온 후기</h3>
+						
 						</div>
-
-
 						<div class="row S3_review_card">
 							<div class="col-xl-4 col-lg-6 my-2"
 								th:each="review : ${recentReviews}">
@@ -223,16 +219,21 @@
 											<p class="col-12 S3_store mb-1" th:each="review : ${reviews}">
 												<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
 											<div class="starRating" th:data-review-id="${review.id}"></div>
-										
-										<small
-										class="text-muted">
-										<p class="col-12 S3_store mb-1">
-    <i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
-    <!-- 리뷰 리스트에서 주소 표시 -->
-<span th:if="${review.store != null}" th:text="${shortAddressMap[review.id]}" style="font-weight: bold;">가게 주소</span> <!-- 잘린 주소 표시 -->
-      <span th:text="${review.store.storeName}"
-      >가게 이름</span> <!-- 가게 이름 표시 -->
-</p></small>
+
+											<small class="text-muted">
+												<p class="col-12 S3_store mb-1">
+													<i class="fa-solid fa-location-dot mx-2"
+														style="color: #000000;"></i>
+													<!-- 리뷰 리스트에서 주소 표시 -->
+													<span th:if="${review.store != null}"
+														th:text="${shortAddressMap[review.id]}"
+														style="font-weight: bold;">가게 주소</span>
+													<!-- 잘린 주소 표시 -->
+													<span th:text="${review.store.storeName}">가게
+														이름</span>
+													<!-- 가게 이름 표시 -->
+												</p>
+											</small>
 
 											<p class="col-12 S3_store mb-1"></p>
 
@@ -268,10 +269,6 @@
 				</div>
 
 			</div>
-			
-			
-
-
 	</section>
 	<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 	<script src="myscript.js"></script>
