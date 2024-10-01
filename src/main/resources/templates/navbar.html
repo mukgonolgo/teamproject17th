@@ -67,7 +67,7 @@
                <a class="nav-link" href="/review">이용후기</a>
             </li>
             <li class="nav-item mx-2">
-               <a class="nav-link"  th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -93,7 +93,7 @@
                <a class="nav-link" href="/review">이용후기</a>
             </li>
             <li class="nav-item mx-2">
-               <a class="nav-link"  th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -119,7 +119,7 @@
                <a class="nav-link" href="/review">이용후기</a>
             </li>
             <li class="nav-item mx-2">
-               <a class="nav-link"  th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -138,17 +138,17 @@
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 1">
             <li class="nav-item active mx-2">
-               <a class="nav-link" th:href="@{/store/create}">식당등록</a> <!-- 식당등록 메뉴 -->
+               <a class="nav-link" href="/store/list">맛집찾기</a>
             </li>
             <li class="nav-item mx-2">
-               <a class="nav-link" th:href="@{/store/list}">맛집찾기</a> <!-- 맛집찾기 메뉴 -->
-            </li>
-            <li class="nav-item mx-2">
-               <a class="nav-link" th:href="@{/reservation/confirm}">예약확인</a> <!-- 예약확인 메뉴 -->
+               <a class="nav-link" href="/eat">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" th:href="@{/notices/list}">공지사항</a> <!-- 공지사항 메뉴 -->
             </li>
+            <li class="nav-item mx-2">
+                          <a class="nav-link" href="/review">이용후기</a>
+                       </li>
          </ul>
 
 
@@ -223,7 +223,7 @@
          <ul class="navbar-nav ml-md-auto d-none d-lg-flex" sec:authorize="isAuthenticated()">
             <li class="nav-item mt-1"><img
                   th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}"
-                  alt="프로필이미지" width="40" height="40"  class="rounded-circle" /></li>
+                  alt="프로필이미지" width="40" height="40" class="rounded-circle" /></li>
 
             <!-- 관리자 -->
             <li class="nav-item d-flex align-items-center"
@@ -237,16 +237,16 @@
                <a th:href="@{/mypage/{userid}(userid=${userid})}">
                   <span class="nav-link" th:text="${nickname} + ' 님 '"></span>
                </a>
-               
+
                <a class="nav-link" th:href="@{/user/somePage}">대기 중인 기능</a>
             </li>
 
             <!-- 승인받은 사업자 -->
             <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 3">
-                <a th:href="@{/mypage/{userid}(userid=${userid})}">
-                    <span class="nav-link" th:text="${nickname} + ' 님 '"></span>
-                </a>
-                <!-- 추가된 예약 리스트 확인 링크 
+               <a th:href="@{/mypage/{userid}(userid=${userid})}">
+                  <span class="nav-link" th:text="${nickname} + ' 님 '"></span>
+               </a>
+               <!-- 추가된 예약 리스트 확인 링크 
                 <a class="nav-link" th:href="@{/reservation/list}">예약 리스트 확인</a>-->
             </li>
 
@@ -260,19 +260,16 @@
                </form>
             </li>
 
+
             <!-- 일반 사용자 -->
             <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 1">
-                <a th:href="@{/mypage/{userid}(userid=${userid})}">
-                    <span class="nav-link" th:text="${nickname} + ' 님'"></span>
-                </a>
+               <a th:href="@{/mypage/{userid}(userid=${userid})}">
+                  <span class="nav-link" th:text="${nickname} + ' 님'"></span>
+               </a>
             </li>
 
             <!-- 예약 리스트 추가 -->
-            <li class="nav-item d-flex align-items-center" sec:authorize="principal.approvalStatus == 1">
-                <a th:href="@{/reservation/mylist}">
-                    <span class="nav-link">내 예약 리스트</span>
-                </a>
-            </li>
+
 
 
 
