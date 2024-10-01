@@ -75,6 +75,7 @@ public class MainController {
 	        model.addAttribute("likedStores", likedStores); // 좋아요한 식당 리스트 추가
 
 			return "user/mypage"; // mypage.html 파일을 렌더링
+			return "user/mypage"; // mypage.html 파일을 렌더링
 		}
 
 		return "redirect:/error"; // 유저가 없으면 에러 처리
