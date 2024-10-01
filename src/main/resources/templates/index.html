@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="/css/review_page.css">
+
 <link rel="stylesheet" href="/css/category.css">
 <link rel="stylesheet" href="/mystyle.css">
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
@@ -10,7 +10,7 @@
 	
 	<section class="M_s1">
 		<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-			<div class="carousel-indicators">
+			<div class="carousel-indicators d-none" >
 				<!-- Indicators will be dynamically added here -->
 			</div>
 			<div class="carousel-inner">
@@ -77,7 +77,7 @@
 		</div>
 	</section>
 	<section class="M_s2">
-		<div class="container my-5">
+		<div class="container my-5" style="overflow: hidden;">
 			<div class="M_s2_a1">
 				<h3 class="mt-4 my-3">인기 있는 맛집</h3>
 				<div class="swiper-container" th:if="${storeList != null}">

@@ -28,7 +28,7 @@ public class StoreService {
     @Autowired
     private final StoreRepository storeRepository;
 
-    private static final String UPLOAD_DIR = "src/main/resources/static/img/store";
+	private static final String UPLOAD_DIR = "src/main/resources/static/img/store/";
     private final ReviewRepository reviewRepository;
     // 가게 정보 조회
     public Store getStore(Integer storeId) {
@@ -63,7 +63,7 @@ public class StoreService {
         } else {
             store.setApprovalStatus(1); // 일반 광고 승인 대기중
         }		
-        if(!imageFile.isEmpty()) {
+		if(!imageFile.isEmpty()) {
 			//고유한 이미지 이름 생성
 			String fileName = UUID.randomUUID().toString()+"_"+imageFile.getOriginalFilename();
 			//파일 저장 경로
@@ -95,6 +95,17 @@ public class StoreService {
  // 모든 가게 조회 (페이지네이션 추가)
     public Page<Store> getAllStores(Pageable pageable) {
         return storeRepository.findAll(pageable);
+    }
+    //좋아요 기능
+    public void vote(Store store, SiteUser siteUser) {
+        if (store.getVoter().contains(siteUser)) {
+            // 이미 좋아요를 눌렀다면 삭제
+            store.getVoter().remove(siteUser);
+        } else {
+            // 좋아요를 누르지 않았다면 추가
+            store.getVoter().add(siteUser);
+        }
+        this.storeRepository.save(store);
     }
 
     public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {

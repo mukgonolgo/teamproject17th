@@ -1,24 +1,32 @@
 package com.test.project.store;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.test.project.review.Review;
-import com.test.project.user.SiteUser;
-import com.test.project.user.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.test.project.user.SiteUser;
+import com.test.project.user.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/store")
 @RequiredArgsConstructor
@@ -27,6 +35,9 @@ public class StoreController {
     private final StoreService storeService;
     private final UserService userService;
 
+    // 이미지 업로드 기본 경로 설정 kimssam
+    private final String uploadDir = "C:/upload/";
+    
     
     @GetMapping("/store_alist_full")
     public String getStoreListForAdminWithoutPagination(Model model) {
@@ -81,6 +92,22 @@ public class StoreController {
             storeLatitude, storeLongitude, storeContent, kategorieGroup, storeTagGroups, 
             storeNumber, storeStarttime, storeEndTime, storeAdvertisement, siteUser, isPremium,imageFile);
         
+        // 이미지 파일 저장 처리 kimssam
+        String imageUrl = null;
+        if (!imageFile.isEmpty()) {
+            // 파일 저장 경로 설정
+            String originalFileName = imageFile.getOriginalFilename();
+            Path imagePath = Paths.get(uploadDir + originalFileName);
+
+            // 디렉토리 생성 (존재하지 않을 경우)
+            if (!Files.exists(imagePath.getParent())) {
+                Files.createDirectories(imagePath.getParent());
+            }
+
+            // 파일 저장
+            Files.write(imagePath, imageFile.getBytes());
+            imageUrl = "/uploads/" + originalFileName; // 나중에 정적 자원 경로에서 접근할 수 있도록 경로 설정
+        }
 
 
         // 등록 후 상세 페이지로 리디렉션
@@ -104,6 +131,18 @@ public class StoreController {
 
 
         return "store/store_detail"; // 상세 페이지 템플릿
+    }
+    
+  //좋아요 클릭시	
+//    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{storeId}")
+    public String storeVote(Principal principal, @PathVariable("storeId") Integer storeId) {
+    	Store store = this.storeService.getStore(storeId);
+    	SiteUser siteUser = this.userService.getUser(principal.getName());
+        // 서비스 메서드 호출
+        this.storeService.vote(store, siteUser);
+    	return String.format("redirect:/store/detail/%s", storeId);
+    	
     }
 
     @PostMapping("/approve")
