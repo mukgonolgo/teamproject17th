@@ -10,6 +10,7 @@ import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLike;
 import com.test.project.review.tag.ReviewTagMap;
+import com.test.project.store.Store;
 import com.test.project.review.comment.ReviewComment;  // 댓글 클래스 import
 import com.test.project.user.SiteUser;
 
@@ -32,89 +33,93 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "review")  // 이 클래스가 "review" 테이블과 매핑됨
+@Table(name = "review")
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ID 값을 자동으로 생성
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     private Long id;
     
-    @Column(length = 100, name = "review_title")  // 리뷰 제목 (최대 길이 100자)
+    @Column(length = 100, name = "review_title")
     private String title;
     
-    @Column(columnDefinition = "TEXT", name = "review_content")  // 리뷰 내용 (TEXT 타입)
+    @Column(columnDefinition = "TEXT", name = "review_content")
     private String content;
     
-    @Column(name = "rating")  // 리뷰 평점
+    @Column(name = "rating")
     private String rating;
 
-    @Column(name = "create_date")  // 리뷰 생성일
+    @Column(name = "create_date")
     private LocalDateTime createDate;
     
-    @Column(name = "updated_At")  // 리뷰 수정일
+    @Column(name = "updated_At")
     private LocalDateTime updatedAt;
     
     @ManyToOne
-    @JoinColumn(name = "user_id")  // 외래키를 "user_id"로 설정
-    private SiteUser user;  // 작성자 (SiteUser와 연관)
+    @JoinColumn(name = "user_id")
+    private SiteUser user;
 
-    // 이미지와의 관계 설정
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImageMap> reviewImageMap = new ArrayList<>();
 
-    // ReviewImageMap을 설정하는 메서드
-    public void setReviewImageMap(List<ReviewImageMap> reviewImageMap) {
-        this.reviewImageMap = reviewImageMap;
-    }
-
-    // 태그 맵핑을 위한 설정
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("orderIndex ASC")  // 태그들을 orderIndex 기준으로 정렬하여 가져옵니다.
+    @OrderBy("orderIndex ASC")
     private Set<ReviewTagMap> tagMaps = new HashSet<>();
 
-    // 댓글 및 대댓글과의 관계 설정
     @OneToMany(mappedBy = "review",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("createDate ASC")  // 생성일 기준으로 댓글을 정렬
+    @OrderBy("createDate ASC")
     private List<ReviewComment> commentList = new ArrayList<>();
-    
-    //좋아요 기능
+
+    @Column(name = "comment_count")
+    private Long commentCount = 0L;
+
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private List<ReviewLike> likes = new ArrayList<>();
     
-    // @Transient를 사용하여 데이터베이스에 저장하지 않음 (임시 필드)
+    @Column(name = "like_count")
+    private Long likeCount = 0L;
+
     @Transient
     private boolean likedByUser;  // 사용자가 좋아요를 눌렀는지 여부
 
-    @Transient
-    private Long likeCount;  // 좋아요 수
-
-    // Getter 및 Setter 추가
-    public boolean isLikedByUser() {
-        return likedByUser;
+    // 좋아요 추가
+    public void addLike(ReviewLike like) {
+        this.likes.add(like);
+        this.likeCount++;  // 좋아요 수 증가
     }
 
-    public void setLikedByUser(boolean likedByUser) {
-        this.likedByUser = likedByUser;
+    // 좋아요 제거 (음수 방지 포함)
+    public void removeLike(ReviewLike like) {
+        this.likes.remove(like);
+        if (this.likeCount > 0) {
+            this.likeCount--;  // 좋아요 수 감소
+        }
     }
 
-    public Long getLikeCount() {
-        return likeCount;
+    // 댓글 수 업데이트
+    public void updateCommentCount() {
+        this.commentCount = (long) this.commentList.size();
     }
 
-    public void setLikeCount(Long likeCount) {
-        this.likeCount = likeCount;
-    }
-    
-    // ReviewImageMap과 연관된 이미지 리스트를 반환하는 메서드 추가
+    // 이미지 리스트 반환
     public List<ReviewImage> getImages() {
         List<ReviewImage> images = new ArrayList<>();
-        
         for (ReviewImageMap imageMap : reviewImageMap) {
-            images.add(imageMap.getImage());  // ReviewImageMap에서 ReviewImage 객체를 가져옴
+            images.add(imageMap.getImage());
         }
-        
         return images;
     }
+    
 
+
+    // 좋아요 리스트에서 수를 카운트할 수도 있음
+    public void updateLikeCount() {
+        this.likeCount = (long) this.getLikes().size();
+    }
 }

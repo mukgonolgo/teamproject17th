@@ -23,34 +23,37 @@ public class ReviewDto {
     private List<ReviewTagMap> tagMaps;
     private Long likeCount;
     private boolean likedByUser;
+    private int commentCount;  // 댓글 수 필드 추가
 
-    // Review 엔티티를 ReviewDto로 변환하는 기존 생성자
+    // 기존 생성자
     public ReviewDto(Review review) {
         this.id = review.getId();
         this.title = review.getTitle();
         this.content = review.getContent();
         this.rating = review.getRating();
         this.createDate = review.getCreateDate();
-        this.userName = review.getUser().getUsername();  // 유저 이름을 포함
+        this.userName = review.getUser().getUsername();
         this.reviewImageMap = review.getReviewImageMap();
         this.commentList = review.getCommentList();
         this.tagMaps = List.copyOf(review.getTagMaps());
         this.likeCount = review.getLikeCount();
         this.likedByUser = review.isLikedByUser();
+        this.commentCount = review.getCommentList().size();  // 댓글 수 초기화
     }
 
-    // 새로운 생성자: Review, likedByUser, likeCount를 매개변수로 받음
+    // 새로운 생성자
     public ReviewDto(Review review, boolean likedByUser, Long likeCount) {
         this.id = review.getId();
         this.title = review.getTitle();
         this.content = review.getContent();
         this.rating = review.getRating();
         this.createDate = review.getCreateDate();
-        this.userName = review.getUser().getUsername();  // 유저 이름을 포함
+        this.userName = review.getUser().getUsername();
         this.reviewImageMap = review.getReviewImageMap();
         this.commentList = review.getCommentList();
         this.tagMaps = List.copyOf(review.getTagMaps());
-        this.likeCount = likeCount;  // 새로운 likeCount 할당
-        this.likedByUser = likedByUser;  // 새로운 likedByUser 할당
+        this.likeCount = likeCount;
+        this.likedByUser = likedByUser;
+        this.commentCount = review.getCommentList().size();  // 댓글 수 초기화
     }
 }

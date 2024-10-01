@@ -1,18 +1,27 @@
 package com.test.project.reservation;
 
 import java.util.List;
+
 import java.util.Set;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Sort;
+
+import com.test.project.notice.Notice;
+import com.test.project.user.SiteUser;
 
 import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer>{
-	 boolean existsByReservationNumber(String reservationNumber);
-	 
+	 boolean existsByReservationid(Integer reservationId);
+	 List<Reservation> findByUser(SiteUser user, Sort sort);
+
 	// 예약 ID로 검색 (여러 Store에 대해서)
 	 Page<Reservation> findByStoreInAndReservationid(List<Store> store, Integer reservationid, Pageable pageable);
 
@@ -36,4 +45,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 	    Page<Reservation> findByUserAndStore_StoreNameContaining(SiteUser user, String storeName, Pageable pageable);
 
 	    
+
+
+	 
+
 }

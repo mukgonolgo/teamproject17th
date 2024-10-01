@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.project.DataNotFoundException;
+import com.test.project.store.Store;
 
 import lombok.RequiredArgsConstructor;
 
@@ -86,6 +87,11 @@ public class UserService {
       } else {
          throw new DataNotFoundException("해당 회원이 없습니다.");
       }
+   }
+
+   public SiteUser getUserId(Long id) {
+       return userRepository.findById(id)
+               .orElseThrow(() -> new DataNotFoundException("User not found"));
    }
 
    // 아이디 중복 확인 로직

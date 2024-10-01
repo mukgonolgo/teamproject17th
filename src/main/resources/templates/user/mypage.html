@@ -42,9 +42,10 @@
 										style="align-self: center;">
 										<div class="menu">
 											<div class="My_select_btn d-flex justify-content-center" style="gap: 10px;">
-												<button class="btn border-dark rounded-pill">내 정보
-													수정</button>
-												<button class="btn btn-dark rounded-pill">로그아웃</button>
+												<a class="nav-link btn border-dark rounded-pill" th:href="@{/user/confirmPassword}">내 정보 수정</a>
+
+												<a class="nav-link btn btn-dark rounded-pill" th:href="@{/user/logout}">로그아웃</a>
+
 											</div>
 										</div>
 									</div>
@@ -110,7 +111,7 @@
 							<div class="top_boxs p-3 my_boxs">
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<spnn class="list_title">예약 리스트</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
+									<a th:href="@{/reservation/list}" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 								<div class="col  top_list p-3 d-flex align-items-center" style="overflow: hidden;">
 									<div class="swiper-container align-items-center" id="swiper2">

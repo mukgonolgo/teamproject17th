@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -70,25 +71,35 @@ public class ReviewController {
     private UserService userService;
 
     // 리뷰 목록 페이지를 반환하는 메서드
+ // 리뷰 목록 페이지를 반환하는 메서드 (검색 기능 추가)
     @GetMapping("/review")
-    public String reviewPage(Model model) {
 
-        List<Review> reviewPage = reviewService.getAllReviews();  // 모든 리뷰 가져오기
-        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자의 ID
+    public String reviewPage(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<Review> reviewPage;
 
-        List<Store> stores = storeService.getAllStore();  // 모든 가게 리스트를 가져옴
-        model.addAttribute("stores", stores);  // stores 데이터를 모델에 추가
+        if (query != null && !query.isEmpty()) {
+            // 검색어가 있을 경우, 해당 검색어로 리뷰를 검색
+            reviewPage = reviewService.searchReviews(query);
+        } else {
+            // 검색어가 없을 경우, 모든 리뷰를 가져오기
+            reviewPage = reviewService.getAllReviews();
+        }
+
+        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자 ID
+        List<Store> stores = storeService.getAllStore();  // 모든 가게 가져오기
+        model.addAttribute("stores", stores);  // 가게 리스트 추가
 
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
-        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수를 저장하는 Map
+        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수 저장할 Map
+
 
         for (Review review : reviewPage) {
             Long reviewId = review.getId();
             boolean likedByUser = false;
-            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수
+            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수 가져오기
 
             if (userId != null) {
-                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 로그인된 경우 좋아요 여부 확인
+                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 사용자가 좋아요를 눌렀는지 확인
             }
 
             LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
@@ -96,12 +107,15 @@ public class ReviewController {
 
             // 댓글 수 계산
             long commentCount = reviewcommentService.countCommentsByReviewId(reviewId);
-            commentCountMap.put(reviewId, commentCount);  // 각 리뷰에 대한 댓글 수 저장
+
+            commentCountMap.put(reviewId, commentCount);  // 각 리뷰별 댓글 수 저장
         }
 
-        model.addAttribute("reviewPage", reviewPage);  // 모든 리뷰 리스트
-        model.addAttribute("likeStatusMap", likeStatusMap);  // 각 리뷰의 좋아요 정보
-        model.addAttribute("commentCountMap", commentCountMap);  // 각 리뷰의 댓글 수 정보
+        // 모델에 데이터 추가
+        model.addAttribute("reviewPage", reviewPage);  // 필터링된 리뷰 목록 추가
+        model.addAttribute("likeStatusMap", likeStatusMap);  // 좋아요 상태 정보 추가
+        model.addAttribute("commentCountMap", commentCountMap);  // 댓글 수 정보 추가
+
 
         return "review/review_page";  // 리뷰 페이지로 이동
     }
@@ -358,8 +372,32 @@ public class ReviewController {
         return ResponseEntity.ok("이미지가 성공적으로 삭제되었습니다.");
     }
 
+    
+    @GetMapping("/user_feed/{userId}")
+    public String userFeed(@PathVariable Long userId, Model model) {
+        SiteUser user = userService.getUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Review> reviews = reviewService.getReviewsByUserId(userId);  // 유저의 리뷰 목록 가져오기
+        List<Map<String, Object>> reviewImages = new ArrayList<>();
 
+        for (Review review : reviews) {
+            List<ReviewImage> images = review.getImages();  // 리뷰의 이미지 리스트 가져오기
+            if (!images.isEmpty()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("imagePath", images.get(0).getFilepath());  // 첫 번째 이미지의 파일 경로
+                map.put("reviewId", review.getId());              // 리뷰 ID
+                reviewImages.add(map);
+            }
+        }
+
+        model.addAttribute("reviewImages", reviewImages);          // 이미지 및 리뷰 ID 데이터 추가
+        model.addAttribute("usernickname", user.getNickname());     // 유저 닉네임 추가
+        model.addAttribute("profileImage", user.getImageUrl());    // 프로필 이미지 추가
+        return "review/review_feed";                               // 피드 페이지로 이동
+    }
+
+
+}
 
 
     
-}

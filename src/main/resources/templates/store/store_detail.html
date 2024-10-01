@@ -18,9 +18,20 @@
 				<div class="row">
 					<div class="main col-12 m-0 col-lg-8">
 						<div class="restaurant_section col card">
-							<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+							<!-- 로그인한 사용자가 가게 소유자인 경우에만 광고 상태 표시 -->
+							<!-- 광고 상태 표시 (가게 소유자만, absolute 적용) -->
+							<div class="ad-status mt-2" th:if="${isOwner}" style="position: absolute;   padding: 10px;  z-index: 999999;">
+							    <p style="margin: 0; font-weight: bold;">
+							        <span th:if="${store.approvalStatus == 2}">일반 광고 승인</span>
+							        <span th:if="${store.approvalStatus == 3}">일반 광고 보류</span>
+							        <span th:if="${store.approvalStatus == 5}">프리미엄 광고 승인</span>
+							        <span th:if="${store.approvalStatus == 6}">프리미엄 광고 보류</span>
+							    </p>
+							</div>
+							<div id="ProRestaurant1" class="carousel slide" data-ride="carousel"  style=" z-index: 10;" >
+
 								<div class="carousel-inner">
-									<div class="carousel-item active">
+									<div class="carousel-item active" >
 										<!--타임리프 경로 변경 kimssam-->
 										<div class="image-container">
 											<img th:src="@{{storeImage}(storeImage=${storeImage})}" alt="가게 이미지 1" />

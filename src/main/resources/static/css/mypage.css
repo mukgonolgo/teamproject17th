@@ -116,26 +116,40 @@ p {
 	border: none;
 }
 
+
+.like_title {
+    overflow: hidden;          /* 내용이 넘칠 경우 숨김 처리 */
+    white-space: nowrap;      /* 텍스트가 줄 바꿈되지 않도록 설정 */
+    text-overflow: ellipsis;  /* 넘치는 텍스트에 ... 표시 */
+    width: 100%;              /* 부모 요소의 너비에 맞춤 */
+}
+
 .re_title {
-	overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
-	white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-	text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
-	width: 100%; /* 부모 요소의 너비에 맞춤 */
+    overflow: hidden;          /* 내용이 넘칠 경우 숨김 처리 */
+    white-space: nowrap;      /* 텍스트가 줄 바꿈되지 않도록 설정 */
+    text-overflow: ellipsis;  /* 넘치는 텍스트에 ... 표시 */
+    width: 100%;              /* 부모 요소의 너비에 맞춤 */
+}
+.like_title .like_title {
+    max-width: 100%;          /* 최대 너비를 부모 요소에 맞춤 */
+    overflow: hidden;          /* 넘치는 내용 숨김 처리 */
+    white-space: nowrap;       /* 줄 바꿈 방지 */
+    text-overflow: ellipsis;   /* 넘치는 텍스트에 ... 표시 */
 }
 
 .re_title p {
-	font-size: 12px;
-	max-width: 100%; /* 최대 너비를 부모 요소에 맞춤 */
-	overflow: hidden; /* 넘치는 내용 숨김 처리 */
-	white-space: nowrap; /* 줄 바꿈 방지 */
-	text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
+    font-size: 12px;
+    max-width: 100%;          /* 최대 너비를 부모 요소에 맞춤 */
+    overflow: hidden;          /* 넘치는 내용 숨김 처리 */
+    white-space: nowrap;       /* 줄 바꿈 방지 */
+    text-overflow: ellipsis;   /* 넘치는 텍스트에 ... 표시 */
+
 }
 
 .reservation_btn {
 	padding: 5px;
 	margin: 2px 0 10px;
 	border-radius: 10px;
-	background-color: aquamarine;
 	font-size: 15px;
 }
 

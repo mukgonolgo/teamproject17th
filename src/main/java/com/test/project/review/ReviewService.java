@@ -2,22 +2,25 @@ package com.test.project.review;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,7 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.test.project.DataNotFoundException;
 import com.test.project.review.comment.ReviewCommentRepository;
+
 import com.test.project.review.comment.ReviewCommentService;
+
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageMapRepository;
@@ -42,296 +47,243 @@ import com.test.project.user.UserRepository;
 public class ReviewService {
 
 	private final String uploadDirectory = "src/main/resources/static/img/upload";
+
+
+	private final ReviewRepository reviewRepository;
+	private final ReviewImageRepository reviewImageRepository;
+	private final ReviewImageMapRepository reviewImageMapRepository;
+	private final ReviewTagRepository reviewTagRepository;
+	private final ReviewLikeService reviewLikeService;
+	private final ReviewCommentRepository reviewCommentRepository;
+	private final UserRepository userRepository;
+
+	@Autowired
+	public ReviewService(ReviewRepository reviewRepository, ReviewImageRepository reviewImageRepository,
+			ReviewTagRepository reviewTagRepository, UserRepository userRepository, ReviewLikeService reviewLikeService,
+			ReviewImageMapRepository reviewImageMapRepository, ReviewCommentRepository reviewCommentRepository) {
+		this.reviewRepository = reviewRepository;
+		this.reviewImageRepository = reviewImageRepository;
+		this.reviewImageMapRepository = reviewImageMapRepository;
+		this.reviewTagRepository = reviewTagRepository;
+		this.userRepository = userRepository;
+		this.reviewLikeService = reviewLikeService;
+		this.reviewCommentRepository = reviewCommentRepository;
+	}
+
+	// ID로 리뷰 조회
+	public Optional<Review> findReviewById(Long id) {
+		return reviewRepository.findById(id); // 리뷰 ID로 특정 리뷰를 조회
+	}
+
+	// 특정 ID의 리뷰를 조회하고, 리뷰가 없으면 예외 발생
+	public Review getReview(Long id) {
+		return reviewRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Review not found"));
+	}
+
+	// 모든 리뷰를 조회하는 메서드
+	public List<Review> getAllReviews() {
+		return reviewRepository.findAll(); // 모든 리뷰를 리스트로 반환
+	}
+
+	// 현재 로그인한 사용자의 ID를 가져오는 메서드
+	public Long getCurrentUserId() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			UserDetails userDetails = (UserDetails) principal;
+			SiteUser user = userRepository.findByUsername(userDetails.getUsername())
+					.orElseThrow(() -> new DataNotFoundException("해당 사용자를 찾을 수 없습니다."));
+			return user.getId(); // 로그인한 사용자의 ID 반환
+		}
+		return null; // 로그인되지 않은 경우 null 반환
+	}
+
+	// 사용자 ID로 리뷰 조회
+	public List<Review> getReviewsByUserId(Long userId) {
+		return reviewRepository.findByUserId(userId); // 특정 사용자 ID에 해당하는 리뷰 조회
+	}
+
+	// 리뷰 ID로 사용자 ID를 가져오는 메서드
+	public Long getUserIdByReviewId(Long reviewId) {
+		return reviewRepository.findById(reviewId)
+				.map(review -> review.getUser() != null ? review.getUser().getId() : null).orElse(null); // 리뷰에 연결된 사용자
+																											// ID를 반환
+	}
+
+	// 리뷰 ID로 특정 리뷰 조회, 없으면 예외 발생
+	public Review findById(Long id) {
+		return reviewRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id));
+	}
+
+	// 모든 리뷰와 해당 리뷰의 좋아요 수 및 사용자의 좋아요 여부를 반환하는 메서드
+	public List<ReviewDto> getAllReviewsWithLikes(Long currentUserId) {
+		List<Review> reviews = reviewRepository.findAll(); // 모든 리뷰를 가져옴
+		List<ReviewDto> reviewDtos = new ArrayList<>();
+
+		for (Review review : reviews) {
+			Long likeCount = reviewLikeService.countLikes(review.getId()); // 각 리뷰의 좋아요 수 조회
+			boolean likedByUser = reviewLikeService.isLikedByUser(review.getId(), currentUserId); // 사용자가 좋아요를 눌렀는지 확인
+			ReviewDto reviewDto = new ReviewDto(review); // Review 객체를 ReviewDto로 변환
+			reviewDto.setLikeCount(likeCount); // 좋아요 수 설정
+			reviewDto.setLikedByUser(likedByUser); // 사용자의 좋아요 여부 설정
+			reviewDtos.add(reviewDto); // DTO 리스트에 추가
+		}
+
+		return reviewDtos; // 변환된 리뷰 목록 반환
+	}
+
+	// 리뷰 삭제
+	public void deleteReview(Long id) {
+		Review review = reviewRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Review not found")); // ID로 리뷰 조회, 없으면 예외 발생
+		reviewRepository.delete(review); // 리뷰 삭제
+	}
+
+	// 리뷰 업데이트 처리 메서드
+	@Transactional
+	public void updateReview(Long id, Review updatedReview, List<MultipartFile> fileUpload, String existingImages,
+			List<String> tags, String rating) throws IOException {
+		Review review = reviewRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id)); // ID로 리뷰 조회
+
+		review.setTitle(updatedReview.getTitle()); // 리뷰 제목 업데이트
+		review.setContent(updatedReview.getContent()); // 리뷰 내용 업데이트
+		review.setRating(rating); // 리뷰 평점 업데이트
+
+		processTags(tags, review); // 태그 처리
+
+		if (fileUpload != null && !fileUpload.isEmpty()) {
+			processImages(fileUpload, review, existingImages); // 이미지 처리
+		}
+
+		review.setUpdatedAt(LocalDateTime.now()); // 리뷰 수정 시간 설정
+		reviewRepository.save(review); // 리뷰 저장
+	}
+
+	// 리뷰에 업로드된 이미지를 처리하는 메서드
+	@Transactional
+	public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review, String existingImages)
+			throws IOException {
+		List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
+		String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
+
+		for (MultipartFile file : imageFiles) {
+			if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
+				continue; // 파일이 비어있으면 건너뜀
+			}
+
+			// UUID로 중복 방지
+			String filenameWithUUID = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+			File dest = new File(imagePath + filenameWithUUID);
+
+			try {
+				file.transferTo(dest); // 파일 저장
+			} catch (IOException e) {
+				continue; // 파일 저장 실패 시 건너뜀
+			}
+
+			// ReviewImage 객체 생성 및 저장
+			ReviewImage image = new ReviewImage();
+			image.setFilename(filenameWithUUID);
+			image.setFilepath("/img/upload/" + filenameWithUUID);
+			reviewImageRepository.save(image); // 이미지 DB에 저장
+
+			// 리뷰와 이미지 매핑 생성
+			ReviewImageMap imageMap = new ReviewImageMap();
+			imageMap.setReview(review);
+			imageMap.setReviewImage(image);
+			reviewImageMaps.add(imageMap);
+		}
+
+		// 기존 이미지와 새 이미지 처리
+		Set<String> existingImagesSet = new HashSet<>();
+		if (existingImages != null && !existingImages.isEmpty()) {
+			existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
+		}
+
+		List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
+		List<ReviewImageMap> imagesToRemove = new ArrayList<>();
+
+		for (ReviewImageMap imageMap : currentImageMaps) {
+			String fullPath = imageMap.getReviewImage().getFilepath();
+			if (!existingImagesSet.contains(fullPath)) {
+				File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + fullPath);
+				if (fileToDelete.exists()) {
+					fileToDelete.delete(); // 이미지 파일 삭제
+				}
+				imagesToRemove.add(imageMap); // 삭제할 이미지 매핑 추가
+			}
+		}
+
+		currentImageMaps.removeAll(imagesToRemove); // 기존 이미지에서 삭제
+		currentImageMaps.addAll(reviewImageMaps); // 새로운 이미지 추가
+		reviewRepository.save(review); // 리뷰 저장
+
+		return reviewImageMaps;
+	}
+
+
 	
-    private final ReviewRepository reviewRepository;
-    private final ReviewImageRepository reviewImageRepository;
-    private final ReviewImageMapRepository reviewImageMapRepository;
-    private final ReviewTagRepository reviewTagRepository;
-    private final ReviewLikeService reviewLikeService;
-    private final ReviewCommentRepository reviewCommentRepository;;
-   
-    
-    private final UserRepository userRepository ;
-    
+	
+	
+	// 리뷰에 태그를 처리하는 메서드
+	@Transactional
+	public void processTags(List<String> tags, Review review) {
+		Set<ReviewTagMap> existingTagMaps = review.getTagMaps(); // 기존 태그 맵
+		Set<String> existingTags = existingTagMaps.stream().map(tagMap -> tagMap.getReviewTag().getName())
+				.collect(Collectors.toSet()); // 기존 태그 이름 목록
 
-    @Autowired
-    public ReviewService(ReviewRepository reviewRepository, 
-                         ReviewImageRepository reviewImageRepository,
-                         ReviewTagRepository reviewTagRepository,
-                         UserRepository userRepository,
-                         ReviewLikeService reviewLikeService,
-                         ReviewImageMapRepository reviewImageMapRepository,
-                         ReviewCommentRepository reviewCommentRepository) {
-        this.reviewRepository = reviewRepository;
-        this.reviewImageRepository = reviewImageRepository;
-        this.reviewImageMapRepository = reviewImageMapRepository;
-        this.reviewTagRepository = reviewTagRepository;
-        this.userRepository = userRepository;
-        this.reviewLikeService = reviewLikeService;
-        this.reviewCommentRepository = reviewCommentRepository;
-    }
+		Set<String> newTags = new HashSet<>(tags); // 새로운 태그 목록
 
-    // ID로 리뷰 조회
-    public Optional<Review> findReviewById(Long id) {
-        return reviewRepository.findById(id);
-    }
+		// 삭제할 태그 찾기
+		Set<ReviewTagMap> tagsToRemove = existingTagMaps.stream()
+				.filter(tagMap -> !newTags.contains(tagMap.getReviewTag().getName())).collect(Collectors.toSet());
 
-    // ID로 특정 리뷰 조회, 없으면 예외
-    public Review getReview(Long id) {
-        return reviewRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("Review not found"));
-    }
+		// 태그 삭제
+		for (ReviewTagMap tagMap : tagsToRemove) {
+			review.getTagMaps().remove(tagMap); // 리뷰와의 연결을 끊음
+			reviewTagRepository.delete(tagMap.getReviewTag()); // 태그 삭제
+		}
 
-    // 모든 리뷰와 사용자 정보 가져오기
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
-    }
+		// 새로 추가할 태그 찾기
+		Set<String> tagsToAdd = newTags.stream().filter(tag -> !existingTags.contains(tag)).collect(Collectors.toSet());
 
+		// 새 태그 추가
+		int orderIndex = existingTagMaps.size();
+		for (String newTag : tagsToAdd) {
+			ReviewTag tag = reviewTagRepository.findByName(newTag);
+			if (tag == null) {
+				tag = new ReviewTag();
+				tag.setName(newTag);
+				reviewTagRepository.save(tag);
+			}
 
+			ReviewTagMap tagMap = new ReviewTagMap();
+			tagMap.setReviewTag(tag);
+			tagMap.setReview(review);
+			tagMap.setOrderIndex(orderIndex++);
+			review.getTagMaps().add(tagMap);
+		}
 
-    // 현재 로그인한 사용자의 ID를 가져오는 메서드
-    public Long getCurrentUserId() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) principal;
-            SiteUser user = userRepository.findByUsername(userDetails.getUsername())
-                    .orElseThrow(() -> new DataNotFoundException("해당 사용자를 찾을 수 없습니다."));
-            return user.getId();
-        }
-        return null;  // 로그인되지 않은 경우 null 반환
-    }
-    
-    // 사용자 ID로 리뷰 조회
-    public List<Review> getReviewsByUserId(Long userId) {
-        return reviewRepository.findByUserId(userId);
-    }
-    
- // 리뷰 ID로 사용자 ID를 가져오는 메서드
-    public Long getUserIdByReviewId(Long reviewId) {
-        return reviewRepository.findById(reviewId)
-                .map(review -> review.getUser() != null ? review.getUser().getId() : null)
-                .orElse(null);
-    }
-    
-    
+		reviewRepository.save(review); // 리뷰 저장
+	}
 
-    //리뷰아이디찾기
-    public Review findById(Long id) {
-        return reviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id));
-    }
-    
-    
-    
- // 모든 리뷰와 해당 리뷰의 좋아요 수 및 사용자의 좋아요 여부를 반환하는 메서드
-    public List<ReviewDto> getAllReviewsWithLikes(Long currentUserId) {
-        List<Review> reviews = reviewRepository.findAll();  // 모든 리뷰 가져오기
-        List<ReviewDto> reviewDtos = new ArrayList<>();
+	// 리뷰 ID로 댓글 수 조회
+	public long getCommentCountForReview(Long reviewId) {
+		Review review = reviewRepository.findById(reviewId)
+				.orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + reviewId)); // 리뷰 조회
 
-        // 각 리뷰에 대해 좋아요 정보 추가
-        for (Review review : reviews) {
-            Long likeCount = reviewLikeService.countLikes(review.getId());  // 좋아요 수 가져오기
-            boolean likedByUser = reviewLikeService.isLikedByUser(review.getId(), currentUserId);  // 사용자가 좋아요 눌렀는지 확인
-            ReviewDto reviewDto = new ReviewDto(review);  // Review를 ReviewDto로 변환
-            reviewDto.setLikeCount(likeCount);
-            reviewDto.setLikedByUser(likedByUser);
-            reviewDtos.add(reviewDto);
-        }
+		return reviewCommentRepository.countByReview(review); // 리뷰에 달린 댓글 수 반환
+	}
 
-        return reviewDtos;
-    }
-    
-    //리뷰삭제
-    public void deleteReview(Long id) {
-        Review review = reviewRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+	// 제목이나 내용에 검색어가 포함된 리뷰를 검색
+	public List<Review> searchReviews(String query) {
+		return reviewRepository.findByTitleContainingOrContentContaining(query, query); // 제목 또는 내용에서 검색어로 리뷰 검색
+	}
+	
+	public List<Review> getRecentReviews(int limit) {
+	    Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
+	    return reviewRepository.findAll(pageable).getContent();
+	}
 
-        reviewRepository.delete(review);
-    }
-
-  
- // 리뷰 업데이트 처리
-    @Transactional
-    public void updateReview(Long id, Review updatedReview, List<MultipartFile> fileUpload, 
-                             String existingImages, List<String> tags, String rating) throws IOException {
-
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + id));
-
-        System.out.println("Starting updateReview for review ID: " + id);
-
-        // 리뷰 정보 업데이트
-        review.setTitle(updatedReview.getTitle());
-        review.setContent(updatedReview.getContent());
-        review.setRating(rating);
-
-        System.out.println("Updated review title: " + updatedReview.getTitle());
-
-        // 태그 처리
-        processTags(tags, review);
-        System.out.println("Processed tags for review ID: " + id);
-
-        // 새로 업로드된 이미지 처리
-        if (fileUpload != null && !fileUpload.isEmpty()) {
-            processImages(fileUpload, review, existingImages); // 수정된 부분
-            System.out.println("Processed new images for review ID: " + id);
-        }
-
-        review.setUpdatedAt(LocalDateTime.now());
-        reviewRepository.save(review);
-        System.out.println("Updated review ID: " + id + " successfully.");
-    }
-    
-
-    
-    @Transactional
-    public List<ReviewImageMap> processImages(List<MultipartFile> imageFiles, Review review, String existingImages) throws IOException {
-        List<ReviewImageMap> reviewImageMaps = new ArrayList<>();
-        String imagePath = System.getProperty("user.dir") + "/src/main/resources/static/img/upload/";
-
-        // 서버로 전달된 파일 개수 출력
-        System.out.println("서버가 수신한 파일 개수: " + imageFiles.size());
-        System.out.println("이미지 저장 경로: " + imagePath);  // 저장 경로 확인
-
-        // 각 파일 이름 출력
-        for (int i = 0; i < imageFiles.size(); i++) {
-            MultipartFile file = imageFiles.get(i);
-            System.out.println("서버에서 받은 파일 " + (i + 1) + ": " + file.getOriginalFilename());
-        }
-
-        for (MultipartFile file : imageFiles) {
-            if (file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().trim().isEmpty()) {
-                continue;  // 파일이 비어있거나 잘못된 경우는 건너뜀
-            }
-
-            // 중복 파일 처리 방지 로직 개선
-            String filenameWithUUID = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            File dest = new File(imagePath + filenameWithUUID);
-            
-            // 파일 저장 로직에 try-catch 추가
-            try {
-                file.transferTo(dest);
-                System.out.println("파일이 성공적으로 저장되었습니다: " + filenameWithUUID);
-            } catch (IOException e) {
-                System.err.println("파일 저장 중 오류가 발생했습니다: " + e.getMessage());
-                e.printStackTrace();
-                continue;  // 파일 저장에 실패한 경우 해당 파일 건너뜀
-            }
-
-            // 이미지 객체 생성 및 저장
-            ReviewImage image = new ReviewImage();
-            image.setFilename(filenameWithUUID);
-            image.setFilepath("/img/upload/" + filenameWithUUID);
-            reviewImageRepository.save(image);  // 새로운 이미지 DB에 저장
-
-            // 이미지와 리뷰의 매핑
-            ReviewImageMap imageMap = new ReviewImageMap();
-            imageMap.setReview(review);
-            imageMap.setReviewImage(image);
-            reviewImageMaps.add(imageMap);
-        }
-
-        // 기존 이미지 처리: 유지할 이미지 경로만 남기고 나머지 이미지를 삭제
-        Set<String> existingImagesSet = new HashSet<>();
-        if (existingImages != null && !existingImages.isEmpty()) {
-            existingImagesSet = new HashSet<>(Arrays.asList(existingImages.split(",")));
-        }
-
-        List<ReviewImageMap> currentImageMaps = review.getReviewImageMap();
-        List<ReviewImageMap> imagesToRemove = new ArrayList<>();
-
-        for (ReviewImageMap imageMap : currentImageMaps) {
-            String fullPath = imageMap.getReviewImage().getFilepath();
-
-            if (!existingImagesSet.contains(fullPath)) {
-                // 파일 삭제 시도
-                File fileToDelete = new File(System.getProperty("user.dir") + "/src/main/resources/static" + fullPath);
-                if (fileToDelete.exists()) {
-                    if (fileToDelete.delete()) {
-                        System.out.println("파일이 성공적으로 삭제되었습니다: " + fullPath);
-                    } else {
-                        System.out.println("파일 삭제에 실패했습니다: " + fullPath);
-                    }
-                }
-
-                imagesToRemove.add(imageMap);  // 삭제할 이미지 매핑 추가
-            }
-        }
-
-        // 기존 이미지에서 삭제할 매핑 제거
-        currentImageMaps.removeAll(imagesToRemove);
-
-        // 새로운 이미지를 추가한 후, 해당 이미지를 리뷰에 매핑
-        currentImageMaps.addAll(reviewImageMaps);
-
-        // 리뷰 저장
-        reviewRepository.save(review);
-
-        return reviewImageMaps;
-    }
-
-
-
-       @Transactional
-       public void processTags(List<String> tags, Review review) {
-           // 1. 기존 태그를 불러옴
-           Set<ReviewTagMap> existingTagMaps = review.getTagMaps();
-           Set<String> existingTags = existingTagMaps.stream()
-               .map(tagMap -> tagMap.getReviewTag().getName())
-               .collect(Collectors.toSet());
-
-           Set<String> newTags = new HashSet<>(tags);
-
-           // 2. 삭제할 태그를 찾음 (기존 태그 중에서 새로운 태그에 없는 것들)
-           Set<ReviewTagMap> tagsToRemove = existingTagMaps.stream()
-               .filter(tagMap -> !newTags.contains(tagMap.getReviewTag().getName()))
-               .collect(Collectors.toSet());
-
-           // 3. 삭제할 태그들을 리뷰에서 제거
-           for (ReviewTagMap tagMap : tagsToRemove) {
-               review.getTagMaps().remove(tagMap);  // 리뷰와의 연결을 끊음
-               reviewTagRepository.delete(tagMap.getReviewTag());  // 태그 삭제
-           }
-
-           // 4. 새로 추가할 태그를 찾음 (새 태그 중에서 기존 태그에 없는 것들)
-           Set<String> tagsToAdd = newTags.stream()
-               .filter(tag -> !existingTags.contains(tag))
-               .collect(Collectors.toSet());
-
-           // 5. 새 태그 추가
-           int orderIndex = existingTagMaps.size();
-           for (String newTag : tagsToAdd) {
-               ReviewTag tag = reviewTagRepository.findByName(newTag);
-               if (tag == null) {
-                   tag = new ReviewTag();
-                   tag.setName(newTag);
-                   reviewTagRepository.save(tag);
-               }
-
-               ReviewTagMap tagMap = new ReviewTagMap();
-               tagMap.setReviewTag(tag);
-               tagMap.setReview(review);
-               tagMap.setOrderIndex(orderIndex++);
-               review.getTagMaps().add(tagMap);
-           }
-
-           reviewRepository.save(review);  // 리뷰 저장
-       }
-
-
-   
-       public long getCommentCountForReview(Long reviewId) {
-    	    // 리뷰 객체를 먼저 조회
-    	    Review review = reviewRepository.findById(reviewId)
-    	        .orElseThrow(() -> new IllegalArgumentException("리뷰를 찾을 수 없습니다. ID: " + reviewId));
-
-    	    // 리뷰 객체로 댓글 수 계산
-    	    return reviewCommentRepository.countByReview(review);
-    	}
-
-
-    }
-
-
-
-
+}
