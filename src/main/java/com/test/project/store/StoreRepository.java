@@ -22,4 +22,11 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     
  // 특정 SiteUser가 소유한 가게 리스트를 가져오는 메서드
     List<Store> findBySiteUser(SiteUser siteUser);
+    
+    
+    // 가게 이름으로 검색
+    List<Store> findByStoreNameContainingIgnoreCase(String storeName);
+
+    // 가게 주소로 검색
+    List<Store> findByBasicAddressContainingIgnoreCase(String basicAddress);
 }

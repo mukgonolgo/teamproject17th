@@ -124,7 +124,13 @@ public class StoreService {
     public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
         return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
     }
-    
+    public List<Store> searchStoresByStoreName(String storeName) {
+        return storeRepository.findByStoreNameContainingIgnoreCase(storeName);
+    }
+
+    public List<Store> searchStoresByBasicAddress(String basicAddress) {
+        return storeRepository.findByBasicAddressContainingIgnoreCase(basicAddress);
+    }
 //	별점 계산
     public double getStoreForstar(Integer storeId) {
         // 스토어에 해당하는 리뷰 조회

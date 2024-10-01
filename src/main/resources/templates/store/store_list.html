@@ -15,28 +15,25 @@
 	<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
 	<script src="/js/store/store_list.js"></script>
 
-	<!-- 검색란 -->
-	
-	<div class="container mt-5">
-		<div class="row">
-				<div class="col-auto d-flex align-items-center">
-					<!-- 검색란 -->
-					<div class="d-flex align-items-center">
-						<form action="/review" method="get">
-							<div class="d-flex align-items-center">
-								<input type="text" class="form-control custom-search-bar"
-									name="query" placeholder="검색어를 입력하세요">
-								<button type="submit" class="btn btn-dark ml-2"
-									style="width: 70px;">검색</button>
-							</div>
-						</form>
-					</div>
-					<!-- 검색 끝 -->
-				</div>
-			</div>
-				<hr />
-		</div>
-		<!-- container -->
+<!-- 검색란 -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-auto">
+            <!-- 검색 폼 -->
+            <form action="/store/list" method="get" class="form-inline mr-auto">
+                <input type="text" name="search" placeholder="검색어 입력" class="form-control">
+                <select name="searchType" class="form-control ml-2">
+                    <option value="storeName" th:selected="${searchType == 'storeName'}">가게 이름</option>
+                    <option value="basicAddress" th:selected="${searchType == 'basicAddress'}">주소</option>
+                </select>
+                <button type="submit" class="btn btn-dark ml-2">검색</button>
+            </form>
+        </div>
+    </div>
+    <hr />
+</div>
+
+
 	
 		<!-- 가게 리스트 섹션 -->
 		<div class="container S1">
