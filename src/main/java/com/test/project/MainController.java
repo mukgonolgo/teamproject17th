@@ -1,8 +1,10 @@
 package com.test.project;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
 
@@ -26,6 +29,7 @@ import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.store.Store;
 import com.test.project.store.StoreService;
+
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 import com.test.project.user.UserService;
@@ -34,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
+
 public class MainController {	
 		@Autowired
 	    private final ReviewLikeService reviewLikeService;	
@@ -109,6 +114,7 @@ public class MainController {
 	          model.addAttribute("user", siteUser); // 전체 유저 객체 추가
 	          List<Reservation> reservations = reservationService.getReservationsByUser(siteUser);
 	          model.addAttribute("reservations", reservations);
+
 
 	          // 좋아요한 리뷰의 첫 번째 이미지를 가져옴
 	          List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);

@@ -115,6 +115,17 @@ public class Review {
         }
         return images;
     }
+    
+    // ReviewImageMap과 연관된 이미지 리스트를 반환하는 메서드 추가
+    public List<ReviewImage> getImages() {
+        List<ReviewImage> images = new ArrayList<>();
+        
+        for (ReviewImageMap imageMap : reviewImageMap) {
+            images.add(imageMap.getImage());  // ReviewImageMap에서 ReviewImage 객체를 가져옴
+        }
+        
+        return images;
+    }
 
     // 좋아요 리스트에서 수를 카운트할 수도 있음
     public void updateLikeCount() {

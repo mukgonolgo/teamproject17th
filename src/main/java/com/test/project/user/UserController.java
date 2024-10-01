@@ -75,6 +75,14 @@ public class UserController {
            return "user/signup_form";
        }
 
+
+       // 이메일 중복 확인
+       if (userService.isEmailTaken(userCreateForm.getEmailDomain())) {
+           model.addAttribute("emailErrorMessage", "이메일이 이미 가입되어있습니다.");
+           return "user/signup_form";  // 이메일 중복 오류가 발생하면 다시 회원가입 폼으로 이동
+       }
+
+
        try {
            userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
                               userCreateForm.getPassword(), userCreateForm.getPostcode(),
@@ -92,6 +100,18 @@ public class UserController {
        return "redirect:/";
    }
 
+ 
+// 이메일 중복 체크
+@GetMapping("/checkEmail")
+@ResponseBody
+public String checkEmail(@RequestParam("email") String email) {
+    try {
+        boolean isTaken = userService.isEmailTaken(email);
+        return "{\"isTaken\": " + isTaken + "}";
+    } catch (Exception e) {
+        return "{\"error\": \"서버 오류가 발생했습니다.\"}";
+    }
+}
 
 
 
@@ -425,10 +445,11 @@ public class UserController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<SiteUser> userPage = null;
 
+        // 검색어가 있는 경우와 없는 경우 처리
         if (search != null && !search.isEmpty()) {
             switch (searchType) {
                 case "id":
-                    userPage = userService.searchById(Long.parseLong(search), pageable);
+                    userPage = userService.searchById(search, pageable);
                     break;
                 case "username":
                     userPage = userService.searchByUsername(search, pageable);
@@ -442,6 +463,11 @@ public class UserController {
             }
         } else {
             userPage = userService.getAllUsers(pageable);
+        }
+
+        // userPage가 null인 경우 빈 페이지로 처리
+        if (userPage == null) {
+            userPage = Page.empty(pageable);
         }
 
         model.addAttribute("userPage", userPage);

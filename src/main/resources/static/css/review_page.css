@@ -48,7 +48,9 @@ a {
     height: 240px;
 
 }
+
 .S3_store{
+
 	margin: 0;
 	padding: 0;
 }
@@ -178,7 +180,6 @@ a {
          font-size: 16px;
          cursor: pointer;
       }
-
      .m_card-body {
          padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
          height: auto; /* 높이를 자동으로 조정 */
