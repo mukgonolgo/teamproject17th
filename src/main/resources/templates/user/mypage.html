@@ -77,20 +77,19 @@
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<span class="list_title">즐겨찾기</span>
 									<!-- 전체보기를 오른쪽 끝에 배치 -->
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 
 								<div class="col top_list p-3 d-flex align-items-center" style="overflow: hidden;">
 									<div class="swiper-container align-items-cente d-flex" id="swiper1">
 										<div class="swiper-wrapper">
 											<!-- 내가 고른 맛집 카드 -->
-											<div class="swiper-slide card mr-2 d-flex align-items-center"th:each="store  : ${likedStores}">
+											<div class="swiper-slide card mr-2 d-flex align-items-center"th:each="store : ${likedStores}">
 												<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}">
 													<div class="like_img" style="border-radius: 20px; width: 100px; height: 80px; overflow: hidden;">
 														<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="img-fluid" alt="가게 이미지"style="width: 100%; height: 100%; object-fit: cover;">
 													</div>
 													<div class="like_title">
-														<div class="like_title mt-2" th:text="${store.storeName}">고기집</div>
+														<div class="like_title m-2 " th:text="${store.storeName}">고기집</div>
 													</div>													
 												</a>
 
@@ -110,7 +109,7 @@
 							<div class="top_boxs p-3 my_boxs">
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<spnn class="list_title">예약 리스트</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
+									<a th:href="@{/reservation/mylist}" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 								<div class="col  top_list p-3 d-flex align-items-center" style="overflow: hidden;">
 									<div class="swiper-container align-items-center" id="swiper2">
@@ -149,7 +148,6 @@
 							<div class="under_boxs p-3 my_boxs" style="overflow: hidden;">
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<spnn class="list_title">좋아요</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 								<div class="row under_list p-1" style="overflow-x: auto; white-space: nowrap;">
 									<div class="col-xl-4 col-sm-6 col-4" th:each="imageMap : ${likedImages}"
@@ -168,7 +166,6 @@
 							<div class="under_boxs p-3 my_boxs" style="overflow: hidden;">
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<spnn class="list_title">즐겨찾기</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 								<div class="row under_list" style="overflow-x: auto; white-space: nowrap;">
 									<div class="col-6" style="width: 100%; height: 190px; padding: 5px;">
