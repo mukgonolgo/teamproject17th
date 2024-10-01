@@ -28,13 +28,6 @@ import com.test.project.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-
-
-import lombok.RequiredArgsConstructor;
-
 @RequestMapping("/store")
 @RequiredArgsConstructor
 @Controller
@@ -143,7 +136,7 @@ public class StoreController {
 
  // 가게 상세 페이지
     @GetMapping("/detail/{storeId}")
-    public String detail(Model model, @PathVariable("storeId") Integer storeId) {
+    public String detail(Model model, @PathVariable("storeId") Integer storeId,Principal principal) {
         Store store = storeService.getStore(storeId);
         model.addAttribute("store", store);
         
@@ -155,6 +148,15 @@ public class StoreController {
         // 평균 평점 및 리뷰 수 계산
         double averageRating = storeService.getStoreForstar(storeId);
         model.addAttribute("averageRating", averageRating);
+        
+        // 현재 사용자가 좋아요를 눌렀는지 확인
+        if (principal != null) {
+            SiteUser siteUser = userService.getUser(principal.getName());
+            boolean hasVoted = store.getVoter().contains(siteUser);
+            model.addAttribute("hasVoted", hasVoted);
+        } else {
+            model.addAttribute("hasVoted", false); // 로그인하지 않은 경우
+        }
 
 
         return "store/store_detail"; // 상세 페이지 템플릿
@@ -212,44 +214,7 @@ public class StoreController {
         return "redirect:/store/store_alist";  // 삭제 후 리스트로 리디렉션
     }
     
-    // 가게 리스트 표시 - 페이지네이션과 검색 추가
-    @GetMapping("/store_alist")
-    @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한이 있는 사용자만 접근 가능
-    public String getStoreListForAdmin(
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "10") int size,
-        @RequestParam(value = "search", required = false) String search,
-        @RequestParam(value = "searchType", defaultValue = "owner") String searchType, // 검색 유형 추가
-        Model model) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("storeName").ascending());
-        Page<Store> storePage;
-
-        // 검색 유형에 따른 검색 처리
-        if (search != null && !search.isEmpty()) {
-            switch (searchType) {
-                case "storeId":
-                    storePage = storeService.searchStoresByStoreId(search, pageable);
-                    break;
-                case "storeName":
-                    storePage = storeService.searchStoresByStoreName(search, pageable);
-                    break;
-                default:
-                    storePage = storeService.searchStoresByOwnerUsername(search, pageable);
-                    break;
-            }
-        } else {
-            storePage = storeService.getAllStores(pageable);
-        }
-
-        model.addAttribute("storePage", storePage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", storePage.getTotalPages());
-        model.addAttribute("search", search); // 검색어를 모델에 추가
-        model.addAttribute("searchType", searchType); // 검색 유형을 모델에 추가
-
-        return "store/store_alist";
-    }
 
 
     

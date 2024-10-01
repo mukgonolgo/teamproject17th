@@ -78,20 +78,17 @@
 				</div>
 			</section>
 
-			<section class="S1_s2 mt-5">
-				<h3 class="S1_category">맛집 리스트</h3>
-				<div class="row" th:if="${storeList != null}">
-					<div class="col-lg-4 col-md-6 col-sm-12 mb-4"
-						th:each="store : ${storeList}">
-						<div class="card">
-							<div id="ProRestaurant1" class="carousel slide"
-								data-ride="carousel">
-								<div class="carousel-inner">
-									<div class="carousel-item active">
-										<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
-											class="card-img-top" alt="가게 이미지" />
-									</div>
-								</div>
+
+	<section class="S1_s2 mt-5">
+		<h3 class="S1_category">맛집 리스트</h3>
+		<div class="row" th:if="${storeList != null}">
+			<div class="col-lg-4 col-md-6 col-sm-12 mb-4" th:each="store : ${storeList}">
+				<div class="card">
+					<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}" class="store_list_btn" style="text-decoration: none; color: black;">
+					<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+								<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="card-img-top" alt="가게 이미지" />
 							</div>
 							<div class="card-body">
 								<div class="storeicon d-flex align-items-center mb-2">
@@ -116,6 +113,7 @@
 							</div>
 						</div>
 					</div>
+					</a>
 				</div>
 			</section>
 		</div>

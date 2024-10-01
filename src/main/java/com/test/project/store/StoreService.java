@@ -38,7 +38,10 @@ public class StoreService {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new DataNotFoundException("Store not found"));
     }
-
+    // 특정 사용자가 좋아요를 누른 가게 리스트를 반환하는 메서드
+    public List<Store> getStoresLikedByUser(SiteUser user) {
+        return storeRepository.findByVoterContaining(user);
+    }
     // 가게 저장 (SiteUser 추가)
     public Store saveStore(String storeName, String postcode, String basicAddress, String detailAddress,
                            double storeLatitude, double storeLongitude, String storeContent, String kategorieGroup,
@@ -111,14 +114,7 @@ public class StoreService {
         this.storeRepository.save(store);
     }
 
-    public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {
-        try {
-            Integer id = Integer.parseInt(storeId);
-            return storeRepository.findByStoreId(id, pageable);
-        } catch (NumberFormatException e) {
-            return Page.empty(pageable);
-        }
-    }
+
 
     public Page<Store> searchStoresByStoreName(String storeName, Pageable pageable) {
         return storeRepository.findByStoreNameContainingIgnoreCase(storeName, pageable);
@@ -144,7 +140,6 @@ public class StoreService {
     public Optional<Store> findById(Integer storeId) {
         return storeRepository.findById(storeId); // StoreRepository의 findById 메서드 호출
     }
-
     
 //	별점 계산
     public double getStoreForstar(Integer storeId) {

@@ -1,8 +1,10 @@
 package com.test.project;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
+
 import com.test.project.review.Review;
 import com.test.project.review.ReviewService;
+
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
-import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.store.Store;
 import com.test.project.store.StoreService;
@@ -114,13 +117,13 @@ public class MainController {
 	          // 좋아요한 리뷰의 첫 번째 이미지를 가져옴
 	          List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
 	          model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
+           
 
 	          return "user/mypage"; // mypage.html 파일을 렌더링
 	       }
 
 	       return "redirect:/error"; // 유저가 없으면 에러 처리
 	    }
-
 
 	
 
