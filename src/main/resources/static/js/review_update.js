@@ -84,24 +84,24 @@ function addImage(event) {
             return;  // 중복된 파일이므로 추가하지 않음
         }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const imgContainer = document.createElement('div');
-            imgContainer.classList.add('img-container');
+		const reader = new FileReader();
+		        reader.onload = function(e) {
+		            const imgContainer = document.createElement('div');
+		            imgContainer.classList.add('img-container'); // 이미지 컨테이너 클래스 추가
 
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('uploaded-image');
-            img.style.cursor = 'pointer';
+		            const img = document.createElement('img');
+		            img.src = e.target.result;
+		            img.classList.add('uploaded-image'); // 이미지 클래스 추가
+		            img.style.cursor = 'pointer';
 
-            imgContainer.appendChild(img);
-            const iconContainer = document.querySelector('.icon-container');
-            iconContainer.appendChild(imgContainer);
+		            imgContainer.appendChild(img); // 이미지 컨테이너에 이미지 추가
+		            const iconContainer = document.querySelector('.icon-container');
+		            iconContainer.appendChild(imgContainer); // icon-container에 imgContainer 추가
 
-            // 파일을 추가
-            imageFiles.push(file); // 새로 추가된 파일을 저장
-            console.log("파일이 추가되었습니다:", file.name);
-        };
+		            // 파일을 추가
+		            imageFiles.push(file); // 새로 추가된 파일을 저장
+		            console.log("파일이 추가되었습니다:", file.name);
+		        };
         reader.readAsDataURL(file);
     });
 }

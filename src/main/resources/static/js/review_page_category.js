@@ -1,4 +1,5 @@
 var map;
+
      var markers = [];
      var overlays = [];
      var currentOverlay = null;  // 현재 표시 중인 오버레이 저장
@@ -378,6 +379,7 @@ $(document).ready(function() {
     });
 });
 
+
 $(document).ready(function() {
     // 드롭다운 항목 클릭 시 버튼 텍스트 업데이트
     $('.dropdown-menu .dropdown-item').on('click', function(event) {
@@ -392,14 +394,11 @@ $(document).ready(function() {
 });
 
 
-document.addEventListener('DOMContentLoaded',
-				function() {
-					const carouselItems = document
-							.querySelectorAll('.carousel-item');
-					const prevButton = document
-							.querySelector('.carousel-control-prev');
-					const nextButton = document
-							.querySelector('.carousel-control-next');
+document.addEventListener('DOMContentLoaded', function() {
+    const carouselItems = document.querySelectorAll('.carousel-item');
+    const prevButton = document.querySelector('.carousel-control-prev');
+    const nextButton = document.querySelector('.carousel-control-next');
+
 
 					if (carouselItems.length <= 1) {
 						if (prevButton)
@@ -410,3 +409,4 @@ document.addEventListener('DOMContentLoaded',
 				});
 				
 							
+

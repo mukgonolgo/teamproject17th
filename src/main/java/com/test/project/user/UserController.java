@@ -66,6 +66,7 @@ public class UserController {
    public String signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult,
                         @RequestParam(value = "imageFile", required = false) MultipartFile imageFile, Model model) {
        if (bindingResult.hasErrors()) {
+           // 오류 처리...
            return "user/signup_form";
        }
 
@@ -74,11 +75,13 @@ public class UserController {
            return "user/signup_form";
        }
 
+
        // 이메일 중복 확인
        if (userService.isEmailTaken(userCreateForm.getEmailDomain())) {
            model.addAttribute("emailErrorMessage", "이메일이 이미 가입되어있습니다.");
            return "user/signup_form";  // 이메일 중복 오류가 발생하면 다시 회원가입 폼으로 이동
        }
+
 
        try {
            userService.create(userCreateForm.getUsername(), userCreateForm.getEmailDomain(),
@@ -97,8 +100,7 @@ public class UserController {
        return "redirect:/";
    }
 
-
-   
+ 
 // 이메일 중복 체크
 @GetMapping("/checkEmail")
 @ResponseBody
@@ -110,7 +112,6 @@ public String checkEmail(@RequestParam("email") String email) {
         return "{\"error\": \"서버 오류가 발생했습니다.\"}";
     }
 }
-
 
 
 

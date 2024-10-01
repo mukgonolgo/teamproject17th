@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg navbar-dark container-fiuid p-2 cs-bg-black" th:fragment="navBarFragment">
 	<div class="container">
 		<a class="navbar-brand" href="/"><img src="/img/logo+(3).svg" alt="logo"><span class="sr-only">먹고놀고</span></a>
@@ -49,10 +50,13 @@
 				<li class="nav-item mx-2 d-flex d-lg-none">
 					<a class="nav-link" href="/user/signup">회원가입</a>
 				</li>
+				<li class="nav-item mx-1"><a class="nav-link"
+					href="/notices/list">공지사항</a></li>
+				<li class="nav-item mx-1 d-flex d-lg-none"><a class="nav-link"
+					href="/user/login">로그인</a></li>
+				<li class="nav-item mx-1 d-flex d-lg-none"><a class="nav-link"
+					href="/user/signup">회원가입</a></li>
 			</ul>
-
-
-
 			<!-- 승인된 사업자일 경우 메뉴 보이기 -->
 			<ul class="navbar-nav navbar-center"
 				sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 3">
@@ -273,10 +277,8 @@
 				        <span class="nav-link">내 예약 리스트</span>
 				    </a>
 				</li>
-
-
-
 			</ul>
 		</div>
 	</div>
 </nav>
+

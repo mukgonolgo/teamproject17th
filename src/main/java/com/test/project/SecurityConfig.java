@@ -1,5 +1,5 @@
 package com.test.project;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,17 +13,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.beans.factory.annotation.Autowired;
-
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-   // CustomAuthenticationFailureHandler 등록
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
+
 
   
 	@Bean
@@ -45,11 +43,11 @@ public class SecurityConfig {
 	        .logoutSuccessUrl("/")
 	        .invalidateHttpSession(true));
 
-	    return http.build();
-	}
 
-   
-  
+	    return http.build();
+	
+ 
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {

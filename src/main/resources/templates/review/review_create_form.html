@@ -9,9 +9,17 @@
 </head>
 <body>
 <div layout:fragment="content">
+
+   <div class=" form_container">
+   
+
     <form id="reviewForm" action="/review_create" method="post" enctype="multipart/form-data">
      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <div class="S3_rw">
+    
+        <div class="S3_rw">   
+          <div class="Log_Logo text-center mb-5">
+                <img src="/img/logo/logo (1).png" alt="login_logo" />
+            </div>   
             <label for="title">제목</label>
             <input type="text" id="title" name="title" placeholder="제목을 입력하세요...">
 			  <!-- 사용자 ID 입력 필드 -->
@@ -54,6 +62,7 @@
             <button type="submit" class="btn btn-dark">등록</button>
         </div>
     </form>
+   </div>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

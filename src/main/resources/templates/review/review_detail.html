@@ -72,14 +72,18 @@
 			<div class="col-xl-8 col-sm-12 ">
 				<div class="card custom-border p-3">
 					<div class="d-flex align-items-center mx-3 my-2">
-						<a th:href="@{/review_feed}"
+						<a
+								th:href="@{/user_feed/{userId}(userId=${review.user.id})}"
+								
 							class="text-dark d-flex align-items-center"
 							style="text-decoration: none;"> <img
 							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
 							alt="" class="rounded-circle"
 							style="width: 50px; height: 50px; object-fit: cover;"> <span
-							class="ml-3">
-								<h4 th:text="${review.user.nickname}"></h4>
+
+							class="ml-3"> 
+									<h4 th:text="${review.user.nickname}"></h4>
+							</a>
 
 						</span>
 						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
@@ -89,7 +93,7 @@
 
 
 
-
+					<!-- 음식사진 -->
 					<div th:id="'S3_d_review_carouselExample' + ${review.id}"
 						class="carousel slide">
 						<div class="carousel-inner S3_d_review_carousel-inner">
@@ -125,7 +129,9 @@
 
 								<!-- 댓글 -->
 								<img src="/img/icon/chat.png" alt="comment" style="width: 20px"
-									class="tap_btn" /> <span class="text-dark mx-1" th:text="${commentCount != null ? commentCount : 0}"></span>
+
+									class="tap_btn" /> <span class="text-dark mx-1"
+									th:text="${commentCount != null ? commentCount : 0}"></span>
 
 								<!-- 좋아요 -->
 								<div id="like-container">
@@ -197,7 +203,7 @@
 
 
 						<!-- 내용  -->
-						<p class="card-text S3_card-text mt-2" style="height: 100px;"
+						<p class="card-text S3_card-text mt-4" style="height: 100px;"
 							th:text="${review.content}"></p>
 
 
@@ -241,6 +247,7 @@
 							</div>
 							<!-- 업데이트시간 -->
 
+
 						</div>
 						<!-- 태그 -->
 
@@ -262,12 +269,17 @@
 									th:value="${review.id}" />
 
 
+								<!-- 리뷰 ID 숨김 필드 -->
+								<input type="hidden" id="reviewId" name="reviewId"
+									th:value="${review.id}" />
+
+
 								<div class="d-flex align-items-center mt-3">
 									<textarea class="form-control ml-2" id="commentContent"
 										name="commentContent" rows="3" placeholder="댓글을 작성하세요..."></textarea>
 								</div>
-								<div class="btn-container mt-2 text-right" >
-							
+								<div class="btn-container mt-2 text-right">
+
 									<button type="button" id="submitComment"
 										class="btn btn-dark mt-2">댓글 작성</button>
 								</div>
@@ -282,7 +294,6 @@
 
 		</div>
 		<!-- row -->
-
 	</div>
 	<!-- container -->
 

@@ -1,14 +1,15 @@
-
+		a{
+			text-decoration: none;
+		}
+		
         p{
             margin: 0;
             padding: 0;
             color: #000;
         }
         .S1_d{
-            background-color: #ccc;
             width: 100%;
             height: 100%;
-            
             position: relative;
         }
         .main{
@@ -16,6 +17,8 @@
             overflow: hidden;
             margin: 0; padding: 0; 
             border-radius: 15px;
+			border: #ccc solid 1px;
+
         }
         .card{
             padding: 0;
@@ -72,6 +75,21 @@
         .delete-button, .menuCreate {
             display: none;
         }
+		.image-container {
+		    width: 100%;
+		    height: 350px;
+		    overflow: hidden;
+		    position: relative;
+		}
+
+		.image-container img {
+		    width: 100%;
+		    height: auto; /* 원본 비율 유지 */
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate(-50%, -50%); /* 중앙 정렬 */
+		}
 
 
 
@@ -180,29 +198,7 @@
     box-shadow: none; /* 그림자 제거 */
 }
 
-/* 반응형 스타일 */
-@media (max-width: 992px) { /* col-lg 이하 */
-    .calendar-container {
-        width: 100%;
-        font-size: 2vw; /* 폰트 크기 줄이기 */
-    }
 
-    .calendar {
-        height: 57vw; /* 높이를 뷰포트의 80%로 설정 */
-    }
-
-    .fc-toolbar {
-        margin-top: 20px;
-    }
-
-    .fc-center h2 {
-        font-size: 3vw;            
-    }
-
-    .fc-month-view {
-        margin: 30px 10px 0; /* 여백 수정 */
-    }
-}
         /* 시간 선택  */
         .S1_d_Check .time-button {
             padding: 7px;
@@ -224,7 +220,7 @@
         }
         .form-control{
 			display: flex;
-
+			text-align: center;
             font-weight: bold;
             border: none; 
             color: inherit; 
@@ -263,23 +259,23 @@
             margin-top: 10px; /* 여백 추가 */
         }
 
-        /* 예약 버튼 */
-        .restaurant_re_btn {
-            text-decoration: none;
-            background-color: black;
-            color: white;
-            padding: 13px;
-            display: flex;
-            font-size: 17px;
-            justify-content: center;
+		/* 예약 버튼 */
+		.restaurant_re_btn {
+		    text-decoration: none;
+		    background-color: #cccc;
+		    color: black;
+		    padding: 13px;
+		    display: flex;
+		    font-size: 17px;
+		    justify-content: center;
 			border: none;			
-            
-        }
-        .restaurant_re_btn:hover {
-            background-color: white;
-            color: black;
-            text-decoration: none;
-        }
+		    
+		}
+		.restaurant_re_btn:hover {
+		    background-color: black;
+		    color: white;
+		    text-decoration: none;
+		}
 		.modal{
 			overflow: hidden;
 		}
@@ -296,4 +292,36 @@
 		    color: red;
 		    margin: 10px 20px;
 			font-size: 10px;
+		}
+		.modyfys{
+			white-space: nowrap;
+			text-align: center;
+		}
+		/* 반응형 스타일 */
+		@media (max-width: 992px) { /* col-lg 이하 */
+		    .calendar-container {
+		        width: 100%;
+		        font-size: 2vw; /* 폰트 크기 줄이기 */
+		    }
+
+		    .calendar {
+		        height: 57vw; /* 높이를 뷰포트의 80%로 설정 */
+		    }
+
+		    .fc-toolbar {
+		        margin-top: 20px;
+		    }
+
+		    .fc-center h2 {
+		        font-size: 3vw;            
+		    }
+
+		    .fc-month-view {
+		        margin: 30px 10px 0; /* 여백 수정 */
+		    }
+		}
+		@media (max-width: 576px) { 
+			.main{
+			    border-radius: 0px;
+			}
 		}

@@ -71,9 +71,8 @@ public class ReviewLikeService {
         }
 
         // 좋아요 수 및 사용자 상태 업데이트 (Review 엔티티에 업데이트)
-        review.setLikeCount((long) review.getLikes().size());
-        review.setLikedByUser(review.getLikes().stream()
-                .anyMatch(like -> like.getUser().equals(user)));
+        review.updateLikeCount();  // 좋아요 수 업데이트
+        reviewRepository.save(review);  // 업데이트 후 저장
     }
 
     

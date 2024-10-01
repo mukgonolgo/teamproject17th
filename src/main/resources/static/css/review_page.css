@@ -20,10 +20,10 @@ a {
 }
 /*카드 내용*/
 .S3_card-text{
-	display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
+   display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
     -webkit-box-orient: vertical; /* 수직 방향으로 박스 정렬 */
     -webkit-line-clamp: 4; /* 줄 수를 설정합니다. (예: 3줄) */
-	 height: auto; /* 높이는 자동으로 조절되도록 설정합니다. */
+    height: auto; /* 높이는 자동으로 조절되도록 설정합니다. */
     overflow: hidden;           
     text-overflow: ellipsis !important;    
 
@@ -40,20 +40,20 @@ a {
 }
 
 .col-8, .col-4 ,.col-12{
-	padding: 0px;
-	margin: 0px;
+   padding: 0px;
+   margin: 0px;
 }
 .S3_carousel-inner {
     width: 100%;
     height: 240px;
 
 }
+
 .S3_store{
 
 	margin: 0;
 	padding: 0;
 }
-
 .S3_custom-card-img {
     height: 100% !important;
     object-fit: cover;
@@ -80,7 +80,7 @@ a {
     margin-top: -4px;
 }
 
-.card-body {
+.S3_card-body {
     position: relative; /* 자식 요소의 위치를 기준으로 설정 */
     height:270px;
 
@@ -139,10 +139,11 @@ a {
 
 /*탭버튼*/
 .tap_btn{
-	cursor: pointer;
+   cursor: pointer;
 }
 .S3_btn_box{
-	margin-top: -50px !important;
+
+   margin-top: -50px !important;
 }
 
 
@@ -179,21 +180,21 @@ a {
          font-size: 16px;
          cursor: pointer;
       }
-	  .m_card-body {
-	      padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
-	      height: auto; /* 높이를 자동으로 조정 */
-	  }
+     .m_card-body {
+         padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
+         height: auto; /* 높이를 자동으로 조정 */
+     }
 
-	  .m_card {
-	      height: auto; /* 카드 전체 높이를 자동으로 조정 */
-	      display: flex;
-	      flex-direction: column;
-	      justify-content: space-between; /* 내용들이 균등하게 분포되도록 조정 */
-	  }
+     .m_card {
+         height: auto; /* 카드 전체 높이를 자동으로 조정 */
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between; /* 내용들이 균등하게 분포되도록 조정 */
+     }
 
-	  .m_card-title {
-	      font-size: 20px; /* 텍스트 크기를 적절하게 조정 */
-		  margin-top: 20px;
-	      margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
-	  }
+     .m_card-title {
+         font-size: 20px; /* 텍스트 크기를 적절하게 조정 */
+        margin-top: 20px;
+         margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
+     }
 

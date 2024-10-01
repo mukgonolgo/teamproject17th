@@ -1,19 +1,26 @@
 package com.test.project.reservation;
 import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.test.project.store.StoreService;
 import com.test.project.DataNotFoundException;
+import com.test.project.notice.Notice;
 import com.test.project.store.Store;
 import com.test.project.user.UserService;
 import com.test.project.user.SiteUser;
-
+import org.springframework.data.domain.Sort;
 import lombok.RequiredArgsConstructor;
 
 
@@ -23,40 +30,39 @@ import lombok.RequiredArgsConstructor;
 public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	
+
+	
 	
 	public Reservation create(Store store, String reservationDay, String reservationTime, String reservationMember, SiteUser user) {
 	    Reservation reservation = new Reservation();
+	    reservation.setReservationid(generateUniqueReservationId());
 	    reservation.setStore(store);
 	    reservation.setUser(user);
 	    reservation.setReservationDay(reservationDay);
 	    reservation.setReservationtime(reservationTime);
 	    reservation.setReservationMember(reservationMember);
-	    String reservationNumber;
-	    do {
-	        reservationNumber = generateRandomReservationNumber();
-	    } while (isReservationNumberExists(reservationNumber)); // 중복 체크
-	    
-	    reservation.setReservationNumber(reservationNumber);
+
 	    reservation.setCreateDate(LocalDateTime.now());
 	    this.reservationRepository.save(reservation);
 	    
 	    return reservation;
 	}
-	
-	// 랜덤한 6자리 숫자를 생성하는 메서드
-	private String generateRandomReservationNumber() {
-	    Random random = new Random();
-	    int number = random.nextInt(900000) + 100000; // 100000부터 999999까지의 숫자 생성
-	    return String.valueOf(number);
-	}
 
-	// reservationNumber의 중복 여부를 확인하는 메서드
-	private boolean isReservationNumberExists(String reservationNumber) {
-	    // 데이터베이스에서 reservationNumber가 존재하는지 확인하는 로직
-	    return reservationRepository.existsByReservationNumber(reservationNumber);
+	public void modify(Reservation reservation, String reservationDay, String reservationTime, String reservationMember) {
+
+	    reservation.setReservationDay(reservationDay);
+	    reservation.setReservationtime(reservationTime);
+	    reservation.setReservationMember(reservationMember);
+		this.reservationRepository.save(reservation);
 	}
-	
-	
+    private Integer generateUniqueReservationId() {
+        Random random = new Random();
+        Integer id;
+        do {
+            id = random.nextInt(900000) + 100000; // 100000부터 999999까지 랜덤 숫자 생성
+        } while (reservationRepository.existsByReservationid(id)); // 중복 확인
+        return id;
+    }
 	//예약 조회
 	public Reservation getReservation(Integer reservationid) {
 		Optional<Reservation> store = this.reservationRepository.findById(reservationid);
@@ -67,6 +73,44 @@ public class ReservationService {
 			throw new DataNotFoundException("답변이 없습니다.");
 		}
 	}
+
+	
+    public Reservation save(Reservation reservation) {
+        return reservationRepository.save(reservation);
+    }
+    public Page<Reservation> getAllReservations(Pageable pageable) {
+        return reservationRepository.findAll(pageable);
+    }
+
+    public Optional<Reservation> getReservationById(Integer reservationid) {
+        return reservationRepository.findById(reservationid);
+    }
+    
+
+
+    public List<Reservation> getReservationsByUser(SiteUser user) {
+        return reservationRepository.findByUser(user, Sort.by(Sort.Direction.DESC, "createDate"));
+    }
+    
+    
+	public Page<Reservation> getList(int page, String kw){
+		//최신순으로 정렬
+		List<Sort.Order> sorts= new ArrayList<>();
+		sorts.add(Sort.Order.desc("createDate"));
+		Pageable pageable = PageRequest.of(page, 7,Sort.by(sorts));
+		return this.reservationRepository.findAllByKeyword(kw, pageable);
+	}
+
+    
+    // 예약 삭제
+    public void deleteReservation(Integer reservationid) {
+        reservationRepository.deleteById(reservationid);
+    }
+    
+    
+	
+	
+
 	
 	public Page<Reservation> searchByReservationId(List<Store> stores, Integer reservationid, Pageable pageable) {
 	    return reservationRepository.findByStoreInAndReservationid(stores, reservationid, pageable);
