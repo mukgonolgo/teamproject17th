@@ -4,24 +4,22 @@
 
 <!-- moment.js 포함 (필수) -->
 <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
 <script
-   src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- 커스텀 CSS 추가 -->
 <link rel="stylesheet" href="/css/review_page.css">
 <link rel="stylesheet" href="/css/category.css">
 
 <!-- 지도 API 포함 -->
 <script type="text/javascript"
-
 	src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
-
 
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <div layout:fragment="content">
-
 
 	<!-- 검색란 -->
 	<div class="section1 container my-5">
@@ -308,18 +306,19 @@
 									</div>
 
 
-									<!-- 식당정보 -->
-									<!-- 서버에서 리뷰 리스트를 반복해서 출력 -->
-									<p class="col-12 S3_store mb-1" th:each="review : ${reviews}">
-										<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
-									<div class="starRating" th:data-review-id="${review.id}"></div>
-									<a href="" style="text-decoration: none;"> <small
-										class="text-muted"> <i
-											class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
-											<span class="font-weight-bold">수원역 근처</span> 
-									</small>
-									</a>
-									</p>
+	<!-- 스토어 정보 -->
+<p class="col-12 S3_store mb-1">
+    <div class="starRating" th:data-review-id="${review.id}"></div>
+    <a href="#" style="text-decoration: none;">
+        <small class="text-muted">
+            <i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
+              <span th:if="${review.store != null}" th:text="${review.store.basicAddress}">Store Address</span>
+            <span th:if="${review.store != null}" th:text="${review.store.storeName}">Store Name</span>
+          
+        </small>
+    </a>
+</p>
+
 
 									<!-- 리뷰내용 -->
 									<p class="card-text S3_card-text mt-2 col-12 mb-2"
@@ -378,5 +377,8 @@
 
 		<!-- 자바스크립트 파일 포함 (라이브러리 이후에 로드) -->
 		<script src="js/review_page_category.js"></script>
+
+
+
 	</div>
 </html>

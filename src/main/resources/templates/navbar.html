@@ -223,7 +223,7 @@
          <ul class="navbar-nav ml-md-auto d-none d-lg-flex" sec:authorize="isAuthenticated()">
             <li class="nav-item mt-1"><img
                   th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}"
-                  alt="프로필이미지" width="40" class="rounded-circle" /></li>
+                  alt="프로필이미지" width="40" height="40"  class="rounded-circle" /></li>
 
             <!-- 관리자 -->
             <li class="nav-item d-flex align-items-center"

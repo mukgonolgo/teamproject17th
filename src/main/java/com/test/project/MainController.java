@@ -1,10 +1,8 @@
 package com.test.project;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
-
 import com.test.project.review.Review;
 import com.test.project.review.ReviewService;
 import com.test.project.review.img.ReviewImage;
@@ -29,17 +25,18 @@ import com.test.project.review.like.LikeStatusDto;
 import com.test.project.review.like.ReviewLikeService;
 import com.test.project.store.Store;
 import com.test.project.store.StoreService;
-
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 import com.test.project.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+
+
 @RequiredArgsConstructor
 @Controller
-
-public class MainController {	
+public class MainController {
+	
 		@Autowired
 	    private final ReviewLikeService reviewLikeService;	
 	    private final UserService userService;
@@ -52,15 +49,15 @@ public class MainController {
 	    
 	    @GetMapping("/")
 	    public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-	        // 가게 목록 가져오기
-	        List<Store> storeList = storeService.getAllStore();
+	        // 가게 목록 6개 가져오기
+	        List<Store> storeList = storeService.getTopStores(6);  // StoreService에 getTopStores 메서드를 추가
 	        model.addAttribute("storeList", storeList);
 
 	        // 최신 리뷰 6개 가져오기
-	        List<Review> recentReviews = reviewService.getRecentReviews(6);
+	        List<Review> recentReviews = reviewService.getRecentReviews(6);  // 이미 구현된 메서드
 	        model.addAttribute("recentReviews", recentReviews);
 
-	        // 현재 로그인한 사용자의 ID 가져오기
+	        // 현재 로그인한 사용자 정보 처리
 	        Long userId = null;
 	        if (userDetails != null) {
 	            SiteUser user = userService.getUser(userDetails.getUsername());
@@ -70,10 +67,9 @@ public class MainController {
 	            model.addAttribute("nickname", user.getNickname());
 	            model.addAttribute("userid", userId);
 	        } else {
-	            // 로그인하지 않은 사용자에 대한 처리
+	            // 로그인하지 않은 경우 처리
 	            model.addAttribute("profileImage", "/img/user/default-profile.png");
 	        }
-
 
 	        // 좋아요 상태 및 댓글 수를 저장할 맵
 	        Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
@@ -115,7 +111,6 @@ public class MainController {
 	          List<Reservation> reservations = reservationService.getReservationsByUser(siteUser);
 	          model.addAttribute("reservations", reservations);
 
-
 	          // 좋아요한 리뷰의 첫 번째 이미지를 가져옴
 	          List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
 	          model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
@@ -127,4 +122,7 @@ public class MainController {
 	    }
 
 
+	
+
 }
+

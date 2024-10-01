@@ -136,11 +136,15 @@ new Vue({
     }
 });
 
-
 document.getElementById('reviewForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
     let formData = new FormData(this);
+
+    // FormData 로그로 확인
+    formData.forEach((value, key) => {
+        console.log(key + ': ' + value);  // 전송될 데이터를 콘솔에 출력하여 확인
+    });
 
     // 파일 개수 로그 출력
     console.log("파일 개수:", formData.getAll('fileUpload').length);
@@ -158,7 +162,6 @@ document.getElementById('reviewForm').addEventListener('submit', function(event)
     }
     formData.append('rating', rating);
 
-    // 태그 필드도 중복 추가 방지
     if (formData.has('tags')) {
         formData.delete('tags');
     }
@@ -176,7 +179,6 @@ document.getElementById('reviewForm').addEventListener('submit', function(event)
     })
     .then(data => {
         console.log('성공:', data);
-        // 리뷰 ID와 함께 리프레시 쿼리 파라미터를 추가
         window.location.href = `/review_detail/${data.reviewId}`;
     })
     .catch((error) => {

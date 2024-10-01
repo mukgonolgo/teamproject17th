@@ -2,7 +2,9 @@ package com.test.project.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -124,6 +127,24 @@ public class StoreService {
     public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
         return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
     }
+    public List<Store> searchStoresByStoreName(String storeName) {
+        return storeRepository.findByStoreNameContainingIgnoreCase(storeName);
+    }
+
+    public List<Store> searchStoresByBasicAddress(String basicAddress) {
+        return storeRepository.findByBasicAddressContainingIgnoreCase(basicAddress);
+    }
+    
+    public List<Store> getTopStores(int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
+        Page<Store> topStores = storeRepository.findAll(pageable);
+        return topStores.getContent();
+    }
+    // StoreId로 스토어를 찾는 메서드 추가
+    public Optional<Store> findById(Integer storeId) {
+        return storeRepository.findById(storeId); // StoreRepository의 findById 메서드 호출
+    }
+
     
 //	별점 계산
     public double getStoreForstar(Integer storeId) {

@@ -54,12 +54,32 @@ public class StoreController {
     }
 
     // 가게 리스트 표시
+ // 가게 리스트 표시 및 검색 기능 추가
     @GetMapping("/list")
-    public String getStores(Model model) {
-        List<Store> storeList = storeService.getAllStore();
+    public String getStores(
+        @RequestParam(value = "search", required = false) String search,
+        @RequestParam(value = "searchType", defaultValue = "storeName") String searchType,
+        Model model) {
+
+        List<Store> storeList;
+
+        // 검색어가 있는 경우
+        if (search != null && !search.isEmpty()) {
+            if ("storeName".equals(searchType)) {
+                storeList = storeService.searchStoresByStoreName(search);
+            } else if ("basicAddress".equals(searchType)) {
+                storeList = storeService.searchStoresByBasicAddress(search);
+            } else {
+                storeList = storeService.getAllStore(); // 검색어가 없거나 검색 유형이 일치하지 않는 경우 전체 조회
+            }
+        } else {
+            storeList = storeService.getAllStore(); // 검색어가 없으면 전체 조회
+        }
+
         model.addAttribute("storeList", storeList);
         return "store/store_list"; // 리스트 페이지 템플릿
     }
+
 
     // 가게 등록 폼
     @GetMapping("/create")
