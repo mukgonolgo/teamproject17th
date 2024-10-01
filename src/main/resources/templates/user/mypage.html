@@ -148,7 +148,10 @@
 															<p th:text="${reservation.store.storeName}">식당 이름:</p>
 															<p th:text="${reservation.reservationDay}">예약 날짜:</p>
 															<span class="badge text-center"> <!-- mx-auto 추가 -->
-																<a href="#">리뷰쓰기</a>
+																																	<a th:href="@{/review_create_form(storeId=${reservation.store.storeId}, storeName=${reservation.store.storeName})}">
+    리뷰쓰기
+</a>
+
 															</span>
 														</div>
 													</a>

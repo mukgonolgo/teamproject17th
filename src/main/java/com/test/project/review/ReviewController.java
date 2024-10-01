@@ -70,51 +70,63 @@ public class ReviewController {
     @Autowired
     private UserService userService;
 
-    // 리뷰 목록 페이지를 반환하는 메서드
- // 리뷰 목록 페이지를 반환하는 메서드 (검색 기능 추가)
+    // 리뷰 목록 페이지를 반환하는 메서드(검색기능추가)
     @GetMapping("/review")
     public String reviewPage(@RequestParam(value = "query", required = false) String query, Model model) {
         List<Review> reviewPage;
 
         if (query != null && !query.isEmpty()) {
-            // 검색어가 있을 경우, 해당 검색어로 리뷰를 검색
             reviewPage = reviewService.searchReviews(query);
         } else {
-            // 검색어가 없을 경우, 모든 리뷰를 가져오기
             reviewPage = reviewService.getAllReviews();
         }
 
-        Long userId = reviewService.getCurrentUserId();  // 현재 로그인한 사용자 ID
-        List<Store> stores = storeService.getAllStore();  // 모든 가게 가져오기
-        model.addAttribute("stores", stores);  // 가게 리스트 추가
+        Long userId = reviewService.getCurrentUserId();
+        List<Store> stores = storeService.getAllStore(); // 모든 가게 가져오기
+        model.addAttribute("stores", stores); // 가게 리스트 추가
+        model.addAttribute("reviewPage", reviewPage); // 리뷰 목록 추가
 
+        // 리뷰의 각 스토어에 대해 주소를 "시"까지만 잘라서 설정
+        for (Review review : reviewPage) {
+            Store store = review.getStore();
+            if (store != null) {
+                String shortAddress = getShortAddress(store.getBasicAddress());
+                review.getStore().setBasicAddress(shortAddress); // 잘린 주소를 설정
+            }
+        }
+
+        // 좋아요 상태와 댓글 수 정보 추가
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
-        Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수 저장할 Map
+        Map<Long, Long> commentCountMap = new HashMap<>();
 
         for (Review review : reviewPage) {
             Long reviewId = review.getId();
-            boolean likedByUser = false;
-            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수 가져오기
-
-            if (userId != null) {
-                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 사용자가 좋아요를 눌렀는지 확인
-            }
+            boolean likedByUser = userId != null && reviewLikeService.isLikedByUser(reviewId, userId);
+            Long likeCount = reviewLikeService.countLikes(reviewId);
 
             LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
             likeStatusMap.put(reviewId, likeStatusDto);
 
-            // 댓글 수 계산
             long commentCount = reviewcommentService.countCommentsByReviewId(reviewId);
-            commentCountMap.put(reviewId, commentCount);  // 각 리뷰별 댓글 수 저장
+            commentCountMap.put(reviewId, commentCount);
         }
 
-        // 모델에 데이터 추가
-        model.addAttribute("reviewPage", reviewPage);  // 필터링된 리뷰 목록 추가
-        model.addAttribute("likeStatusMap", likeStatusMap);  // 좋아요 상태 정보 추가
-        model.addAttribute("commentCountMap", commentCountMap);  // 댓글 수 정보 추가
+        model.addAttribute("likeStatusMap", likeStatusMap);
+        model.addAttribute("commentCountMap", commentCountMap);
 
-        return "review/review_page";  // 리뷰 페이지로 이동
+        return "review/review_page"; // 리뷰 페이지로 이동
     }
+
+ // ReviewController 클래스 안에 추가
+    private String getShortAddress(String address) {
+        // "구" 까지 자르기
+        int endIndex = address.indexOf("시");
+        if (endIndex != -1) {
+            return address.substring(0, endIndex + 1); // "구"까지 포함해서 자르기
+        }
+        return address; // 만약 "구"가 없다면 전체 주소 반환
+    }
+
 
 
 
@@ -143,6 +155,11 @@ public class ReviewController {
         List<CommentResponse> comments = reviewcommentService.getCommentsForReview(id);  // 댓글 조회
         long commentCount = reviewcommentService.countCommentsByReviewId(id);  // 댓글 수 계산
 
+        // 스토어 정보를 모델에 추가
+        Store store = review.getStore();  // 리뷰와 연결된 스토어 정보 가져오기
+        model.addAttribute("storeName", store.getStoreName());  // 스토어 이름 추가
+        model.addAttribute("storeAddress", store.getBasicAddress());  // 스토어 주소 추가
+
         model.addAttribute("review", review);
         model.addAttribute("likedByUser", likedByUser);
         model.addAttribute("likeCount", likeCount);
@@ -155,11 +172,18 @@ public class ReviewController {
     }
 
 
+
     // 리뷰 작성 폼 페이지로 이동하는 메서드
     @GetMapping("/review_create_form")
-    public String reviewCreateForm() {
-        return "review/review_create_form";  // 리뷰 작성 폼 페이지로 이동
+    public String reviewCreateForm(@RequestParam("storeId") Integer storeId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+
+      
+
+        model.addAttribute("storeId", storeId);  // storeId를 모델에 추가
+
+        return "review/review_create_form"; // 리뷰 작성 폼 페이지로 이동
     }
+
 
  // 리뷰를 생성하는 메서드 (이미지 및 태그 처리 포함)
     @PostMapping("/review_create")
@@ -168,17 +192,21 @@ public class ReviewController {
             @ModelAttribute Review review,
             @RequestParam(name = "fileUpload") List<MultipartFile> fileUpload,
             @RequestParam("tags_output") List<String> tags,
-            @RequestParam("rating") String rating) throws IOException {
+            @RequestParam("rating") String rating,
+            @RequestParam(name = "storeId") Integer storeId) throws IOException {
 
         Long userId = reviewService.getCurrentUserId();
         SiteUser user = userService.getUserById(userId).orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
 
+        // storeId로 스토어를 찾음
+        Store store = storeService.findById(storeId).orElseThrow(() -> new RuntimeException("해당 스토어를 찾을 수 없습니다."));
+
         review.setCreateDate(LocalDateTime.now());
         review.setUser(user);
+        review.setStore(store);  // 스토어 정보 설정
 
         reviewService.processTags(tags, review);
-        // processImages 메서드 호출 시 기존 이미지 경로는 null 또는 빈 문자열로 전달
-        List<ReviewImageMap> reviewImageMaps = reviewService.processImages(fileUpload, review, "");  // 이미지 처리
+        List<ReviewImageMap> reviewImageMaps = reviewService.processImages(fileUpload, review, "");
 
         reviewRepository.save(review);
 

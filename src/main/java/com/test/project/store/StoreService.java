@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -139,7 +140,10 @@ public class StoreService {
         Page<Store> topStores = storeRepository.findAll(pageable);
         return topStores.getContent();
     }
-
+    // StoreId로 스토어를 찾는 메서드 추가
+    public Optional<Store> findById(Integer storeId) {
+        return storeRepository.findById(storeId); // StoreRepository의 findById 메서드 호출
+    }
 
     
 //	별점 계산
