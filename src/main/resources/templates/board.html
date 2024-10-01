@@ -13,25 +13,25 @@
 <body>
 	<div layout:fragment="content">
 		<div class="container">
-			<div class="jumbotron">
-				<h2 class="display-4">게시판 목록</h2>
-			</div>
+			<h5 class="my-4 border-bottom pb-3 display-4">게시글 목록</h5>
 			<form id="searchForm" method="get" th:action="@{/board/{id}(id=${id})}">
 				<input type="hidden" id="page" name="page" value="1">
 				<div>
 					<label>
 						<input type="radio" name="searchType" value="title" th:checked="${searchType == 'title'}"> 제목
 					</label>
+					<span>&nbsp;</span>
 					<label>
 						<input type="radio" name="searchType" value="content" th:checked="${searchType == 'content'}">
 						본문
 					</label>
+					<span>&nbsp;</span>
 					<label>
 						<input type="radio" name="searchType" value="username" th:checked="${searchType == 'username'}">
 						글쓴이
 					</label>
 				</div>
-				<span class="search_box">
+				<span class="search_box mb-4 mt-3">
 					<input type="text" id="search_kw" name="kw" placeholder="검색어 입력" th:value="${kw}" class="search_kw"
 						style="flex: 1; margin-right: 5px;">
 					<button type="submit" id="btn_search" class="search_btn"><i class="ri-search-line"></i></button>
@@ -39,7 +39,7 @@
 			</form>
 			</form>
 			<span class="">
-				<a href="#" class="badge badge-primary board_tag" data-tag="">전체</a>
+				<a href="#" class="badge badge-dark board_tag" data-tag="">전체</a>
 				<a href="#" class="badge badge-primary board_tag" data-tag="일반"><i class="ri-message-3-line"></i>일반</a>
 				<a href="#" class="badge badge-secondary board_tag" data-tag="질문"> <i
 						class="ri-question-mark"></i>질문</a>
@@ -82,7 +82,7 @@
 
 			</table>
 			<a class="float-right button button-primary" th:href="@{/boardwrite/{id}(id=${userId})}" >
-				<button type="button" class="btn btn-primary">게시글 작성</button></a>
+				<button type="button" class="btn btn-info text-white">게시글 작성</button></a>
 
 
 <nav th:if="${!board.isEmpty()}">
