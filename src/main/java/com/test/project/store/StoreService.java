@@ -2,7 +2,9 @@ package com.test.project.store;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -131,6 +133,15 @@ public class StoreService {
     public List<Store> searchStoresByBasicAddress(String basicAddress) {
         return storeRepository.findByBasicAddressContainingIgnoreCase(basicAddress);
     }
+    
+    public List<Store> getTopStores(int limit) {
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
+        Page<Store> topStores = storeRepository.findAll(pageable);
+        return topStores.getContent();
+    }
+
+
+    
 //	별점 계산
     public double getStoreForstar(Integer storeId) {
         // 스토어에 해당하는 리뷰 조회

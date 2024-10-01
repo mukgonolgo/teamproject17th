@@ -339,6 +339,19 @@
     z-index: 1;
 }
 
+.swiper-container {
+    overflow: hidden; /* 나머지 슬라이드 숨기기 */
+    max-width: 100%; /* 최대 너비 설정 */
+}
+
+.swiper-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* 슬라이드 애니메이션 */
+}
+
+.swiper-slide {
+    width: calc(100% / 3); /* 한 번에 세 개씩 보이도록 설정 */
+}
 
 @media (max-width: 1200px) {
     .M_s2_a2_carousel-inner {

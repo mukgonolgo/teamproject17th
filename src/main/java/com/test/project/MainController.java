@@ -49,15 +49,15 @@ public class MainController {
 	    
 	    @GetMapping("/")
 	    public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-	        // 가게 목록 가져오기
-	        List<Store> storeList = storeService.getAllStore();
+	        // 가게 목록 6개 가져오기
+	        List<Store> storeList = storeService.getTopStores(6);  // StoreService에 getTopStores 메서드를 추가
 	        model.addAttribute("storeList", storeList);
 
 	        // 최신 리뷰 6개 가져오기
-	        List<Review> recentReviews = reviewService.getRecentReviews(6);
+	        List<Review> recentReviews = reviewService.getRecentReviews(6);  // 이미 구현된 메서드
 	        model.addAttribute("recentReviews", recentReviews);
 
-	        // 현재 로그인한 사용자의 ID 가져오기
+	        // 현재 로그인한 사용자 정보 처리
 	        Long userId = null;
 	        if (userDetails != null) {
 	            SiteUser user = userService.getUser(userDetails.getUsername());
@@ -67,10 +67,9 @@ public class MainController {
 	            model.addAttribute("nickname", user.getNickname());
 	            model.addAttribute("userid", userId);
 	        } else {
-	            // 로그인하지 않은 사용자에 대한 처리
+	            // 로그인하지 않은 경우 처리
 	            model.addAttribute("profileImage", "/img/user/default-profile.png");
 	        }
-
 
 	        // 좋아요 상태 및 댓글 수를 저장할 맵
 	        Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
