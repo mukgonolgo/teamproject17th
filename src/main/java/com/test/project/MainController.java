@@ -49,13 +49,27 @@ public class MainController {
 	    
 	    @GetMapping("/")
 	    public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-	        // 가게 목록 6개 가져오기
-	        List<Store> storeList = storeService.getTopStores(6);  // StoreService에 getTopStores 메서드를 추가
-	        model.addAttribute("storeList", storeList);
+	    	   // 가게 목록 6개 가져오기
+	        List<Store> storeList = storeService.getTopStores(6);
+	        model.addAttribute("storeList", storeList);  // 가게 목록은 전체 주소 그대로 유지
 
 	        // 최신 리뷰 6개 가져오기
-	        List<Review> recentReviews = reviewService.getRecentReviews(6);  // 이미 구현된 메서드
+	        List<Review> recentReviews = reviewService.getRecentReviews(6);
+
+	        // 리뷰의 주소는 '시'나 '구'까지만 잘라서 표시할 수 있도록 추가 데이터를 모델에 담기
+	        Map<Long, String> shortAddressMap = new HashMap<>(); // 리뷰별 짧은 주소 저장
+	        
+	        for (Review review : recentReviews) {
+	            Store store = review.getStore();
+	            if (store != null) {
+	                String shortAddress = getShortAddress(store.getBasicAddress());  // '시'나 '구'까지 자르기
+	                shortAddressMap.put(review.getId(), shortAddress);  // 리뷰 ID를 키로 하고 짧은 주소 저장
+	            }
+	        }
+
+	        // 모델에 리뷰와 주소 정보를 함께 전달
 	        model.addAttribute("recentReviews", recentReviews);
+	        model.addAttribute("shortAddressMap", shortAddressMap);  // 리뷰용 짧은 주소 추가
 
 	        // 현재 로그인한 사용자 정보 처리
 	        Long userId = null;
@@ -91,7 +105,8 @@ public class MainController {
 	            // 댓글 수 계산
 	            long commentCount = reviewService.getCommentCountForReview(reviewId);
 	            commentCountMap.put(reviewId, commentCount);
-	        }
+	        }    
+
 
 	        // 모델에 좋아요 상태 및 댓글 수 정보 추가
 	        model.addAttribute("likeStatusMap", likeStatusMap);
@@ -100,6 +115,20 @@ public class MainController {
 	        return "index";  // index.html 파일을 렌더링
 	    }
 
+	    
+
+	 // 주소를 "시" 또는 "구"까지 자르는 메서드 추가
+	    private String getShortAddress(String address) {
+	        // "구" 또는 "시"까지 자르기
+	        int endIndex = address.indexOf("구");
+	        if (endIndex == -1) {  // 구가 없으면 시까지 자르기
+	            endIndex = address.indexOf("시");
+	        }
+	        if (endIndex != -1) {
+	            return address.substring(0, endIndex + 1);  // 구 또는 시까지 포함해서 자르기
+	        }
+	        return address;  // 만약 "구"나 "시"가 없다면 전체 주소 반환
+	    }
 	
 	    @GetMapping("/mypage/{userid}")
 	    public String mypage(@PathVariable("userid") Long userid, Model model) {

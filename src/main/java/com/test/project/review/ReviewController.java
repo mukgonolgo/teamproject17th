@@ -117,16 +117,16 @@ public class ReviewController {
         return "review/review_page"; // 리뷰 페이지로 이동
     }
 
- // ReviewController 클래스 안에 추가
     private String getShortAddress(String address) {
-        // "구" 까지 자르기
         int endIndex = address.indexOf("시");
-        if (endIndex != -1) {
-            return address.substring(0, endIndex + 1); // "구"까지 포함해서 자르기
+        if (endIndex == -1) { // "시"가 없다면 "구"를 찾음
+            endIndex = address.indexOf("구");
         }
-        return address; // 만약 "구"가 없다면 전체 주소 반환
+        if (endIndex != -1) {
+            return address.substring(0, endIndex + 1); // "시"나 "구"까지 포함해서 자름
+        }
+        return address; // "시"나 "구"가 없으면 전체 주소 반환
     }
-
 
 
 

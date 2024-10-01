@@ -46,73 +46,14 @@
 					<option value="gyeongbuk">경상북도</option>
 					<option value="gyeongnam">경상남도</option>
 					<option value="jeju">제주특별자치도</option>
-
-
 				</select>
 			</div>
-
-
-
-
 
 			<div class="col-auto">
 				<select name="h_area2" id="region2" class="form-control">
 					<option>-선택-</option>
 				</select>
 			</div>
-
-
-			<!--메뉴 선택-->
-			<div class="col-auto">
-				<button class="btn text-secondary bg-white  category_btn menu_btn">
-					메뉴 <i class="fa-solid fa-utensils"></i>
-				</button>
-				<div class="card food_box">
-					<div
-						class="card-body S3_card-body m_card_body row justify-content-center ">
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/bibimbap_8740490.png" alt="food_icon"
-								class="icon">
-							<div class="text">한식</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_Chinese.png" alt="food_icon"
-								class="icon">
-							<div class="text">중식</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_japan.png" alt="food_icon"
-								class="icon">
-							<div class="text">일식</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_Western.png" alt="food_icon"
-								class="icon">
-							<div class="text">양식</div>
-						</button>
-						<button class="btn border btn-icon col-3 ">
-							<img src="/img/icon/food_i_fast.png" alt="food_icon" class="icon">
-							<div class="text ">패스트푸드</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_asian.png" alt="food_icon"
-								class="icon">
-							<div class="text">아시안</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_omakase.png" alt="food_icon"
-								class="icon">
-							<div class="text">오마카세</div>
-						</button>
-						<button class="btn border btn-icon col-3">
-							<img src="/img/icon/food_i_dongne.png" alt="food_icon"
-								class="icon">
-							<div class="text">동네맛집</div>
-						</button>
-					</div>
-				</div>
-			</div>
-			<!--메뉴 선택 끝-->
 
 			<!-- 지도 선택 -->
 			<div class="col-auto">
@@ -306,18 +247,22 @@
 									</div>
 
 
-	<!-- 스토어 정보 -->
-<p class="col-12 S3_store mb-1">
-    <div class="starRating" th:data-review-id="${review.id}"></div>
-    <a href="#" style="text-decoration: none;">
-        <small class="text-muted">
-            <i class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
-              <span th:if="${review.store != null}" th:text="${review.store.basicAddress}">Store Address</span>
-            <span th:if="${review.store != null}" th:text="${review.store.storeName}">Store Name</span>
-          
-        </small>
-    </a>
-</p>
+									<!-- 스토어 정보 -->
+									<p class="col-12 S3_store mb-1">
+									<div class="starRating" th:data-review-id="${review.id}"></div>
+									<a href="#" style="text-decoration: none;"> <small
+										class="text-muted"> <i
+											class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
+											<span th:if="${review.store != null}"
+											th:text="${review.store.basicAddress}"
+											style="font-weight: bold;">Store Address</span> <span
+											th:if="${review.store != null}"
+											th:text="${review.store.storeName}"
+											>Store Name</span>
+
+									</small>
+									</a>
+									</p>
 
 
 									<!-- 리뷰내용 -->
