@@ -1,12 +1,16 @@
 package com.test.project.reservation;
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -108,8 +112,41 @@ public class ReservationService {
 	
 
 	
+	public Page<Reservation> searchByReservationId(List<Store> stores, Integer reservationid, Pageable pageable) {
+	    return reservationRepository.findByStoreInAndReservationid(stores, reservationid, pageable);
+	}
 
+
+
+	public Page<Reservation> searchByStoreName(List<Store> stores, String storeName, Pageable pageable) {
+	    return reservationRepository.findByStoreInAndStore_StoreNameContaining(stores, storeName, pageable);
+	}
+
+
+    // 전체 예약 리스트 조회
+    public Page<Reservation> getReservationList(Pageable pageable) {
+        return reservationRepository.findAll(pageable);
+    }
+
+ // 가게 리스트에 해당하는 예약 정보 가져오기
+    public Page<Reservation> getReservationsByStores(List<Store> stores, Pageable pageable) {
+        return reservationRepository.findByStoreIn(stores, pageable);
+    }
 	
+ // 사용자별 예약 조회
+    public Page<Reservation> getReservationsByUser(SiteUser user, Pageable pageable) {
+        return reservationRepository.findByUser(user, pageable);
+    }
+
+    // 사용자와 예약 ID로 검색
+    public Page<Reservation> searchByUserAndReservationId(SiteUser user, Integer reservationId, Pageable pageable) {
+        return reservationRepository.findByUserAndReservationid(user, reservationId, pageable);
+    }
+
+    // 사용자와 가게 이름으로 검색
+    public Page<Reservation> searchByUserAndStoreName(SiteUser user, String storeName, Pageable pageable) {
+        return reservationRepository.findByUserAndStore_StoreNameContaining(user, storeName, pageable);
+    }
 
 
 

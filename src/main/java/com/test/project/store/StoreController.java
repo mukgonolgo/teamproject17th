@@ -28,6 +28,13 @@ import com.test.project.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
+import lombok.RequiredArgsConstructor;
+
 @RequestMapping("/store")
 @RequiredArgsConstructor
 @Controller
@@ -187,6 +194,7 @@ public class StoreController {
     
     // 가게 리스트 표시 - 페이지네이션과 검색 추가
     @GetMapping("/store_alist")
+    @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한이 있는 사용자만 접근 가능
     public String getStoreListForAdmin(
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "10") int size,

@@ -73,6 +73,7 @@ public class ReviewController {
     // 리뷰 목록 페이지를 반환하는 메서드
  // 리뷰 목록 페이지를 반환하는 메서드 (검색 기능 추가)
     @GetMapping("/review")
+
     public String reviewPage(@RequestParam(value = "query", required = false) String query, Model model) {
         List<Review> reviewPage;
 
@@ -91,6 +92,7 @@ public class ReviewController {
         Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
         Map<Long, Long> commentCountMap = new HashMap<>();  // 리뷰별 댓글 수 저장할 Map
 
+
         for (Review review : reviewPage) {
             Long reviewId = review.getId();
             boolean likedByUser = false;
@@ -105,6 +107,7 @@ public class ReviewController {
 
             // 댓글 수 계산
             long commentCount = reviewcommentService.countCommentsByReviewId(reviewId);
+
             commentCountMap.put(reviewId, commentCount);  // 각 리뷰별 댓글 수 저장
         }
 
@@ -113,9 +116,9 @@ public class ReviewController {
         model.addAttribute("likeStatusMap", likeStatusMap);  // 좋아요 상태 정보 추가
         model.addAttribute("commentCountMap", commentCountMap);  // 댓글 수 정보 추가
 
+
         return "review/review_page";  // 리뷰 페이지로 이동
     }
-
 
 
 
