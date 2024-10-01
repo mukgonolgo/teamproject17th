@@ -437,7 +437,7 @@ public String checkEmail(@RequestParam("email") String email) {
     @GetMapping("/list")
     @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한이 있는 사용자만 접근 가능
     public String getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
-                              @RequestParam(value = "size", defaultValue = "10") int size,
+                              @RequestParam(value = "size", defaultValue = "1") int size,
                               @RequestParam(value = "search", required = false) String search,
                               @RequestParam(value = "searchType", defaultValue = "id") String searchType,
                               Model model) {
