@@ -130,7 +130,6 @@ public class ReviewController {
 
 
 
-
  // 특정 리뷰에 대한 상세 정보를 반환하는 메서드
     @GetMapping("/review_detail/{id}")
     public String reviewDetail(@PathVariable("id") Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -156,9 +155,12 @@ public class ReviewController {
         long commentCount = reviewcommentService.countCommentsByReviewId(id);  // 댓글 수 계산
 
         // 스토어 정보를 모델에 추가
+
         Store store = review.getStore();  // 리뷰와 연결된 스토어 정보 가져오기
         model.addAttribute("storeName", store.getStoreName());  // 스토어 이름 추가
         model.addAttribute("storeAddress", store.getBasicAddress());  // 스토어 주소 추가
+        model.addAttribute("storeImage", store.getImageUrl());  // 스토어 이미지 추가
+
 
         model.addAttribute("review", review);
         model.addAttribute("likedByUser", likedByUser);

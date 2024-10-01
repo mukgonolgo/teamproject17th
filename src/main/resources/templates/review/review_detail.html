@@ -24,42 +24,21 @@
 					<div id="carouselExample" class="carousel slide mt-3">
 						<div class="carousel-inner S3_d_carousel-inner">
 							<div class="carousel-item S3_d_carousel-item active">
-								<img src="/img/food/food2_2.png"
-									class="d-block w-100 custom-card-img" alt="...">
+								<img th:src="${storeImage}" alt="Store Image" class="d-block w-100 custom-card-img">
+
 							</div>
-							<div class="carousel-item S3_d_carousel-item">
-								<img src="/img/food/food2_3.png"
-									class="d-block w-100 custom-card-img" alt="...">
-							</div>
-							<div class="carousel-item S3_d_carousel-item">
-								<img src="/img/food/food_2.png"
-									class="d-block w-100 custom-card-img" alt="...">
-							</div>
+					
 						</div>
-						<a
-							class="carousel-control-prev S3_d_carousel-control-prev S3_d_hover_btn"
-							href="#carouselExample" role="button" data-slide="prev"> <span
-							class="carousel-control-prev-icon" aria-hidden="true"></span> <span
-							class="sr-only">Previous</span>
-						</a> <a
-							class="carousel-control-next S3_d_carousel-control-next S3_d_hover_btn"
-							href="#carouselExample" role="button" data-slide="next"> <span
-							class="carousel-control-next-icon" aria-hidden="true"></span> <span
-							class="sr-only">Next</span>
-						</a>
+				
 					</div>
 					<div class="S3_d_card_text text-left mb-2 mx-3">
 						<h2 class="  mt-3">
-							돼지냠냠 <img src="/img/icon/bookmark-regular.svg" alt="bookmark"
-								style="width: 15px; margin-top: 10px" class="float-right">
+								<span th:text="${storeName}">가게 이름</span> 
 						</h2>
 						<p>
-							<img src="/img/icon/star-solid.svg" alt="star"
-								style="width: 20px;"><small
-								class="text-muted ml-2 font-weight-bold">4.7</small> <small
+							<small
 								class="text-muted"><i
-								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i><span
-								class="font-weight-bold">수원역 근처</span> 돼지냠냠</small>
+								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i> <span class="font-weight-bold" th:text="${storeAddress}">가게 주소</span></small>
 						</p>
 						<button class="btn btn-secondary ">예약하기</button>
 						<button class="btn btn-secondary ">구경가기</button>
