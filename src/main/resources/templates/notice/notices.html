@@ -26,8 +26,11 @@
 							    </span>
 							    <div class="No_btn d-flex">
 									<img src="/img/arrow_drop.svg" alt="dfdf">
-									<form action="#" th:action="@{/notices/delete/{id}(id=${notice.noticeId})}" method="post">
-									    <button class="btn" type="submit" ><i class="fa-solid fa-x" style="color: #e72323;"></i></a>
+									<form action="#" th:action="@{/notices/delete/{id}(id=${notice.noticeId})}" method="post" 
+									      sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
+									    <button class="btn" type="submit">
+									        <i class="fa-solid fa-x" style="color: #e72323;"></i>
+									    </button>
 									</form>
 								</div>
 
@@ -73,8 +76,11 @@
 			  	<input type="hidden" id="page" th:value="${paging.number}" name="page"/>
 			  </form>
 			  
-			  <div style="display: flex; justify-content: flex-end; white-space: nowrap; ">
-			    <a th:href="@{/notices/create}"  style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">공지 작성</a>
+			  <div style="display: flex; justify-content: flex-end; white-space: nowrap;" 
+			       sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
+			      <a th:href="@{/notices/create}" style="font-size: 12px; color: white;" class="col-3 col-sm-2 col-lg-1 btn  mt-5 bg-dark">
+			          공지 작성
+			      </a>
 			  </div>
 		     </div>
 
