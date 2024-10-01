@@ -69,6 +69,10 @@ public class MainController {
 			// 좋아요한 리뷰의 첫 번째 이미지를 가져옴
 			List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
 			model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
+			
+	        // 좋아요를 누른 식당 리스트 가져오기
+	        List<Store> likedStores = storeService.getStoresLikedByUser(siteUser); // 사용자에 의해 좋아요가 눌린 가게 리스트
+	        model.addAttribute("likedStores", likedStores); // 좋아요한 식당 리스트 추가
 
 			return "user/mypage"; // mypage.html 파일을 렌더링
 		}

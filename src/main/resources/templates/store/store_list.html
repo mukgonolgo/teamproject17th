@@ -124,6 +124,7 @@
 		<div class="row" th:if="${storeList != null}">
 			<div class="col-lg-4 col-md-6 col-sm-12 mb-4" th:each="store : ${storeList}">
 				<div class="card">
+					<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}" class="store_list_btn" style="text-decoration: none; color: black;">
 					<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
@@ -145,9 +146,9 @@
 								<small class="ml-1" th:text="${store.basicAddress}">주소</small>
 							</div>
 						</div>
-						<!-- 상세 페이지로 이동 -->
-						<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}" class="btn btn-primary">상세 보기</a>
+						<!-- 상세 페이지로 이동 -->					
 					</div>
+					</a>
 				</div>
 			</div>		             
 		</div>

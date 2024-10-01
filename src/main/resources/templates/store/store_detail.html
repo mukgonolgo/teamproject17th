@@ -9,6 +9,18 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+	<style>
+
+
+
+
+		.recommend.red i {
+		    color: #ff2424; /* 기본 색상 */
+		}
+		.recommend.black i {
+		    color: #bababa; /* 기본 색상 */
+		}
+	</style>
 </head>
 
 <body>
@@ -44,11 +56,15 @@
 								<div class="restaurant_title d-flex justify-content-between align-items-center">
 								    <h5 class="card-title mb-0" th:text="${store.storeName}">가게 이름</h5>
 									<div class="d-flex d-lg-none align-items-center">
-									    <span class="mr-2">공유</span>
-									    <a href="javascript:void(0);" class="mt-1 recommend" th:data-uri="@{|/store/vote/${store.storeId}|}">
-									        👍 
-									        <span class="badge">[[${#lists.size(store.voter)}]]</span>
-									    </a>
+										<!--공유 기능-->
+										<img  src="/img/icon/share-nodes-solid.svg"
+											alt="share" style="width: 15px" class=" shareBtn tap_btn mx-2" />
+										<a href="javascript:void(0);" 
+										   th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'" 
+										   th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
+										   <i class="fa-solid fa-heart"></i>
+										    <span style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
+										</a>
 									</div>
 								</div>
 
@@ -239,11 +255,15 @@
 						<div class="restaurant_re_object " style="border: 1px solid #ccc;">
 							<div class="restaurant_re_title d-flex justify-content-between align-items-center p-3 bg-white">
 								<p>예약 하기</p>
-								<div class="d-flex">
-									<span class="mr-2">공유</span>
-									<a href="javascript:void(0);" class=" mt-2 recommend" style="text-decoration: none;"
-										th:data-uri="@{|/store/vote/${store.storeId}|}">👍 
-										<span class="badge text-dark">[[${#lists.size(store.voter)}]]</span>
+								<div class="d-flex align-items-center">
+									<!-- 공유버튼 -->
+									<img src="/img/icon/share-nodes-solid.svg"
+										alt="share" style="width: 15px" class="shareBtn tap_btn mx-2" />
+									<a href="javascript:void(0);" 
+									   th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'" 
+									   th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
+									   <i class="fa-solid fa-heart"></i>
+									    <span style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
 									</a>
 								</div>
 							</div>
@@ -380,6 +400,41 @@
 					</div>
 				</div>
 			</div>
+			<!-- 모달창 -->
+			<div id="shareModal" class="modal" style="display: none;">
+				<div class="modal-content">
+					<span class="closeBtn text-right">&times;</span>
+
+					<!-- SNS 공유 버튼들을 감싸는 div -->
+					<div class="sns-share d-flex justify-content-center"
+						style="gap: 20px;">
+						<!-- 페이스북 공유 버튼 -->
+						<a href="" id="facebookShare" target="_blank"> <img
+							src="/img/icon/sns/f_black.png" alt="페이스북 공유"
+							style="width: 50px;" />
+						</a>
+
+						<!-- 트위터 공유 버튼 -->
+						<a href="" id="twitterShare" target="_blank"> <img
+							src="/img/icon/sns/x_black.png" alt="트위터 공유"
+							style="width: 50px;" />
+						</a>
+					</div>
+
+					<p>공유할 주소:</p>
+
+					<!-- 인풋창과 복사 버튼 -->
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" id="shareUrl"
+							value="https://youtu.be/CyzW4FxtHVM?feature=shared" readonly>
+						<div class="input-group-append">
+							<!-- 복사 버튼 이미지 -->
+							<button class="btn btn-dark" id="copyBtn" type="button"
+								style="display: flex; align-items: center;">복사</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<script src="/js/store/store_detail.js"></script>
 			<script>
@@ -432,6 +487,33 @@
 				    element.addEventListener("click", function(){
 				        location.href = this.dataset.uri;
 				    });
+				});
+				/*공유 모달창 기능*/
+				document.querySelectorAll('.shareBtn').forEach(button => {
+				    button.addEventListener('click', function() {
+				        const modal = document.getElementById('shareModal');
+				        const shareUrl = window.location.href; // 현재 페이지 URL 가져오기
+				        document.getElementById('shareUrl').value = shareUrl; // 주소 입력란에 넣기
+
+				        // SNS 공유 링크 설정
+				        document.getElementById('facebookShare').href = `${shareUrl}`;
+				        document.getElementById('twitterShare').href = `${shareUrl}&text=Check this out!`;
+
+				        modal.style.display = 'block'; // 모달창 보이기
+				    });
+				});
+
+				// 모달창 닫기 버튼 기능
+				document.querySelector('.closeBtn').addEventListener('click', function() {
+				    document.getElementById('shareModal').style.display = 'none';
+				});
+
+				// 주소 복사 기능
+				document.getElementById('copyBtn').addEventListener('click', function() {
+				    const copyText = document.getElementById('shareUrl');
+				    copyText.select();
+				    document.execCommand('copy'); // 주소 복사
+				    alert('주소가 복사되었습니다!');
 				});
 
 
