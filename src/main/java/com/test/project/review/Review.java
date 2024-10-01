@@ -115,6 +115,8 @@ public class Review {
         }
         return images;
     }
+    
+
 
     // 좋아요 리스트에서 수를 카운트할 수도 있음
     public void updateLikeCount() {

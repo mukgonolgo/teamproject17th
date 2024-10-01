@@ -48,12 +48,18 @@ a {
     height: 240px;
 
 }
+
 .S3_store{
+<<<<<<< HEAD
 
    margin: 0;
    padding: 0;
-}
+=======
 
+	margin: 0;
+	padding: 0;
+>>>>>>> branch 'Parkjongmin' of https://github.com/mukgonolgo/teamproject17th.git
+}
 .S3_custom-card-img {
     height: 100% !important;
     object-fit: cover;
@@ -80,7 +86,7 @@ a {
     margin-top: -4px;
 }
 
-.card-body {
+.S3_card-body {
     position: relative; /* 자식 요소의 위치를 기준으로 설정 */
     height:270px;
 
@@ -180,7 +186,10 @@ a {
          font-size: 16px;
          cursor: pointer;
       }
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'Parkjongmin' of https://github.com/mukgonolgo/teamproject17th.git
      .m_card-body {
          padding: 5px; /* 패딩을 줄여서 박스 크기를 줄임 */
          height: auto; /* 높이를 자동으로 조정 */
@@ -199,4 +208,7 @@ a {
          margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
      }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'Parkjongmin' of https://github.com/mukgonolgo/teamproject17th.git

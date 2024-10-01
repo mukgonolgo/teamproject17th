@@ -15,5 +15,14 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     @Query("SELECT s FROM Store s JOIN FETCH s.siteUser WHERE s.storeId = :storeId")
     Store findStoreWithUser(@Param("storeId") Integer storeId);
     
+
     List<Store> findByVoterContaining(SiteUser user);
+
+    // 사업자 이름으로 가게 검색 (페이지네이션 포함)
+    Page<Store> findByStoreId(Integer storeId, Pageable pageable);
+    Page<Store> findByStoreNameContainingIgnoreCase(String storeName, Pageable pageable);
+    Page<Store> findBySiteUser_UsernameContainingIgnoreCase(String username, Pageable pageable);
+
+    List<Store> findBySiteUser(SiteUser siteUser);
+
 }

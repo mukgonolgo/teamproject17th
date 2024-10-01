@@ -70,6 +70,5 @@ public class Store {
     private Integer approvalStatus = 1; // 기본값: 일반 광고 승인 대기 중
     private String imageUrl;//이미지 업로드 위치
 
-
     
 }
