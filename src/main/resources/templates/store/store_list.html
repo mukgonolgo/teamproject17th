@@ -93,7 +93,7 @@
 					<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
-								<img src="img/food/food1_1.jpg" class="card-img-top" alt="가게 이미지 1">
+								<img th:src="@{{storeImage}(storeImage=${storeImage})}"  class="card-img-top" alt="가게 이미지 1" />
 							</div>
 						</div>
 					</div>
@@ -127,7 +127,7 @@
 					<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
-								<img th:src="@{${storeImage}}" class="card-img-top" alt="가게 이미지 1">
+								<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="card-img-top" alt="가게 이미지" />
 							</div>
 						</div>
 					</div>
