@@ -7,10 +7,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import java.util.Optional;
 import java.util.Set;
@@ -30,8 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.test.project.DataNotFoundException;
 import com.test.project.review.comment.ReviewCommentRepository;
 
-import com.test.project.review.comment.ReviewCommentService;
-
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.img.ReviewImageMapRepository;
@@ -47,7 +43,6 @@ import com.test.project.user.UserRepository;
 public class ReviewService {
 
 	private final String uploadDirectory = "src/main/resources/static/img/upload";
-
 
 	private final ReviewRepository reviewRepository;
 	private final ReviewImageRepository reviewImageRepository;
@@ -222,7 +217,6 @@ public class ReviewService {
 		return reviewImageMaps;
 	}
 
-
 	
 	
 	
@@ -285,5 +279,6 @@ public class ReviewService {
 	    Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
 	    return reviewRepository.findAll(pageable).getContent();
 	}
+
 
 }

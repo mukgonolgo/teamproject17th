@@ -23,6 +23,12 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     Page<Store> findByStoreNameContainingIgnoreCase(String storeName, Pageable pageable);
     Page<Store> findBySiteUser_UsernameContainingIgnoreCase(String username, Pageable pageable);
 
-    List<Store> findBySiteUser(SiteUser siteUser);
+    List<Store> findBySiteUser(SiteUser siteUser);    
+    
+    // 가게 이름으로 검색
+    List<Store> findByStoreNameContainingIgnoreCase(String storeName);
+
+    // 가게 주소로 검색
+    List<Store> findByBasicAddressContainingIgnoreCase(String basicAddress);
 
 }

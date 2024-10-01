@@ -80,10 +80,11 @@
 							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
 							alt="" class="rounded-circle"
 							style="width: 50px; height: 50px; object-fit: cover;"> <span
-
 							class="ml-3"> 
 									<h4 th:text="${review.user.nickname}"></h4>
 							</a>
+
+
 
 						</span>
 						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
@@ -129,7 +130,6 @@
 
 								<!-- 댓글 -->
 								<img src="/img/icon/chat.png" alt="comment" style="width: 20px"
-
 									class="tap_btn" /> <span class="text-dark mx-1"
 									th:text="${commentCount != null ? commentCount : 0}"></span>
 
@@ -184,21 +184,19 @@
 								</div>
 							</div>
 						</div>
-
-						<p class="col-12 S3_store_s mb-2">
-							<!-- 별점 표시 영역 -->
-							<small class="starRating ml-0"
-								th:attr="data-review-id=${review.id}"></small>
-							<!-- 리뷰마다 고유한 ID 부여 -->
-							<a href="" style="text-decoration: none;"> <small
-								class="text-muted"> <i class="fa-solid fa-location-dot"
-									style="color: #000000;"></i> <span class="font-weight-bold">수원역
-										근처</span> 돼지냠냠
-							</small>
-							</a>
-						</p>
-
-
+<p class="col-12 S3_store_s mb-2">
+    <!-- 별점 표시 영역 -->
+    <small class="starRating ml-0" th:attr="data-review-id=${review.id}"></small>
+    <!-- 리뷰마다 고유한 ID 부여 -->
+    <a href="" style="text-decoration: none;">
+        <small class="text-muted">
+            <i class="fa-solid fa-location-dot" style="color: #000000;"></i>
+            <span class="font-weight-bold" th:text="${storeAddress}">가게 주소</span>
+            <!-- 가게 이름 표시 -->
+            <span th:text="${storeName}">가게 이름</span>
+        </small>
+    </a>
+</p>
 
 
 
@@ -247,7 +245,6 @@
 							</div>
 							<!-- 업데이트시간 -->
 
-
 						</div>
 						<!-- 태그 -->
 
@@ -263,11 +260,6 @@
 								method="post">
 								<input type="hidden" th:name="${_csrf.parameterName}"
 									th:value="${_csrf.token}" />
-
-								<!-- 리뷰 ID 숨김 필드 -->
-								<input type="hidden" id="reviewId" name="reviewId"
-									th:value="${review.id}" />
-
 
 								<!-- 리뷰 ID 숨김 필드 -->
 								<input type="hidden" id="reviewId" name="reviewId"
@@ -294,6 +286,7 @@
 
 		</div>
 		<!-- row -->
+
 	</div>
 	<!-- container -->
 

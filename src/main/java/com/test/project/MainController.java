@@ -1,6 +1,10 @@
 package com.test.project;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
+
+import com.test.project.review.Review;
+import com.test.project.review.ReviewService;
+
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.ReviewLikeService;
@@ -26,58 +34,98 @@ import com.test.project.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+
+
 @RequiredArgsConstructor
 @Controller
 public class MainController {
-	@Autowired
-	private final ReservationService reservationService;
+	
+		@Autowired
+	    private final ReviewLikeService reviewLikeService;	
+	    private final UserService userService;
+	    private final ReviewService reviewService;
+	    
+	    private final ReservationService reservationService;
+	    
+	    @Autowired
+		private StoreService storeService;
+	    
+	    @GetMapping("/")
+	    public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+	        // 가게 목록 6개 가져오기
+	        List<Store> storeList = storeService.getTopStores(6);  // StoreService에 getTopStores 메서드를 추가
+	        model.addAttribute("storeList", storeList);
 
-	@Autowired
-	private final ReviewLikeService reviewLikeService;
-	private final UserService userService;
+	        // 최신 리뷰 6개 가져오기
+	        List<Review> recentReviews = reviewService.getRecentReviews(6);  // 이미 구현된 메서드
+	        model.addAttribute("recentReviews", recentReviews);
 
-	@Autowired
-	private StoreService storeService;
+	        // 현재 로그인한 사용자 정보 처리
+	        Long userId = null;
+	        if (userDetails != null) {
+	            SiteUser user = userService.getUser(userDetails.getUsername());
+	            userId = user.getId();
+	            model.addAttribute("profileImage", user.getImageUrl());
+	            model.addAttribute("username", user.getUsername());
+	            model.addAttribute("nickname", user.getNickname());
+	            model.addAttribute("userid", userId);
+	        } else {
+	            // 로그인하지 않은 경우 처리
+	            model.addAttribute("profileImage", "/img/user/default-profile.png");
+	        }
 
-	@GetMapping("/")
-	public String root(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-		List<Store> storeList = storeService.getAllStore();
-		model.addAttribute("storeList", storeList);
+	        // 좋아요 상태 및 댓글 수를 저장할 맵
+	        Map<Long, LikeStatusDto> likeStatusMap = new HashMap<>();
+	        Map<Long, Long> commentCountMap = new HashMap<>();
 
-		if (userDetails != null) {
-			SiteUser user = userService.getUser(userDetails.getUsername());
-			model.addAttribute("profileImage", user.getImageUrl());
-			model.addAttribute("username", user.getUsername());
-			model.addAttribute("nickname", user.getNickname());
-			model.addAttribute("userid", user.getId());
+	        // 각 리뷰에 대해 좋아요 상태와 댓글 수 계산
+	        for (Review review : recentReviews) {
+	            Long reviewId = review.getId();
+	            boolean likedByUser = false;
+	            Long likeCount = reviewLikeService.countLikes(reviewId);  // 좋아요 수 가져오기
 
-		}
+	            if (userId != null) {
+	                likedByUser = reviewLikeService.isLikedByUser(reviewId, userId);  // 사용자가 좋아요를 눌렀는지 확인
+	            }
 
-		return "index";
-	}
+	            LikeStatusDto likeStatusDto = new LikeStatusDto(likedByUser, likeCount.intValue());
+	            likeStatusMap.put(reviewId, likeStatusDto);
 
-	@GetMapping("/mypage/{userid}")
-	public String mypage(@PathVariable("userid") Long userid, Model model) {
-		Optional<SiteUser> user = userService.getUserById(userid);
+	            // 댓글 수 계산
+	            long commentCount = reviewService.getCommentCountForReview(reviewId);
+	            commentCountMap.put(reviewId, commentCount);
+	        }
 
-		if (user.isPresent()) {
-			SiteUser siteUser = user.get();
-			model.addAttribute("user", siteUser); // 전체 유저 객체 추가
-			List<Reservation> reservations = reservationService.getReservationsByUser(siteUser);
-			model.addAttribute("reservations", reservations);
+	        // 모델에 좋아요 상태 및 댓글 수 정보 추가
+	        model.addAttribute("likeStatusMap", likeStatusMap);
+	        model.addAttribute("commentCountMap", commentCountMap);
 
-			// 좋아요한 리뷰의 첫 번째 이미지를 가져옴
-			List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
-			model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
-			
-	        // 좋아요를 누른 식당 리스트 가져오기
-	        List<Store> likedStores = storeService.getStoresLikedByUser(siteUser); // 사용자에 의해 좋아요가 눌린 가게 리스트
-	        model.addAttribute("likedStores", likedStores); // 좋아요한 식당 리스트 추가
+	        return "index";  // index.html 파일을 렌더링
+	    }
 
-			return "user/mypage"; // mypage.html 파일을 렌더링
-		}
+	
+	    @GetMapping("/mypage/{userid}")
+	    public String mypage(@PathVariable("userid") Long userid, Model model) {
+	       Optional<SiteUser> user = userService.getUserById(userid);
 
-		return "redirect:/error"; // 유저가 없으면 에러 처리
-	}
+	       if (user.isPresent()) {
+	          SiteUser siteUser = user.get();
+	          model.addAttribute("user", siteUser); // 전체 유저 객체 추가
+	          List<Reservation> reservations = reservationService.getReservationsByUser(siteUser);
+	          model.addAttribute("reservations", reservations);
+
+	          // 좋아요한 리뷰의 첫 번째 이미지를 가져옴
+	          List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
+	          model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
+           
+
+	          return "user/mypage"; // mypage.html 파일을 렌더링
+	       }
+
+	       return "redirect:/error"; // 유저가 없으면 에러 처리
+	    }
+
+	
 
 }
+
