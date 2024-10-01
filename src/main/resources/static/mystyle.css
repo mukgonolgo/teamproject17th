@@ -21,6 +21,7 @@
     object-fit: cover;
 }
 
+
 .carousel-caption {
     position: absolute;
     bottom: 450px;
@@ -42,6 +43,7 @@
 
 .content {
     font-family: 'JNE-Bareun-TTF-Bold';
+   
 }
 
 .gradient-overlay {

@@ -311,6 +311,3 @@ setInterval(checkOpenHours, 1800000);
 checkOpenHours();
 
 
-
-
-

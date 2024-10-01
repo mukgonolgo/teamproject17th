@@ -85,4 +85,6 @@ const swiper1 = new Swiper('#swiper1', {
         } else {
             prevButton.style.display = 'block'; // 그 외에는 '이전' 버튼 보이기
         }
-}
+    }
+
+

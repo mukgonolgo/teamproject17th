@@ -28,7 +28,7 @@ public class StoreService {
     @Autowired
     private final StoreRepository storeRepository;
 
-    private static final String UPLOAD_DIR = "src/main/resources/static/img/store/";
+	private static final String UPLOAD_DIR = "src/main/resources/static/img/store/";
     private final ReviewRepository reviewRepository;
     // 가게 정보 조회
     public Store getStore(Integer storeId) {
@@ -40,7 +40,7 @@ public class StoreService {
     public Store saveStore(String storeName, String postcode, String basicAddress, String detailAddress,
                            double storeLatitude, double storeLongitude, String storeContent, String kategorieGroup,
                            String storeTagGroups, String storeNumber, String storeStarttime, String storeEndTime,
-                           Boolean storeAdvertisement, SiteUser siteUser, boolean isPremium) throws IOException {
+                           Boolean storeAdvertisement, SiteUser siteUser, boolean isPremium,MultipartFile imageFile) throws IOException {
         Store store = new Store();
         store.setStoreName(storeName);
         store.setPostcode(postcode);
@@ -62,7 +62,19 @@ public class StoreService {
             store.setApprovalStatus(4); // 프리미엄 승인 대기중
         } else {
             store.setApprovalStatus(1); // 일반 광고 승인 대기중
-        }
+        }		
+		if(!imageFile.isEmpty()) {
+			//고유한 이미지 이름 생성
+			String fileName = UUID.randomUUID().toString()+"_"+imageFile.getOriginalFilename();
+			//파일 저장 경로
+			Path filePath = Paths.get(UPLOAD_DIR, fileName);
+			//디렉토리가 없으면 생성
+			Files.createDirectories(filePath.getParent());
+			//파일 저장
+			Files.write(filePath,imageFile.getBytes());
+			//사용자 엔티티에 이미지 경로 설정
+			store.setImageUrl("/img/store/"+fileName);
+		}
         
         return storeRepository.save(store);
     
@@ -83,6 +95,17 @@ public class StoreService {
  // 모든 가게 조회 (페이지네이션 추가)
     public Page<Store> getAllStores(Pageable pageable) {
         return storeRepository.findAll(pageable);
+    }
+    //좋아요 기능
+    public void vote(Store store, SiteUser siteUser) {
+        if (store.getVoter().contains(siteUser)) {
+            // 이미 좋아요를 눌렀다면 삭제
+            store.getVoter().remove(siteUser);
+        } else {
+            // 좋아요를 누르지 않았다면 추가
+            store.getVoter().add(siteUser);
+        }
+        this.storeRepository.save(store);
     }
 
     public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {
@@ -128,5 +151,21 @@ public class StoreService {
 	    return reviewRepository.countByStore(store);
 	}
 
+	public Store getStoreByUser(SiteUser siteUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	public Store getStoreByOwner(SiteUser siteUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	 // 로그인한 사용자의 가게 리스트 반환
+    public List<Store> getStoresByOwner(SiteUser siteUser) {
+        return storeRepository.findBySiteUser(siteUser);
+    }
     
 }

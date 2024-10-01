@@ -68,8 +68,7 @@ public class Store {
     // 승인 상태 필드 (1: 일반 광고 승인 대기 중, 2: 일반 광고 승인, 3: 일반 광고 보류, 4: 프리미엄 승인 대기 중, 5: 프리미엄 허용, 6: 프리미엄 보류)
     @Column(nullable = false)
     private Integer approvalStatus = 1; // 기본값: 일반 광고 승인 대기 중
-    
-
+    private String imageUrl;//이미지 업로드 위치
 
     
 }
