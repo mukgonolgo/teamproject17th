@@ -3,12 +3,16 @@
 
 <link rel="stylesheet" href="/css/category.css">
 <link rel="stylesheet" href="/mystyle.css">
-	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<link rel="stylesheet"
+	href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 </head>
 <div layout:fragment="content">
-	
+
 	<section class="M_s1">
+
 		<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
 			<div class="carousel-indicators d-none" >
 				<!-- Indicators will be dynamically added here -->
@@ -16,7 +20,8 @@
 			<div class="carousel-inner">
 				<div class="carousel-item active">
 					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_1.png" class="d-block w-100 img-fluid" alt="...">
+					<img src="/img/carousel_1.png" class="d-block w-100 img-fluid"
+						alt="...">
 					<div class="carousel-caption d-none d-md-block">
 						<h5 class="text-title t-shadow" >우린 그냥 먹고놀고</h5>
 						<p class="content t-shadow">당신이 찾던 맛집 사이트</p>
@@ -24,33 +29,38 @@
 				</div>
 				<div class="carousel-item">
 					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_2.png" class="d-block w-100 img-fluid" alt="...">
+					<img src="/img/carousel_2.png" class="d-block w-100 img-fluid"
+						alt="...">
 					<div class="carousel-caption d-none d-md-block">
 						<h5 class="text-title t-shadow">맛집 친구를 찾는다면?</h5>
 					</div>
 				</div>
 				<div class="carousel-item">
 					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_3.png" class="d-block w-100 img-fluid" alt="...">
+					<img src="/img/carousel_3.png" class="d-block w-100 img-fluid"
+						alt="...">
 					<div class="carousel-caption d-none d-md-block">
-						<h5 class="text-title t-shadow">모든 미식가를 위한 <br> 최고의 선택</h5>
+						<h5 class="text-title t-shadow">
+							모든 미식가를 위한 <br> 최고의 선택
+						</h5>
 						<p class="content t-shadow">광고 없는 솔직한 리뷰들로 이야기합니다.</p>
 					</div>
 				</div>
 			</div>
-			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-				data-bs-slide="prev">
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Previous</span>
 			</button>
-			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-				data-bs-slide="next">
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Next</span>
 			</button>
 		</div>
 		<div class="search-container">
-			<input type="text" class="search-box" placeholder="search" id="search-input">
+			<input type="text" class="search-box" placeholder="search"
+				id="search-input">
 			<div class="dropdown-menu" id="dropdown-menu">
 				<div class="dropdown-section">
 					<h4>최근 검색어</h4>
@@ -85,7 +95,8 @@
 						<div class="swiper-slide" th:each="store : ${storeList}">
 							<div class=" mb-4">
 								<div class="card">
-									<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+									<div id="ProRestaurant1" class="carousel slide"
+										data-ride="carousel">
 										<div class="carousel-inner">
 											<div class="carousel-item active">
 												<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="card-img-top" alt="가게 이미지" />
@@ -94,20 +105,23 @@
 									</div>
 									<div class="card-body">
 										<div class="storeicon d-flex align-items-center mb-2">
-											<i class="fa-solid fa-star" style="color: #FFD43B;"></i>
-											<small class="ml-1">4.5</small>
+											<i class="fa-solid fa-star" style="color: #FFD43B;"></i> <small
+												class="ml-1">4.5</small>
 										</div>
 										<div class="d-flex justify-content-between align-items-center">
-											<h5 class="card-title mb-3" th:text="${store.storeName}">가게 이름</h5>
+											<h5 class="card-title mb-3" th:text="${store.storeName}">가게
+												이름</h5>
 										</div>
-										<div class="d-flex justify-content-between align-items-center mb-3">
+										<div
+											class="d-flex justify-content-between align-items-center mb-3">
 											<div class="d-flex align-items-center">
-												<i class="fa-solid fa-location-dot"></i>
-												<small class="ml-1" th:text="${store.basicAddress}">주소</small>
+												<i class="fa-solid fa-location-dot"></i> <small class="ml-1"
+													th:text="${store.basicAddress}">주소</small>
 											</div>
 										</div>
 										<!-- 상세 페이지로 이동 -->
-										<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
+										<a
+											th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
 											class="btn btn-primary">상세 보기</a>
 									</div>
 								</div>
@@ -115,57 +129,149 @@
 						</div>
 						<!-- 추가적인 swiper-slide을 여기에 추가 -->
 					</div>
-					<div class="swiper-pagination pagination_bullet">
-					</div>
+					<div class="swiper-pagination pagination_bullet"></div>
 				</div>
-				
-				
-				
-				
-				<div class="M_s2_a2">
-				
-			
-    <div class="container my-5">
-        <h3 class="mt-4 my-3">최신 리뷰</h3>
-        <div class="row">
-            <div class="col-xl-4 col-lg-6 my-2" th:each="review : ${reviewPage}">
-                <div class="card h-100 custom-border mx-auto">
-                    <a th:href="@{/review_detail/{id}(id=${review.id})}" class="text-dark">
-                        <h5 class="d-flex align-items-center mt-3 ml-3 mb-2">
-                            <img th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}" 
-                                 alt="user_img" class="rounded-circle" style="width: 50px; height: 50px">
-                            <span class="d-flex align-items-center mx-2" th:text="${review.user.nickname}"></span>
-                        </h5>
-                    </a>
-                    <div class="carousel slide px-2" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img th:src="@{${review.reviewImageMap[0].reviewImage.filepath}}" class="d-block w-100" alt="Review Image">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${review.title}"></h5>
-                        <p class="card-text" th:text="${review.content}"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			</div>
 
-				
+
+
+
+			<div class="M_s2_a2">
+				<div class="section3 mt-5">
+					<div class="container my-5">
+
+						<div class="d-flex align-items-center justify-content-between">
+							<h3 class="mt-5 my-3 ml-2">새로 올라온 후기</h3>
+							<a href="/review" class="mt-5"> <small> 더 보러가기</small>
+							</a>
 						</div>
 
-						<!-- 케로셀 버튼 추가 -->
-						<div class="swiper-button-prev"></div>
-						<div class="swiper-button-next"></div>
+
+						<div class="row S3_review_card">
+							<div class="col-xl-4 col-lg-6 my-2"
+								th:each="review : ${recentReviews}">
+								<div class="card S3_card h-100 custom-border mx-auto">
+									<a th:href="@{/review_detail/{id}(id=${review.id})}"
+										class="text-dark">
+										<h5 class="d-flex align-items-center mt-3 ml-3 mb-2">
+											<img
+												th:src="@{${review.user.imageUrl} != null ? ${review.user.imageUrl} : '/img/user/default-profile.png'}"
+												alt="user_img" class="rounded-circle"
+												style="width: 50px; height: 50px"> <span
+												class="d-flex align-items-center mx-2"
+												th:text="${review.user.nickname}"></span>
+										</h5>
+									</a>
+
+									<!-- 캐러셀 슬라이드 -->
+									<div th:id="'S3_review_carouselExample' + ${review.id}"
+										class="carousel slide carousel-fade px-2" data-ride="carousel">
+										<div class="carousel-inner S3_carousel-inner">
+											<a th:href="@{/review_detail/{id}(id=${review.id})}">
+												<div class="carousel-item S3_carousel-item"
+													th:each="imageMap, iterStat : ${review.reviewImageMap}"
+													th:classappend="${iterStat.index == 0} ? ' active'">
+													<img th:src="@{${imageMap.reviewImage.filepath}}"
+														alt="Review detail Image"
+														class="d-block w-100 S3_custom-card-img">
+												</div>
+											</a>
+										</div>
+									</div>
+
+									<!-- 카드 본문 -->
+									<div class="card-body d-flex flex-column">
+										<div class="row p-3 S3_text-box">
+											<div class="col-8 mx-0">
+												<a th:href="@{/review_detail/{id}(id=${review.id})}"
+													class="text-dark">
+													<h5 class="card-title S3_card-title"
+														th:text="${review.title}"></h5>
+												</a>
+											</div>
+
+											<!-- 댓글과 좋아요 -->
+											<div class="col-4 text-right d-flex justify-content-end"
+												style="margin-top: -35px;">
+												<div class="d-flex align-items-center">
+													<img src="/img/icon/chat.png" alt="comment"
+														style="width: 20px;" /> <span class="text-dark mx-1"
+														style="margin-top: 2px;"
+														th:text="${commentCountMap[review.id]}"></span>
+												</div>
+
+												<!-- 좋아요 -->
+												<div class="d-flex align-items-center like_box ml-1">
+													<!-- 리뷰 ID를 동적으로 설정 -->
+													<input type="hidden" class="review-id"
+														th:value="${review.id}">
+													<!-- likedByUser 상태를 동적으로 설정 -->
+													<input type="hidden" class="liked-by-user"
+														th:value="${likeStatusMap[review.id].liked}"> <i
+														th:id="'like-btn-' + ${review.id}"
+														class="tap_btn like_btn fa-regular fa-heart"></i> <span
+														class="like-count ml-1"
+														th:text="${likeStatusMap[review.id].likeCount}"></span>
+												</div>
+
+											</div>
+
+
+											<!-- 식당정보 -->
+											<!-- 서버에서 리뷰 리스트를 반복해서 출력 -->
+											<p class="col-12 S3_store mb-1" th:each="review : ${reviews}">
+												<!-- 각 리뷰의 고유 ID를 data-review-id에 삽입 -->
+											<div class="starRating" th:data-review-id="${review.id}"></div>
+											<a href="" style="text-decoration: none;"> <small
+												class="text-muted"> <i
+													class="fa-solid fa-location-dot mx-2"
+													style="color: #000000;"></i> <span class="font-weight-bold">수원역
+														근처</span> <span>돼지냠냠</span>
+											</small>
+											</a>
+											</p>
+											<p class="col-12 S3_store mb-1"></p>
+
+											<p class="card-text S3_card-text mt-2 col-12 mb-2"
+												th:text="${review.content}"></p>
+											<!-- 리뷰태그 -->
+											<div class="mb-3 S3_tag_box ml-1">
+												<span th:each="tagMap : ${review.tagMaps}"
+													calss="S3_tag_box"> <span
+													class="badge badge-pill border border-dark"
+													th:text="'#'+${tagMap.reviewTag.name}"> </span>
+												</span>
+
+												<p class="card-text mt-2">
+													<small class="text-muted"> <span
+														th:text="${#temporals.format(review.createDate, 'yyyy-MM-dd HH:mm')}"></span>
+														업데이트
+													</small>
+												</p>
+											</div>
+											<!--tag-->
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--col-lg-4-->
+						</div>
+						<!--row-->
 					</div>
+					<!--container-->
+
 				</div>
-				<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
-				<script src="myscript.js"></script>
+
+			</div>
+			
+			
+
+
 	</section>
-	
-		<script src="/js/review_page_like.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+	<script src="myscript.js"></script>
+	<script src="/js/review_page_like.js"></script>
 </div>
 <!--layout:fragment="content"  -->
 

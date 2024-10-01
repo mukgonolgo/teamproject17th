@@ -16,6 +16,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -271,10 +274,12 @@ public class ReviewService {
 	public List<Review> searchReviews(String query) {
 		return reviewRepository.findByTitleContainingOrContentContaining(query, query); // 제목 또는 내용에서 검색어로 리뷰 검색
 	}
-	// 최근 리뷰 6개 가져오기 (필요한 개수만큼 조정 가능)
-    public List<Review> getRecentReviews() {
-        return reviewRepository.findTop6ByOrderByCreateDateDesc();
-    }
+	
+	public List<Review> getRecentReviews(int limit) {
+	    Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
+	    return reviewRepository.findAll(pageable).getContent();
+	}
+
 
 
 }
