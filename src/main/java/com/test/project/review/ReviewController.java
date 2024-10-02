@@ -69,6 +69,9 @@ public class ReviewController {
 
     @Autowired
     private UserService userService;
+    
+    
+    
     @GetMapping("/review")
     public String reviewPage(@RequestParam(value = "query", required = false) String query, 
                              @RequestParam(value = "region", required = false) String region, 

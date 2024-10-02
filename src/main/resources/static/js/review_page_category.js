@@ -233,6 +233,8 @@ function updateSubRegion() {
 	           window.location.href = '/review?region=' + encodeURIComponent(selectedRegion); // 하위 지역을 포함하여 리뷰 페이지로 이동
 	       }
 	   }
+	   
+	   
 $(document).ready(function() {
     // 드롭다운 항목 클릭 시 버튼 텍스트 업데이트
     $('.dropdown-menu .dropdown-item').on('click', function(event) {
