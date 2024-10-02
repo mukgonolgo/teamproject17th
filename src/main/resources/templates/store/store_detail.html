@@ -9,6 +9,12 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+
+
+	<!-- Kakao 지도 API 추가 -->
+	<script type="text/javascript"
+		src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
 </head>
 
 <body>
@@ -20,18 +26,19 @@
 						<div class="restaurant_section col card">
 							<!-- 로그인한 사용자가 가게 소유자인 경우에만 광고 상태 표시 -->
 							<!-- 광고 상태 표시 (가게 소유자만, absolute 적용) -->
-							<div class="ad-status mt-2" th:if="${isOwner}" style="position: absolute;   padding: 10px;  z-index: 999999;">
-							    <p style="margin: 0; font-weight: bold;">
-							        <span th:if="${store.approvalStatus == 2}">일반 광고 승인</span>
-							        <span th:if="${store.approvalStatus == 3}">일반 광고 보류</span>
-							        <span th:if="${store.approvalStatus == 5}">프리미엄 광고 승인</span>
-							        <span th:if="${store.approvalStatus == 6}">프리미엄 광고 보류</span>
-							    </p>
+							<div class="ad-status mt-2" th:if="${isOwner}"
+								style="position: absolute;   padding: 10px;  z-index: 999999;">
+								<p style="margin: 0; font-weight: bold;">
+									<span th:if="${store.approvalStatus == 2}">일반 광고 승인</span>
+									<span th:if="${store.approvalStatus == 3}">일반 광고 보류</span>
+									<span th:if="${store.approvalStatus == 5}">프리미엄 광고 승인</span>
+									<span th:if="${store.approvalStatus == 6}">프리미엄 광고 보류</span>
+								</p>
 							</div>
-							<div id="ProRestaurant1" class="carousel slide" data-ride="carousel"  style=" z-index: 10;" >
+							<div id="ProRestaurant1" class="carousel slide" data-ride="carousel" style=" z-index: 10;">
 
 								<div class="carousel-inner">
-									<div class="carousel-item active" >
+									<div class="carousel-item active">
 										<!--타임리프 경로 변경 kimssam-->
 										<div class="image-container">
 											<img th:src="@{{storeImage}(storeImage=${storeImage})}" alt="가게 이미지 1" />
@@ -53,13 +60,14 @@
 							<div class="card-body" style="border-top: 1px solid #ccc;">
 								<!-- 가게 이름 표시 -->
 								<div class="restaurant_title d-flex justify-content-between align-items-center">
-								    <h5 class="card-title mb-0" th:text="${store.storeName}">가게 이름</h5>
+									<h5 class="card-title mb-0" th:text="${store.storeName}">가게 이름</h5>
 									<div class="d-flex d-lg-none align-items-center">
-									    <span class="mr-2">공유</span>
-									    <a href="javascript:void(0);" class="mt-1 recommend" th:data-uri="@{|/store/vote/${store.storeId}|}">
-									        👍 
-									        <span class="badge">[[${#lists.size(store.voter)}]]</span>
-									    </a>
+										<span class="mr-2">공유</span>
+										<a href="javascript:void(0);" class="mt-1 recommend"
+											th:data-uri="@{|/store/vote/${store.storeId}|}">
+											👍
+											<span class="badge">[[${#lists.size(store.voter)}]]</span>
+										</a>
 									</div>
 								</div>
 
@@ -72,7 +80,8 @@
 											<span th:text="${store.detailAddress}">상세 주소</span>
 										</p>
 									</div>
-									<button class="btn btn-secondary btn-sm location-button">지도보기</button>
+									<button class="btn btn-secondary btn-sm location-button"
+										onclick="openMap()">지도보기</button>
 								</div>
 								<div class="d-flex align-items-center mt-2">
 									<!-- 가게 전화번호 -->
@@ -91,6 +100,17 @@
 								</div>
 							</div>
 						</div>
+
+						<!-- 지도 팝업 -->
+						<div id="mapPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: white; border: 1px solid black; width: 600px; height: 400px;">
+						    <div id="map" style="width: 100%; height: 100%;"></div>
+						    <button onclick="closeMap()" style="position: absolute; bottom: 10px; right: 10px; z-index: 999999;">닫기</button>
+						</div>
+
+
+						<!-- 가게의 위도와 경도 값을 숨겨서 자바스크립트로 전달 -->
+						<input type="hidden" class="store-lat" th:value="${store.storeLatitude}" />
+						<input type="hidden" class="store-lng" th:value="${store.storeLongitude}" />
 
 						<div class="d-block d-lg-none" style="border-top: 1px solid #ccc;">
 							<div class="restaurant_mo_re_object bg-white">
@@ -248,12 +268,13 @@
 					</div>
 					<div class="restaurant_re_section d-none d-lg-block col-4 col-lg-0">
 						<div class="restaurant_re_object " style="border: 1px solid #ccc;">
-							<div class="restaurant_re_title d-flex justify-content-between align-items-center p-3 bg-white">
+							<div
+								class="restaurant_re_title d-flex justify-content-between align-items-center p-3 bg-white">
 								<p>예약 하기</p>
 								<div class="d-flex">
 									<span class="mr-2">공유</span>
 									<a href="javascript:void(0);" class=" mt-2 recommend" style="text-decoration: none;"
-										th:data-uri="@{|/store/vote/${store.storeId}|}">👍 
+										th:data-uri="@{|/store/vote/${store.storeId}|}">👍
 										<span class="badge text-dark">[[${#lists.size(store.voter)}]]</span>
 									</a>
 								</div>
@@ -394,6 +415,57 @@
 
 			<script src="/js/store/store_detail.js"></script>
 			<script>
+				let mapContainer = document.getElementById('map'); // 지도를 표시할 div
+				    let mapPopup = document.getElementById('mapPopup'); // 팝업창 div
+				    let map; // 지도 객체를 전역 변수로 선언
+				    let marker; // 마커 객체를 전역 변수로 선언
+
+				    // 지도 열기 함수
+				    function openMap() {
+				        // DB에서 가져온 위도와 경도 값
+				        let storeLatitude = parseFloat(document.querySelector('.store-lat').value);
+				        let storeLongitude = parseFloat(document.querySelector('.store-lng').value);
+				        let storePosition = new kakao.maps.LatLng(storeLatitude, storeLongitude); // 좌표 설정
+
+				        // 팝업 열기 전에 지도가 있으면 리사이즈
+				        if (map) {
+				            // 팝업창이 열리면서 지도 크기를 다시 계산하고, 중앙 좌표를 설정
+				            map.relayout();
+				            map.setCenter(storePosition);
+				            marker.setPosition(storePosition);
+				        } else {
+				            // 지도가 처음 열릴 때만 생성
+				            let mapOption = {
+				                center: storePosition, // 지도의 중심좌표
+				                level: 3 // 지도의 확대 레벨
+				            };
+				            
+				            // 지도를 생성
+				            map = new kakao.maps.Map(mapContainer, mapOption);
+
+				            // 마커를 생성
+				            marker = new kakao.maps.Marker({
+				                position: storePosition // 마커 위치
+				            });
+
+				            // 마커를 지도에 표시
+				            marker.setMap(map);
+				        }
+
+				        // 팝업창 열기
+				        mapPopup.style.display = 'block';
+
+				        // 지도를 제대로 표시하기 위해 지연 후에 relayout() 호출
+				        setTimeout(function() {
+				            map.relayout(); // 팝업이 열리고 나서 지도 크기를 다시 계산
+				            map.setCenter(storePosition); // 지도의 중심 좌표를 다시 설정
+				        }, 100);
+				    }
+
+				    // 지도 닫기 함수
+				    function closeMap() {
+				        mapPopup.style.display = 'none';
+				    }
 				document.addEventListener('DOMContentLoaded', function () {
 					const reservationButtons = document.querySelectorAll('.restaurant_re_btn');
 					const reservationModal = document.getElementById('reservationModal');
@@ -439,10 +511,10 @@
 
 				});
 				const recommend_elements = document.getElementsByClassName("recommend");
-				Array.from(recommend_elements).forEach(function(element){
-				    element.addEventListener("click", function(){
-				        location.href = this.dataset.uri;
-				    });
+				Array.from(recommend_elements).forEach(function (element) {
+					element.addEventListener("click", function () {
+						location.href = this.dataset.uri;
+					});
 				});
 
 
