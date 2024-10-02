@@ -3,12 +3,13 @@ const swiper = new Swiper('.swiper-container', {
     spaceBetween:1,
     slidesPerView: 1, // 기본적으로 3개
     breakpoints: {
-        970: {
+        992: {
             slidesPerView: 3, 
         },
-        780: {
-            slidesPerView: 3, // 태블릿에서 2개
-        }
+		768: {
+			slidesPerView: 2, 
+		},
+
     },
     pagination: {
         el: '.swiper-pagination',

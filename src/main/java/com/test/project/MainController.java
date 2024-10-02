@@ -3,6 +3,7 @@ package com.test.project;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.test.project.reservation.Reservation;
 import com.test.project.reservation.ReservationService;
+
 import com.test.project.review.Review;
 import com.test.project.review.ReviewService;
+
 import com.test.project.review.img.ReviewImage;
 import com.test.project.review.img.ReviewImageMap;
 import com.test.project.review.like.LikeStatusDto;
@@ -35,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Controller
 public class MainController {
+
 
 	@Autowired
 	private final ReviewLikeService reviewLikeService;
@@ -139,6 +143,13 @@ public class MainController {
 			// 좋아요한 리뷰의 첫 번째 이미지를 가져옴
 			List<ReviewImageMap> likedImages = reviewLikeService.getFirstImagesForLikedReviews(userid);
 			model.addAttribute("likedImages", likedImages); // 좋아요한 이미지 리스트 추가
+			// 좋아요를 누른 식당 리스트 가져오기
+			List<Store> likedStores = storeService.getStoresLikedByUser(siteUser); // 사용자에 의해 좋아요가 눌린 가게 리스트
+			model.addAttribute("likedStores", likedStores); // 좋아요한 식당 리스트 추가
+			
+	        // approvalStatus가 5인 랜덤 가게 가져오기
+	        Optional<Store> randomStore = storeService.getRandomStoreWithApprovalStatus5();
+	        randomStore.ifPresent(store -> model.addAttribute("randomStore", store));
 
 			return "user/mypage"; // mypage.html 파일을 렌더링
 		}
@@ -175,7 +186,6 @@ public class MainController {
 	    }
 	    return reviews;
 	}
-
 
 
 }
