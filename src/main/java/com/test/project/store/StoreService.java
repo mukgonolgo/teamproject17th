@@ -188,6 +188,10 @@ public class StoreService {
             .orElseThrow(() -> new RuntimeException("Store not found"));
     }
     
-    
+
+    // 가게 검색 메소드
+    public List<Store> searchStoresByKeyword(String keyword) {
+        return storeRepository.searchStoresByKeyword(keyword);
+    }
    
 }

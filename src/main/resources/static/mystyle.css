@@ -265,7 +265,7 @@
 }
 
 .swiper-slide {
-	width: calc(100%/ 3); /* 한 번에 세 개씩 보이도록 설정 */
+	width: calc(100%/ 3) !important; /* 한 번에 세 개씩 보이도록 설정 */
 }
 
 
@@ -364,7 +364,9 @@
 	visibility: visible;
 	transform:translateY(0);
 }
-
+#something.search-container{
+	width: 100%;
+}
 .dropdown-section {
 	margin-top: 20px;
 	width: 60%;

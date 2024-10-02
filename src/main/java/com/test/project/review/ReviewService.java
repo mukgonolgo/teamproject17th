@@ -36,6 +36,7 @@ import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 
@@ -285,5 +286,10 @@ public class ReviewService {
 	
 		return reviewRepository.findByStoreBasicAddressContaining(region);
 	}
+	
+    // 리뷰 검색 메소드
+    public List<Review> searchReviewsByKeyword(String keyword) {
+        return reviewRepository.searchReviewsByKeyword(keyword);
+    }
 
 }

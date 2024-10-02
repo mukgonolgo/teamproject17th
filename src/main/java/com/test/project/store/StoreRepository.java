@@ -29,4 +29,11 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
 
     // 가게 주소로 검색
     List<Store> findByBasicAddressContainingIgnoreCase(String basicAddress);
+    
+    
+ // 가게 이름 또는 주소에서 키워드 검색
+    @Query("SELECT s FROM Store s WHERE (s.storeName IS NOT NULL AND s.storeName LIKE %:keyword%) " +
+           "OR (s.basicAddress IS NOT NULL AND s.basicAddress LIKE %:keyword%)")
+    List<Store> searchStoresByKeyword(@Param("keyword") String keyword);
+
 }
