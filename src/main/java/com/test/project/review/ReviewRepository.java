@@ -6,10 +6,13 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
+
+import org.springframework.data.repository.query.Param;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
@@ -47,6 +50,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     
  // 최신순으로 상위 6개의 리뷰를 가져오는 쿼리
     List<Review> findTop6ByOrderByCreateDateDesc();
-
+    
+ // 지역을 포함하는 리뷰 검색 메서드  
+    List<Review> findByStoreBasicAddressContaining(String region); 
+    
+    @Query("SELECT r FROM Review r WHERE " +
+            "(r.title LIKE %:keyword% OR r.content LIKE %:keyword%) " +
+            "OR (r.store IS NOT NULL AND (r.store.storeName LIKE %:keyword% OR r.store.basicAddress LIKE %:keyword%))")
+     List<Review> searchReviewsByKeyword(@Param("keyword") String keyword);
 
 }

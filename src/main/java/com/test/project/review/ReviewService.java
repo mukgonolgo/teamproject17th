@@ -36,6 +36,7 @@ import com.test.project.review.like.ReviewLikeService;
 import com.test.project.review.tag.ReviewTag;
 import com.test.project.review.tag.ReviewTagMap;
 import com.test.project.review.tag.ReviewTagRepository;
+import com.test.project.store.Store;
 import com.test.project.user.SiteUser;
 import com.test.project.user.UserRepository;
 
@@ -217,9 +218,6 @@ public class ReviewService {
 		return reviewImageMaps;
 	}
 
-	
-	
-	
 	// 리뷰에 태그를 처리하는 메서드
 	@Transactional
 	public void processTags(List<String> tags, Review review) {
@@ -274,11 +272,24 @@ public class ReviewService {
 	public List<Review> searchReviews(String query) {
 		return reviewRepository.findByTitleContainingOrContentContaining(query, query); // 제목 또는 내용에서 검색어로 리뷰 검색
 	}
-	
-	public List<Review> getRecentReviews(int limit) {
-	    Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
-	    return reviewRepository.findAll(pageable).getContent();
-	}
 
+	
+	//최근 리뷰를 지정된 개수만큼 가져오는 메서드
+	//최신순으로 정렬된 리뷰를 반환
+	public List<Review> getRecentReviews(int limit) {
+		Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
+		return reviewRepository.findAll(pageable).getContent();
+	}
+	
+	// 입력된 지역명을 포함하는 가게 주소를 가진 리뷰를 가져오는 메서드
+	public List<Review> getReviewsByRegion(String region) {
+	
+		return reviewRepository.findByStoreBasicAddressContaining(region);
+	}
+	
+    // 리뷰 검색 메소드
+    public List<Review> searchReviewsByKeyword(String keyword) {
+        return reviewRepository.searchReviewsByKeyword(keyword);
+    }
 
 }
