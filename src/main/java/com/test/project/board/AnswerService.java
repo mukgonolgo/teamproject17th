@@ -76,7 +76,18 @@ public class AnswerService {
 			}
 		}
 		
+		// 대댓글 수정
+	    public void modifyComment(Long commentId, String content) {
+	        Answer comment = findById(commentId); // 대댓글 조회
+	        comment.setAnswerContent(content);
+	        answerRepository.save(comment); // 수정된 대댓글 저장
+	    }
 
+	    // 대댓글 삭제
+	    public void deleteComment(Long commentId) {
+	        Answer comment = findById(commentId); // 대댓글 조회
+	        answerRepository.delete(comment); // 대댓글 삭제
+	    }	
 	
 
 }

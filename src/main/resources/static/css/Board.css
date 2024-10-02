@@ -162,6 +162,9 @@
 .border_bottomLine{
 	border-bottom:3px solid #dee2e6 !important ;	
 }
+.border_topLine{
+	border-top:3px solid #dee2e6 !important ;	
+}
 .questionSize{
 	padding: 50px 0px 30px 0pxs;
 }
@@ -171,8 +174,13 @@
 	border-bottom: 1px solid lightgray;
 	
 }
-.questionBodyBtn{
-	top: 250px; position: relative;		
+.Afont{
+	cursor: pointer; 
+	color: gray;
+	text-decoration: none !important;	
 }
-
+.Afont:hover {
+    color: rgb(0, 128, 255); /* 호버 시 색상 변경 */
+}
 /*borad_detail css end*/
+

@@ -44,7 +44,7 @@ public class BoardService {
    }
 
    
-   public void create(String tag, String content, String title, SiteUser user, Principal principal, boolean isPrivate) {
+   public Long create(String tag, String title,String content, SiteUser user, Principal principal, boolean isPrivate) {
           System.out.println("서비스에서 받은 isPrivate 값: " + isPrivate);
          if (user == null) {
               System.out.println("User is null!");
@@ -56,17 +56,20 @@ public class BoardService {
          SiteUser siteUser = this.userService.getUser(principal.getName());
       Board b = new Board();
       b.setBoardTag(tag);
-      b.setBoardCreateDate(LocalDateTime.now());      
-      b.setBoardContent(content);
+      b.setBoardCreateDate(LocalDateTime.now());            
       b.setBoardTitle(title);
+      b.setBoardContent(content);
       b.setUser(user);
       b.setUsername(user.getUsername()); // 여기에 추가
       b.setPrivate(isPrivate);
+      
       System.out.println("저장 전 Board 객체: " + b.toString()); // 객체 전체 출력 로그
+      Board savedBoard = boardRepository.save(b);
       boardRepository.save(b);
       System.out.println("****************비밀글 확인(서비스)" + isPrivate +"************************");
       //id는 자동
-   }
+      return savedBoard.getBoardId(); // 새로 생성된 게시글의 ID를 반환
+      }
    
     public Page<Board> getList(int page){
        Pageable pageable = PageRequest.of(page, 5);
@@ -92,6 +95,14 @@ public class BoardService {
       
    }
 
+
+   public void modifyTitle(Board board, String title) {
+      board.setBoardTitle(title);
+      System.out.println("수정할 title 값: " + title); // 추가된 로깅
+      
+      this.boardRepository.save(board);
+      
+   }
    public void delete(Board board) {
       this.boardRepository.delete(board);
       

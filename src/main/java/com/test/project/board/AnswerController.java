@@ -45,10 +45,12 @@ public class AnswerController {
 		model.addAttribute("userId", user.getId());
 	}
 
+	//답변생성
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{boardId}")
 	public String createAnswer(Model model,
 	        @PathVariable("boardId") Long boardId,  // boardId로 변경
+	        @Valid BoardDTO boardDTO,
 	        @Valid AnswerFormDTO answerFormDTO,
 	        BindingResult bindingResult,
 	        Principal principal,
@@ -69,13 +71,13 @@ public class AnswerController {
 	    }
 
 	    Answer parentAnswer = null; // 부모 답변 설정
-	    if (answerFormDTO.getParentId() != null) {
-	        parentAnswer = this.answerService.findById(answerFormDTO.getParentId());
+	    if (boardDTO.getParentId() != null) {
+	        parentAnswer = this.answerService.findById(boardDTO.getParentId());
 	    }
 
 	    // 답변 생성
-	    if (answerFormDTO.getContent() != null && !answerFormDTO.getContent().isEmpty()) {
-	        Answer answer = this.answerService.create(board, answerFormDTO.getContent(), siteUser, parentAnswer);
+	    if (boardDTO.getContent() != null && !boardDTO.getContent().isEmpty()) {
+	        Answer answer = this.answerService.create(board, boardDTO.getContent(), siteUser, parentAnswer);
 
 	        // 리다이렉트 URL 생성
 	        return String.format("redirect:/board_detail/%s#answer_%s", answer.getBoard().getBoardId(), answer.getAnswerId());
@@ -144,6 +146,7 @@ public class AnswerController {
 	    return ResponseEntity.ok("수정 완료"); // 성공 시 응답
 	}
 
+
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/delete/{AnswerId}")
 	public String answerDelete(@PathVariable("AnswerId") Long id, Principal principal,
@@ -157,6 +160,22 @@ public class AnswerController {
 		return String.format("redirect:/board_detail/%s", answer.getBoard().getBoardId());
 	}
 	
+	@PostMapping("/commentModify/{commentId}")
+	public ResponseEntity<String> modifyComment(@PathVariable Long commentId, @RequestBody Map<String, String> body) {
+	    String content = body.get("content"); // JSON에서 content를 가져옵니다.
+	    answerService.modifyComment(commentId, content);
+	    System.out.println(content+"@@@@@@@@@@@@@@@################");
+	    return ResponseEntity.ok(content); // 수정된 내용을 문자열로 반환
+	}
+	
+	//대댓글 삭제
+    // 대댓글 삭제 API
+    @PostMapping("/commentDelete/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
+        answerService.deleteComment(commentId);
+        System.out.println(commentId+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        return ResponseEntity.ok().build();
+    }
 	
 
 	

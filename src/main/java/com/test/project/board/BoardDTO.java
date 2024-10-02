@@ -9,7 +9,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AnswerFormDTO {
-	private List<Answer> comment;
-    private String content; 
+public class BoardDTO {
+	
+	private String content;
+	
+	private String title;
+	
+	  private Long parentId; // 부모 답변 ID 추가
+
+
+
+	  
 }
