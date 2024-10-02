@@ -161,6 +161,7 @@ public class ReviewController {
 
         // 스토어 정보를 모델에 추가
         Store store = review.getStore();  // 리뷰와 연결된 스토어 정보 가져오기
+        model.addAttribute("storeId", store.getStoreId());
         model.addAttribute("storeName", store.getStoreName());  // 스토어 이름 추가
         model.addAttribute("storeAddress", store.getBasicAddress());  // 스토어 주소 추가
         model.addAttribute("storeImage", store.getImageUrl());  // 스토어 이미지 추가
@@ -427,6 +428,14 @@ public class ReviewController {
         return "review/review_feed";                               // 피드 페이지로 이동
     }
 
+
+    
+    @GetMapping("/store/{id}")
+    public String getStoreDetail(@PathVariable Integer id, Model model) {
+        Store store = storeService.getStoreById(id);
+        model.addAttribute("store", store);
+        return "store_detail";  // 가게 상세 페이지
+    }
 
 }
 

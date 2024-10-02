@@ -177,16 +177,15 @@ public class StoreService {
 		return null;
 	}
 
-	
-
-	public Store getStoreByOwner(SiteUser siteUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	 // 로그인한 사용자의 가게 리스트 반환
     public List<Store> getStoresByOwner(SiteUser siteUser) {
         return storeRepository.findBySiteUser(siteUser);
+    }
+    
+    public Store getStoreById(Integer id) {
+        return storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found"));
     }
     
     

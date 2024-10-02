@@ -40,8 +40,12 @@
 								class="text-muted"><i
 								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i> <span class="font-weight-bold" th:text="${storeAddress}">가게 주소</span></small>
 						</p>
-						<button class="btn btn-secondary ">예약하기</button>
-						<button class="btn btn-secondary ">구경가기</button>
+			
+	<a th:href="@{/store/detail/{storeId}(storeId=${storeId})}">
+    <button class="btn btn-secondary w-100">가게 보기</button>
+</a>
+
+
 					</div>
 				</div>
 			</div>
