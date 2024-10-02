@@ -36,32 +36,6 @@
 				</form>
 
 
-				<!-- 드롭다운: 최근 검색어 및 인기 키워드 -->
-				<div class="dropdown-menu text-center show" id="dropdown-menu"
-					style="display: block;">
-					<div class="dropdown-section"
-						style="border-right: 1px dashed lightgray;">
-						<h4>최근 검색어</h4>
-						<div id="recent-searches">
-							<!-- 최근 검색어가 여기에 추가됩니다 -->
-						</div>
-					</div>
-					<div class="dropdown-section">
-						<h4>인기 키워드</h4>
-						<div class="tag-container">
-							<div class="tag">#루프탑</div>
-							<div class="tag">#한옥</div>
-							<div class="tag">#발레</div>
-							<div class="tag">#바베큐</div>
-							<div class="tag">#쿠킹</div>
-							<div class="tag">#영화</div>
-							<div class="tag">#필라테스</div>
-							<div class="tag">#요가</div>
-							<div class="tag">#브라이덜샤워</div>
-							<div class="tag">#자연광</div>
-						</div>
-					</div>
-				</div>
 
 			</div>
 		</div>
@@ -142,53 +116,59 @@
 
 
 	<section class="M_s2 container" th:if="${keyword == null}">
-		<div class=" my-5">
-			<div class="M_s2_a1">
-				<h3 class="mt-4 my-3">인기 있는 맛집</h3>
-				<div class="swiper-container" th:if="${storeList != null}">
-					<div class="swiper-wrapper">
-						<div class="swiper-slide" th:each="store : ${storeList}">
-							<div class=" mb-4">
-								<div class="card">
-									<div id="ProRestaurant1" class="carousel slide"
-										data-ride="carousel">
-										<div class="carousel-inner">
-											<div class="carousel-item active">
-												<img src="img/food/food1_1.jpg" class="card-img-top"
-													alt="가게 이미지 1">
-											</div>
-										</div>
-									</div>
-									<div class="card-body">
-										<div class="storeicon d-flex align-items-center mb-2">
-											<i class="fa-solid fa-star" style="color: #FFD43B;"></i> <small
-												class="ml-1">4.5</small>
-										</div>
-										<div class="d-flex justify-content-between align-items-center">
-											<h5 class="card-title mb-3" th:text="${store.storeName}">가게
-												이름</h5>
-										</div>
-										<div
-											class="d-flex justify-content-between align-items-center mb-3">
-											<div class="d-flex align-items-center">
-												<i class="fa-solid fa-location-dot"></i> <small class="ml-1"
-													th:text="${store.basicAddress}">주소</small>
-											</div>
-										</div>
-										<!-- 상세 페이지로 이동 -->
-										<a
-											th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
-											class="btn btn-primary">상세 보기</a>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- 추가적인 swiper-slide을 여기에 추가 -->
-					</div>
-					<div class="swiper-pagination pagination_bullet"></div>
-				</div>
-			</div>
-		</div>
+	   <div id="carouselExampleCaptions" class="d-none">
+      <div class="carousel-indicators" >
+      </div>
+   </div>
+   <input type="text" class="search-box1 d-none" placeholder="search" id="search-input" />
+   <section class="M_s2">
+      <div class="container my-5">
+         <div class="M_s2_a1">
+            <h3 class="mt-4 my-3">인기 있는 맛집</h3>
+            <div class="swiper-container" th:if="${storeList != null}">
+               <div class="swiper-wrapper">
+                  <div class="swiper-slide" th:each="store : ${storeList}">
+                     <div class=" mb-4">
+                        <div class="card">
+
+                           <a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
+                              class="store_list_btn" style="text-decoration: none; color: black;">
+
+                              <div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+                                 <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                       <img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
+                                          class="card-img-top" alt="가게 이미지" />
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="card-body">
+                                 <div class="storeicon d-flex align-items-center mb-2">
+                                    <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
+                                    <small class="ml-1">4.5</small>
+                                 </div>
+                                 <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-3" th:text="${store.storeName}">가게 이름</h5>
+                                 </div>
+                                 <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                       <i class="fa-solid fa-location-dot"></i>
+                                       <small class="ml-1" th:text="${store.basicAddress}">주소</small>
+                                    </div>
+                                 </div>
+                              </div>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="swiper-pagination pagination_bullet d-lg-none"></div>
+               <div class="swiper-button-prev"></div>
+               <div class="swiper-button-next"></div>
+            </div>
+         </div>
+
+
 
 
 
