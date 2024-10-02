@@ -26,9 +26,11 @@ public interface StoreRepository extends JpaRepository<Store, Integer> {
     List<Store> findBySiteUser(SiteUser siteUser);    
     
     // 가게 이름으로 검색
-    List<Store> findByStoreNameContainingIgnoreCase(String storeName);
+    List<Store> findByStoreNameContainingOrKategorieGroupContaining(String storeName, String kategorieGroup);
+
 
     // 가게 주소로 검색
-    List<Store> findByBasicAddressContainingIgnoreCase(String basicAddress);
+    List<Store> findByBasicAddressContainingIgnoreCase(String region); // 지역을 포함하는 리뷰 검색 메서드
+    List<Store> findByApprovalStatus(Integer approvalStatus);
 
 }

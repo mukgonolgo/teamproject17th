@@ -1,4 +1,82 @@
 // 메뉴 추가 스크립트
+
+document.addEventListener('DOMContentLoaded', function () {
+	const reservationButtons = document.querySelectorAll('.restaurant_re_btn');
+	const reservationModal = document.getElementById('reservationModal');
+	const reservationDay = document.getElementById('reservationDay');
+	const reservationtTime = document.getElementById('reservationtTime');
+	const reservationMember = document.getElementById('reservationMember');
+
+
+	reservationButtons.forEach(button => {
+		button.addEventListener('click', function () {
+			// 선택한 값 가져오기
+			const selectedDate = document.querySelector('.setDay').value;
+			const selectedTime = document.querySelector('.setTime').value; // 시작 시간
+			const selectedPeople = document.querySelector('.setMember').value;
+
+			// 모달에 값 설정
+			reservationDay.value = selectedDate;
+			reservationtTime.value = selectedTime;
+			reservationMember.value = selectedPeople;
+			// 에러 메시지 초기화
+			document.getElementById('reformError1').style.display = 'none';
+			document.getElementById('reformError2').style.display = 'none';
+
+			// 값이 비어있는지 확인
+			if (!selectedDate || !reservationtTime || !reservationMember) {
+				document.getElementById('reformError1').style.display = 'block';
+				document.getElementById('reformError2').style.display = 'block';
+				return;
+			}
+
+			$(reservationModal).modal('show'); // 모달 열기
+		});
+	});
+
+	document.getElementById('confirmReservation').addEventListener('click', function () {
+		// 예약 로직을 여기에 추가
+		alert('예약이 완료되었습니다.'); // 예시로 알림창을 띄움
+		$(reservationModal).modal('hide'); // 모달 닫기
+	});
+
+
+
+
+});
+const recommend_elements = document.getElementsByClassName("recommend");
+Array.from(recommend_elements).forEach(function (element) {
+	element.addEventListener("click", function () {
+		location.href = this.dataset.uri;
+	});
+});
+/*공유 모달창 기능*/
+document.querySelectorAll('.shareBtn').forEach(button => {
+	button.addEventListener('click', function () {
+		const modal = document.getElementById('shareModal');
+		const shareUrl = window.location.href; // 현재 페이지 URL 가져오기
+		document.getElementById('shareUrl').value = shareUrl; // 주소 입력란에 넣기
+
+		// SNS 공유 링크 설정
+		document.getElementById('facebookShare').href = `${shareUrl}`;
+		document.getElementById('twitterShare').href = `${shareUrl}&text=Check this out!`;
+
+		modal.style.display = 'block'; // 모달창 보이기
+	});
+});
+
+// 모달창 닫기 버튼 기능
+document.querySelector('.closeBtn').addEventListener('click', function () {
+	document.getElementById('shareModal').style.display = 'none';
+});
+
+// 주소 복사 기능
+document.getElementById('copyBtn').addEventListener('click', function () {
+	const copyText = document.getElementById('shareUrl');
+	copyText.select();
+	document.execCommand('copy'); // 주소 복사
+	alert('주소가 복사되었습니다!');
+});
 let isExpanded = false; // 초기 상태 설정
 
 function updateMoreButtonVisibility() {
