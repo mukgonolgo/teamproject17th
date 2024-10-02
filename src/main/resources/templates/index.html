@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout}">
 <head>
-<link rel="stylesheet" href="/css/main_review_page.css">
+<link rel="stylesheet" href="/css/review_page.css">
 <link rel="stylesheet" href="/css/category.css">
 <link rel="stylesheet" href="/mystyle.css">
 <link rel="stylesheet"
@@ -11,83 +11,53 @@
 </head>
 <div layout:fragment="content">
 
-	<section class="M_s1">
-		<div id="carouselExampleCaptions" class="carousel slide"
-			data-bs-ride="carousel">
-			<div class="carousel-indicators">
-				<!-- Indicators will be dynamically added here -->
-			</div>
-			<div class="carousel-inner">
-				<div class="carousel-item active">
-					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_1.png" class="d-block w-100 img-fluid"
-						alt="...">
-					<div class="carousel-caption d-none d-md-block">
-						<h5 class="text-title t-shadow">우린 그냥 먹고놀고</h5>
-						<p class="content t-shadow">당신이 찾던 맛집 사이트</p>
-					</div>
-				</div>
-				<div class="carousel-item">
-					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_2.png" class="d-block w-100 img-fluid"
-						alt="...">
-					<div class="carousel-caption d-none d-md-block">
-						<h5 class="text-title t-shadow">맛집 친구를 찾는다면?</h5>
-					</div>
-				</div>
-				<div class="carousel-item">
-					<div class="gradient-overlay"></div>
-					<img src="/img/carousel_3.png" class="d-block w-100 img-fluid"
-						alt="...">
-					<div class="carousel-caption d-none d-md-block">
-						<h5 class="text-title t-shadow">
-							모든 미식가를 위한 <br> 최고의 선택
-						</h5>
-						<p class="content t-shadow">광고 없는 솔직한 리뷰들로 이야기합니다.</p>
-					</div>
-				</div>
-			</div>
-			<button class="carousel-control-prev" type="button"
-				data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Previous</span>
-			</button>
-			<button class="carousel-control-next" type="button"
-				data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Next</span>
-			</button>
-		</div>
-		<div class="search-container">
-			<input type="text" class="search-box" placeholder="search"
-				id="search-input">
-			<div class="dropdown-menu" id="dropdown-menu">
-				<div class="dropdown-section">
-					<h4>최근 검색어</h4>
-					<div id="recent-searches">
-						<!-- 최근 검색어가 여기에 추가됩니다 -->
-					</div>
-				</div>
-				<div class="dropdown-section">
-					<h4>인기 키워드</h4>
-					<div class="tag-container">
-						<div class="tag">#루프탑</div>
-						<div class="tag">#한옥</div>
-						<div class="tag">#발레</div>
-						<div class="tag">#바베큐</div>
-						<div class="tag">#쿠킹</div>
-						<div class="tag">#영화</div>
-						<div class="tag">#필라테스</div>
-						<div class="tag">#요가</div>
-						<div class="tag">#브라이덜샤워</div>
-						<div class="tag">#자연광</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<section class="M_s2">
-		<div class="container my-5">
+<section class="M_s1 position-relative" style="height: 100vh;">
+    <div class="p-0 h-100 main_img">
+        <img src="/img/carousel_3.png" class="img-fluid  w-100 h-100" alt="Main Image" style="object-fit: cover;">
+
+        <!-- 이미지 위에 텍스트와 검색창 -->
+        <div class="overlay d-flex flex-column justify-content-center align-items-center text-center">
+            <div class="text_box mb-4">
+                <h5 class="text-title text-light t-shadow main_title">
+                    모든 미식가를 위한 <br> 최고의 선택
+                </h5>
+                <p class="content t-shadow main_txt text-light">광고 없는 솔직한 리뷰들로 이야기합니다.</p>
+            </div>
+
+            <div class="search-container w-75 w-md-50 w-lg-25 d-flex justify-content-center">
+                <input type="text" class="form-control search-box d-flex justify-content-center" placeholder="search" id="search-input">
+                
+                <div class="dropdown-menu text-center" id="dropdown-menu">
+                    <div class="dropdown-section" style="border-right: 1px dashed lightgray;">
+                        <h4>최근 검색어</h4>
+                        <div id="recent-searches">
+                            <!-- 최근 검색어가 여기에 추가됩니다 -->
+                        </div>
+                    </div>
+                    <div class="dropdown-section ">
+                        <h4>인기 키워드</h4>
+                        <div class="tag-container">
+                            <div class="tag">#루프탑</div>
+                            <div class="tag">#한옥</div>
+                            <div class="tag">#발레</div>
+                            <div class="tag">#바베큐</div>
+                            <div class="tag">#쿠킹</div>
+                            <div class="tag">#영화</div>
+                            <div class="tag">#필라테스</div>
+                            <div class="tag">#요가</div>
+                            <div class="tag">#브라이덜샤워</div>
+                            <div class="tag">#자연광</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+	<section class="M_s2 container">
+		<div class=" my-5">
 			<div class="M_s2_a1">
 				<h3 class="mt-4 my-3">인기 있는 맛집</h3>
 				<div class="swiper-container" th:if="${storeList != null}">
@@ -133,10 +103,11 @@
 					<div class="swiper-pagination pagination_bullet"></div>
 				</div>
 			</div>
+		</div>
 
 
 
-
+		
 			<div class="M_s2_a2">
 				<div class="section3 mt-5">
 					<div class="container my-5">
