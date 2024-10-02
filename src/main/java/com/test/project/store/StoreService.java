@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -123,13 +124,17 @@ public class StoreService {
     public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
         return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
     }
-    public List<Store> searchStoresByStoreName(String storeName) {
-        return storeRepository.findByStoreNameContainingIgnoreCase(storeName);
+
+ // 제목이나 내용에 검색어가 포함된 리뷰를 검색
+    public List<Store> searchStore(String query) {
+        return storeRepository.findByStoreNameContainingOrKategorieGroupContaining(query, query); // 제목 또는 내용에서 검색어로 리뷰 검색
+    }
+    public List<Store> getStoreByRegion(String region) {
+        // 지역 정보가 포함된 리뷰를 검색
+        return storeRepository.findByBasicAddressContainingIgnoreCase(region);
     }
 
-    public List<Store> searchStoresByBasicAddress(String basicAddress) {
-        return storeRepository.findByBasicAddressContainingIgnoreCase(basicAddress);
-    }
+
     
     public List<Store> getTopStores(int limit) {
         Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
@@ -183,5 +188,12 @@ public class StoreService {
     public List<Store> getStoresByOwner(SiteUser siteUser) {
         return storeRepository.findBySiteUser(siteUser);
     }
-    
+    public Optional<Store> getRandomStoreWithApprovalStatus5() {
+        List<Store> stores = storeRepository.findByApprovalStatus(1); // approvalStatus가 5인 Store 목록 가져오기
+        if (stores.isEmpty()) {
+            return Optional.empty(); // 목록이 비어있으면 Optional.empty() 반환
+        }
+        Random random = new Random();
+        return Optional.of(stores.get(random.nextInt(stores.size()))); // 랜덤으로 하나 선택
+    }
 }

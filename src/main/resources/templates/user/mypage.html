@@ -1,9 +1,9 @@
 <html layout:decorate="~{layout}">
 
 <head>
-	<link rel="stylesheet" href="/css/mypage.css" />
 
 	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+	<link rel="stylesheet" href="/css/mypage.css" />
 	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 </head>
@@ -59,10 +59,13 @@
 							<div class="my_boxs p-3">
 								<div class="profile col d-flex justify-content-center">
 									<div class="p-2" style="text-align: center;">
-										<p class="m-3">난는 집에가고싶어요</p>
-										<div class="restaurant_img d-flex justify-content-center">
-											<img src="/팀 포폴 사진들/로고.png" alt="프로필 이미지">
-										</div>
+										<p class="m-3">이런 맛집은 어떠세요?</p>
+										<a th:href="@{/store/detail/{storeId}(storeId=${randomStore.storeId})}">
+											<div class="restaurant_img d-flex justify-content-center">
+												<img th:src="${randomStore.imageUrl}" alt="가게 이미지"
+													style="width: 100%; height: 100%; object-fit: cover;">
+											</div>
+										</a>
 									</div>
 								</div>
 							</div>
@@ -83,14 +86,19 @@
 									<div class="swiper-container align-items-cente d-flex" id="swiper1">
 										<div class="swiper-wrapper">
 											<!-- 내가 고른 맛집 카드 -->
-											<div class="swiper-slide card mr-2 d-flex align-items-center"th:each="store : ${likedStores}">
+											<div class="swiper-slide card mr-2 d-flex align-items-center"
+												th:each="store : ${likedStores}">
 												<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}">
-													<div class="like_img" style="border-radius: 20px; width: 100px; height: 80px; overflow: hidden;">
-														<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"  class="img-fluid" alt="가게 이미지"style="width: 100%; height: 100%; object-fit: cover;">
+													<div class="like_img"
+														style="border-radius: 20px; width: 100px; height: 80px; overflow: hidden;">
+														<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
+															class="img-fluid" alt="가게 이미지"
+															style="width: 100%; height: 100%; object-fit: cover;">
 													</div>
 													<div class="like_title">
-														<div class="like_title m-2 " th:text="${store.storeName}">고기집</div>
-													</div>													
+														<div class="like_title m-2 " th:text="${store.storeName}">고기집
+														</div>
+													</div>
 												</a>
 
 
@@ -109,19 +117,21 @@
 							<div class="top_boxs p-3 my_boxs">
 								<div class="d-flex p-1 justify-content-between align-items-center">
 									<spnn class="list_title">예약 리스트</spnn>
-									<a th:href="@{/reservation/mylist}" class="ml-auto text-right mb-1"><small>전체보기</small></a>
+									<a th:href="@{/reservation/mylist}"
+										class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 								<div class="col  top_list p-3 d-flex align-items-center" style="overflow: hidden;">
 									<div class="swiper-container align-items-center" id="swiper2">
 										<div class="swiper-wrapper">
-											<div class="swiper-slide card mr-2"
-												th:each="reservation : ${reservations}">
+											<div class="swiper-slide card mr-2" th:each="reservation : ${reservations}">
 
 												<div class="reservation_img"
 													style="border-radius: 20px; width: 120px; height: 100px; background-color: aqua;">
 													<a th:href="@{/reservation/completed/{reservationid}(reservationid=${reservation.reservationid})}"
 														style="width: 100%; height: 100%;">
-														<img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}"  class="img-fluid" alt="가게 이미지"style="width: 100%; height: 100%; object-fit: cover;">
+														<img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}"
+															class="img-fluid" alt="가게 이미지"
+															style="width: 100%; height: 100%; object-fit: cover;">
 
 														<div class="re_title m-2 ">
 															<!-- text-center 추가 -->
@@ -165,29 +175,78 @@
 						<div class="col-sm-7 p-2 box3 align-items-center">
 							<div class="under_boxs p-3 my_boxs" style="overflow: hidden;">
 								<div class="d-flex p-1 justify-content-between align-items-center">
-									<spnn class="list_title">즐겨찾기</spnn>
+									<spnn class="list_title">인기글</spnn>
 								</div>
-								<div class="row under_list" style="overflow-x: auto; white-space: nowrap;">
-									<div class="col-6" style="width: 100%; height: 190px; padding: 5px;">
-										<div class="card" style="width: 100%; height: 100%;">
-											<div class="like_img"
-												style="border-radius: 10px; width: 100%; height: 68%; background-color: aqua;">
-												<!-- <img src="이미지_주소.jpg" alt="이미지 설명" style="width: 100%; height: auto;"> -->
-											</div>
-											<a class="re_title mt-1 p-1">
-												<p class="review_re_name">식당 이름</p>
-												<p class="review_re_name">리뷰 제목</p> <a href="#"
-													class="d-flex  mt-2 align-items-center">
-													<div
-														style="width: 20px; height: 20px; border: solid 1px red; border-radius: 50%;">
-														<img src="" alt="">
-													</div>
-													<p class="ml-1 " style="font-size: 12px;">리뷰 쓴사람</p>
-												</a><img src="" alt="">
-											</a>
-										</div>
-									</div>
+								<div class="col  top_list p-3 d-flex align-items-center" style="overflow: hidden;">
+									<div class="swiper-container align-items-center" id="swiper3">
+										<div class="swiper-wrapper">
+											<div class="swiper-slide">
+												<div class="board d-flex align-items-center"
+													style="border-radius: 20px; width: 100%; height: 100px;">
+													<a href="#" style="width: 100%; height: 100%;"
+														class="d-flex  align-items-center">
+														<img src="/img/user/default-profile.png" alt="user_img"
+															class="rounded-circle image-fluid "
+															style="width: 100px; height: 100px">
 
+														<div class=" m-2 ">
+															<div class="bord_user m-1">
+																<h6>이쁜이 버거</h6>
+															</div>
+															<div class="bord_title ">
+																<p>서울에서 가장 맛있는 맛집!!</p>
+															</div>
+														</div>
+													</a>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="board d-flex align-items-center"
+													style="border-radius: 20px; width: 100%; height: 100px;">
+													<a href="#" style="width: 100%; height: 100%;"
+														class="d-flex  align-items-center">
+														<img src="/img/user/default-profile.png" alt="user_img"
+															class="rounded-circle image-fluid "
+															style="width: 100px; height: 100px">
+
+														<div class=" m-2 ">
+															<div class="bord_user m-1">
+																<h6>이쁜이 버거</h6>
+															</div>
+															<div class="bord_title ">
+																<p>서울에서 가장 맛있는 맛집!!</p>
+															</div>
+														</div>
+													</a>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="board d-flex align-items-center"
+													style="border-radius: 20px; width: 100%; height: 100px;">
+													<a href="#" style="width: 100%; height: 100%;"
+														class="d-flex  align-items-center">
+														<img src="/img/user/default-profile.png" alt="user_img"
+															class="rounded-circle image-fluid "
+															style="width: 100px; height: 100px">
+
+														<div class=" m-2 ">
+															<div class="bord_user m-1">
+																<h6>이쁜이 버거</h6>
+															</div>
+															<div class="bord_title ">
+																<p>서울에서 가장 맛있는 맛집!!</p>
+															</div>
+														</div>
+													</a>
+												</div>
+											</div>
+
+
+										</div>
+										<div class="swiper-button-next"></div>
+										<div class="swiper-button-prev"></div>
+										<div class="swiper-scrollbar d-none"></div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -270,6 +329,28 @@
 				scrollbarDragMove: function () {
 					updateNavigationButtons(this);
 				},
+			},
+		});
+		const swiper3 = new Swiper('#swiper3', {
+			slidesPerView: 1,
+			spaceBetween: 20,
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			scrollbar: {
+				el: '.swiper-scrollbar',
+				hide: false,
+				draggable: true,
+			},
+			on: {
+				slideChange: function () {
+					updateNavigationButtons(this);
+				},
+				scrollbarDragMove: function () {
+					updateNavigationButtons(this);
+				},
+
 			},
 		});
 

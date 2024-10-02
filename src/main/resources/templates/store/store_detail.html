@@ -9,16 +9,17 @@
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+	<script type="text/javascript"
+		src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
 	<style>
-
-
-
-
 		.recommend.red i {
-		    color: #ff2424; /* 기본 색상 */
+			color: #ff2424;
+			/* 기본 색상 */
 		}
+
 		.recommend.black i {
-		    color: #bababa; /* 기본 색상 */
+			color: #bababa;
+			/* 기본 색상 */
 		}
 	</style>
 </head>
@@ -54,16 +55,18 @@
 							<div class="card-body" style="border-top: 1px solid #ccc;">
 								<!-- 가게 이름 표시 -->
 								<div class="restaurant_title d-flex justify-content-between align-items-center">
-								    <h5 class="card-title mb-0" th:text="${store.storeName}">가게 이름</h5>
+									<h5 class="card-title mb-0" th:text="${store.storeName}">가게 이름</h5>
 									<div class="d-flex d-lg-none align-items-center">
 										<!--공유 기능-->
-										<img  src="/img/icon/share-nodes-solid.svg"
-											alt="share" style="width: 15px" class=" shareBtn tap_btn mx-2" />
-										<a href="javascript:void(0);" 
-										   th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'" 
-										   th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
-										   <i class="fa-solid fa-heart"></i>
-										    <span style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
+										<img src="/img/icon/share-nodes-solid.svg" alt="share" style="width: 15px"
+											class=" shareBtn tap_btn mx-2" />
+										<a href="javascript:void(0);"
+											th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'"
+											th:data-uri="@{|/store/vote/${store.storeId}|}"
+											style="text-decoration: none;">
+											<i class="fa-solid fa-heart"></i>
+											<span
+												style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
 										</a>
 									</div>
 								</div>
@@ -77,7 +80,9 @@
 											<span th:text="${store.detailAddress}">상세 주소</span>
 										</p>
 									</div>
-									<button class="btn btn-secondary btn-sm location-button">지도보기</button>
+									<button class="btn btn-secondary btn-sm location-button"
+										onclick="openMap()">지도보기</button>
+
 								</div>
 								<div class="d-flex align-items-center mt-2">
 									<!-- 가게 전화번호 -->
@@ -96,6 +101,22 @@
 								</div>
 							</div>
 						</div>
+						<!-- 지도 팝업 -->
+						<div id="overlay"
+							style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;">
+						</div>
+						<div id="mapPopup"
+							style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: white; width: 600px; height: 400px;">
+							<div id="map" style="width: 100%; height: 100%;"></div>
+							<i class="fas fa-times" onclick="closeMap()" style="position: absolute; top: 10px; right: 10px; font-size: 24px; z-index: 99999; cursor: pointer;"></i>
+
+						</div>
+
+						<!-- 가게의 위도와 경도 값을 숨겨서 자바스크립트로 전달 -->
+						<input type="hidden" class="store-lat" th:value="${store.storeLatitude}" />
+						<input type="hidden" class="store-lng" th:value="${store.storeLongitude}" />
+
+
 
 						<div class="d-block d-lg-none" style="border-top: 1px solid #ccc;">
 							<div class="restaurant_mo_re_object bg-white">
@@ -253,17 +274,19 @@
 					</div>
 					<div class="restaurant_re_section d-none d-lg-block col-4 col-lg-0">
 						<div class="restaurant_re_object " style="border: 1px solid #ccc;">
-							<div class="restaurant_re_title d-flex justify-content-between align-items-center p-3 bg-white">
+							<div
+								class="restaurant_re_title d-flex justify-content-between align-items-center p-3 bg-white">
 								<p>예약 하기</p>
 								<div class="d-flex align-items-center">
 									<!-- 공유버튼 -->
-									<img src="/img/icon/share-nodes-solid.svg"
-										alt="share" style="width: 15px" class="shareBtn tap_btn mx-2" />
-									<a href="javascript:void(0);" 
-									   th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'" 
-									   th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
-									   <i class="fa-solid fa-heart"></i>
-									    <span style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
+									<img src="/img/icon/share-nodes-solid.svg" alt="share" style="width: 15px"
+										class="shareBtn tap_btn mx-2" />
+									<a href="javascript:void(0);"
+										th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'"
+										th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
+										<i class="fa-solid fa-heart"></i>
+										<span
+											style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
 									</a>
 								</div>
 							</div>
@@ -334,8 +357,7 @@
 											data-target="#collapseMemver" aria-expanded="true"
 											aria-controls="collapseMemver">
 											<label class="check_title col-4 col-xl-4 col-lg-5 mt-2">인원 선택</label>
-											<input type="text" class="form-control selected-Memver setMember"
-												value="1" />
+											<input type="text" class="form-control selected-Memver setMember" />
 										</div>
 									</div>
 									<div id="collapseMemver" class="collapse" aria-labelledby="headingMember"
@@ -406,18 +428,15 @@
 					<span class="closeBtn text-right">&times;</span>
 
 					<!-- SNS 공유 버튼들을 감싸는 div -->
-					<div class="sns-share d-flex justify-content-center"
-						style="gap: 20px;">
+					<div class="sns-share d-flex justify-content-center" style="gap: 20px;">
 						<!-- 페이스북 공유 버튼 -->
-						<a href="" id="facebookShare" target="_blank"> <img
-							src="/img/icon/sns/f_black.png" alt="페이스북 공유"
-							style="width: 50px;" />
+						<a href="" id="facebookShare" target="_blank"> <img src="/img/icon/sns/f_black.png"
+								alt="페이스북 공유" style="width: 50px;" />
 						</a>
 
 						<!-- 트위터 공유 버튼 -->
-						<a href="" id="twitterShare" target="_blank"> <img
-							src="/img/icon/sns/x_black.png" alt="트위터 공유"
-							style="width: 50px;" />
+						<a href="" id="twitterShare" target="_blank"> <img src="/img/icon/sns/x_black.png" alt="트위터 공유"
+								style="width: 50px;" />
 						</a>
 					</div>
 
@@ -438,83 +457,50 @@
 
 			<script src="/js/store/store_detail.js"></script>
 			<script>
-				document.addEventListener('DOMContentLoaded', function () {
-					const reservationButtons = document.querySelectorAll('.restaurant_re_btn');
-					const reservationModal = document.getElementById('reservationModal');
-					const reservationDay = document.getElementById('reservationDay');
-					const reservationtTime = document.getElementById('reservationtTime');
-					const reservationMember = document.getElementById('reservationMember');
+				let mapContainer = document.getElementById('map');
+				let mapPopup = document.getElementById('mapPopup');
+				let overlay = document.getElementById('overlay');
+				let map;
+				let marker;
 
+				function openMap() {
+					let storeLatitude = parseFloat(document.querySelector('.store-lat').value);
+					let storeLongitude = parseFloat(document.querySelector('.store-lng').value);
+					let storePosition = new kakao.maps.LatLng(storeLatitude, storeLongitude);
 
-					reservationButtons.forEach(button => {
-						button.addEventListener('click', function () {
-							// 선택한 값 가져오기
-							const selectedDate = document.querySelector('.setDay').value;
-							const selectedTime = document.querySelector('.setTime').value; // 시작 시간
-							const selectedPeople = document.querySelector('.setMember').value;
+					if (map) {
+						map.relayout();
+						map.setCenter(storePosition);
+						marker.setPosition(storePosition);
+					} else {
+						let mapOption = {
+							center: storePosition,
+							level: 3
+						};
 
-							// 모달에 값 설정
-							reservationDay.value = selectedDate;
-							reservationtTime.value = selectedTime;
-							reservationMember.value = selectedPeople;
-							// 에러 메시지 초기화
-							document.getElementById('reformError1').style.display = 'none';
-							document.getElementById('reformError2').style.display = 'none';
-
-							// 값이 비어있는지 확인
-							if (!selectedDate || !reservationtTime || !reservationMember) {
-								document.getElementById('reformError1').style.display = 'block';
-								document.getElementById('reformError2').style.display = 'block';
-								return;
-							}
-
-							$(reservationModal).modal('show'); // 모달 열기
+						map = new kakao.maps.Map(mapContainer, mapOption);
+						marker = new kakao.maps.Marker({
+							position: storePosition
 						});
-					});
+						marker.setMap(map);
+					}
 
-					document.getElementById('confirmReservation').addEventListener('click', function () {
-						// 예약 로직을 여기에 추가
-						alert('예약이 완료되었습니다.'); // 예시로 알림창을 띄움
-						$(reservationModal).modal('hide'); // 모달 닫기
-					});
+					mapPopup.style.display = 'block';
+					overlay.style.display = 'block';
+					document.body.style.overflow = 'hidden';
 
+					setTimeout(function () {
+						map.relayout();
+						map.setCenter(storePosition);
+					}, 100);
+				}
 
+				function closeMap() {
+					mapPopup.style.display = 'none';
+					overlay.style.display = 'none';
+					document.body.style.overflow = 'auto';
+				}
 
-
-				});
-				const recommend_elements = document.getElementsByClassName("recommend");
-				Array.from(recommend_elements).forEach(function(element){
-				    element.addEventListener("click", function(){
-				        location.href = this.dataset.uri;
-				    });
-				});
-				/*공유 모달창 기능*/
-				document.querySelectorAll('.shareBtn').forEach(button => {
-				    button.addEventListener('click', function() {
-				        const modal = document.getElementById('shareModal');
-				        const shareUrl = window.location.href; // 현재 페이지 URL 가져오기
-				        document.getElementById('shareUrl').value = shareUrl; // 주소 입력란에 넣기
-
-				        // SNS 공유 링크 설정
-				        document.getElementById('facebookShare').href = `${shareUrl}`;
-				        document.getElementById('twitterShare').href = `${shareUrl}&text=Check this out!`;
-
-				        modal.style.display = 'block'; // 모달창 보이기
-				    });
-				});
-
-				// 모달창 닫기 버튼 기능
-				document.querySelector('.closeBtn').addEventListener('click', function() {
-				    document.getElementById('shareModal').style.display = 'none';
-				});
-
-				// 주소 복사 기능
-				document.getElementById('copyBtn').addEventListener('click', function() {
-				    const copyText = document.getElementById('shareUrl');
-				    copyText.select();
-				    document.execCommand('copy'); // 주소 복사
-				    alert('주소가 복사되었습니다!');
-				});
 
 
 			</script>
