@@ -100,6 +100,8 @@ public class UserService {
    }
 
    // 아이디 찾기 로직 (email 사용)
+   
+   
    public String findIdByNameAndEmail(String name, String email) {
       Optional<SiteUser> user = userRepository.findByNameAndEmail(name, email);
       return user.map(SiteUser::getUsername).orElse(null);

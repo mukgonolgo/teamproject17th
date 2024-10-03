@@ -68,8 +68,8 @@ public class EmailSendService {
     public String joinEmail(String email) {
         makeRandomNum();
         String customerMail = email;
-        String title = "회원 가입을 위한 이메일입니다!";
-        String content = "이메일 인증번호는 " + authNumber + "입니다.";
+        String title = "먹고 놀고 회원 가입을 위한 이메일입니다!";
+        String content = "먹고놀고  이메일 인증번호는 " + authNumber + "입니다.";
         mailSend(serviceName, customerMail, title, content);
         return Integer.toString(authNumber);
     }
