@@ -1,17 +1,17 @@
 <html layout:decorate="~{layout}">
 
 <head>
-<link rel="stylesheet" href="/css/mypage.css" />
 
 <link rel="stylesheet"
 	href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<link rel="stylesheet" href="/css/mypage.css" />
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 </head>
 <div layout:fragment="content">
 
 
-	<div class="container ">
+	<div class="container my_container ">
 		<section class="My_s pt-5 pb-5">
 			<div class="row justify-content-between ">
 				<div class="col-lg-4 ">
@@ -35,11 +35,11 @@
 
 											<small class="nav-link text-muted"
 												th:text="'등급: ' + 
-                                           (${user.approvalStatus == 0} ? '관리자' :
-                                           (${user.approvalStatus == 1} ? '일반 사용자' :
-                                           (${user.approvalStatus == 2} ? '승인 대기 중' :
-                                           (${user.approvalStatus == 3} ? '승인된 사업자' :
-                                           (${user.approvalStatus == 4} ? '보류 중' : '알 수 없음')))))">
+									                (${user.approvalStatus == 0} ? '관리자' :
+									                (${user.approvalStatus == 1} ? '일반 사용자' :
+									                (${user.approvalStatus == 2} ? '승인 대기 중' :
+									                (${user.approvalStatus == 3} ? '승인된 사업자' :
+									                (${user.approvalStatus == 4} ? '보류 중' : '알 수 없음')))))">
 											</small>
 
 										</div>
@@ -64,19 +64,9 @@
 
 
 
+
 						</div>
-						<div class="col-md-12 d-none d-lg-block p-2 my_s2">
-							<div class="my_boxs p-3">
-								<div class="profile col d-flex justify-content-center">
-									<div class="p-2" style="text-align: center;">
-										<p class="m-3">난는 집에가고싶어요</p>
-										<div class="restaurant_img d-flex justify-content-center">
-											<img src="/팀 포폴 사진들/로고.png" alt="프로필 이미지">
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+
 					</div>
 				</div>
 				<div class="col-lg-8 ">
@@ -87,11 +77,7 @@
 								<div
 									class="d-flex p-1 justify-content-between align-items-center">
 									<span class="list_title">즐겨찾기</span>
-
-
-
 									<!-- 전체보기를 오른쪽 끝에 배치 -->
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
 
 								<div class="col top_list p-3 d-flex align-items-center"
@@ -100,19 +86,29 @@
 										id="swiper1">
 										<div class="swiper-wrapper">
 											<!-- 내가 고른 맛집 카드 -->
-											<div class="swiper-slide card mr-2 d-flex align-items-center">
-												<div class="like_img"
-													style="border-radius: 10px; width: 100%; height: 60%; background-color: aqua;">
-													<!-- <img src="이미지_주소.jpg" alt="이미지 설명" style="width: 100%; height: auto;"> -->
-												</div>
-												<div class="like_title">
-													<div class="like_title mt-2">dsfasdfasdf</div>
-												</div>
+											<div
+												class="swiper-slide card mr-2 d-flex align-items-center text-center"
+												th:each="store : ${likedStores}">
+												<a
+													th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}">
+													<div class="like_img"
+														style="width: 100px; height: 80px; overflow: hidden;">
+														<img
+															th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
+															class="img-fluid" alt="가게 이미지"
+															style="width: 100%; height: 100%; object-fit: cover;">
+													</div>
+													<div class="like_title mt-2">
+														<h5 class="like_title  " th:text="${store.storeName}">
+														</h5>
+													</div>
+												</a>
+
+
 											</div>
 
 										</div>
-										<div class="swiper-button-next"></div>
-										<div class="swiper-button-prev"></div>
+
 										<div class="swiper-scrollbar"></div>
 									</div>
 								</div>
@@ -122,57 +118,48 @@
 						<div class="col-12 p-2 box2 align-items-center">
 							<div class="top_boxs p-3 my_boxs">
 								<div
-									class="d-flex p-1 justify-content-between align-items-center">
-									<spnn class="list_title">예약 리스트</spnn>
-									<a th:href="@{/reservation/list}"
+									class="d-flex p-1 justify-content-between align-items-center text-center">
+									<span class="list_title">예약 리스트</span> <a
+										th:href="@{/reservation/mylist}"
 										class="ml-auto text-right mb-1"><small>전체보기</small></a>
 								</div>
-								<div class="col  top_list p-3 d-flex align-items-center"
+								<div class="col top_list p-3 d-flex align-items-center"
 									style="overflow: hidden;">
 									<div class="swiper-container align-items-center" id="swiper2">
 										<div class="swiper-wrapper">
-											<div class="swiper-slide card mb-0 mr-2 d-flex"
+											<div class="swiper-slide card mr-2"
 												th:each="reservation : ${reservations}">
-
 												<div class="reservation_img"
-													style="border-radius: 10px; width: 100%; height: 55%; background-color: aqua;">
+													style="width: 120px; height: 80px;">
 													<a
 														th:href="@{/reservation/completed/{reservationid}(reservationid=${reservation.reservationid})}"
 														style="width: 100%; height: 100%;"> <img
 														th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}"
 														class="img-fluid" alt="가게 이미지"
 														style="width: 100%; height: 100%; object-fit: cover;">
-
-														<div class="re_title m-2 ">
-															<!-- text-center 추가 -->
-															<p th:text="${reservation.store.storeName}">식당 이름:</p>
-															<p th:text="${reservation.reservationDay}">예약 날짜:</p>
-															<span class="badge text-center"> <!-- mx-auto 추가 -->
-																<a
-																th:href="@{/review_create_form(storeId=${reservation.store.storeId}, storeName=${reservation.store.storeName})}">
-																	리뷰쓰기 </a>
-
-															</span>
-														</div>
 													</a>
 												</div>
+												<div class="re_title m-2 text-center">
+													<h5 th:text="${reservation.store.storeName}">식당 이름:</h5>
+													<p th:text="${reservation.reservationDay}">예약 날짜:</p>
+													<small><a
+														th:href="@{/review_create_form(storeId=${reservation.store.storeId}, storeName=${reservation.store.storeName})}">리뷰쓰기</a></small>
+												</div>
 											</div>
-
 										</div>
-										<div class="swiper-button-next"></div>
-										<div class="swiper-button-prev"></div>
 										<div class="swiper-scrollbar"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 
+
 						<div class="col-sm-5 p-2 box3 align-items-center">
 							<div class="under_boxs p-3 my_boxs" style="overflow: hidden;">
 								<div
 									class="d-flex p-1 justify-content-between align-items-center">
-									<spnn class="list_title">좋아요</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
+									<span class="list_title">좋아요</span>
+
 								</div>
 								<div class="row under_list p-1"
 									style="overflow-x: auto; white-space: nowrap;">
@@ -190,36 +177,38 @@
 								</div>
 							</div>
 						</div>
+
+
+
+
+
 						<div class="col-sm-7 p-2 box3 align-items-center">
 							<div class="under_boxs p-3 my_boxs" style="overflow: hidden;">
 								<div
 									class="d-flex p-1 justify-content-between align-items-center">
-									<spnn class="list_title">즐겨찾기</spnn>
-									<a href="#" class="ml-auto text-right mb-1"><small>전체보기</small></a>
+									<span class="list_title">🔥HOT한 맛집🔥 <span>
 								</div>
-								<div class="row under_list"
-									style="overflow-x: auto; white-space: nowrap;">
-									<div class="col-6"
-										style="width: 100%; height: 190px; padding: 5px;">
-										<div class="card" style="width: 100%; height: 100%;">
-											<div class="like_img"
-												style="border-radius: 10px; width: 100%; height: 68%; background-color: aqua;">
-												<!-- <img src="이미지_주소.jpg" alt="이미지 설명" style="width: 100%; height: auto;"> -->
-											</div>
-											<a class="re_title mt-1 p-1">
-												<p class="review_re_name">식당 이름</p>
-												<p class="review_re_name">리뷰 제목</p> <a href="#"
-												class="d-flex  mt-2 align-items-center">
-													<div
-														style="width: 20px; height: 20px; border: solid 1px red; border-radius: 50%;">
-														<img src="" alt="">
-													</div>
-													<p class="ml-1 " style="font-size: 12px;">리뷰 쓴사람</p>
-											</a><img src="" alt="">
-											</a>
-										</div>
-									</div>
+								<div class="col  top_list p-3 d-flex align-items-center"
+									style="overflow: hidden;">
+									<div class="board d-flex align-items-center"
+										style=" width: 100%; height: 100px;">
+										<a
+											th:href="@{/store/detail/{storeId}(storeId=${randomStore.storeId})}"
+											style="width: 100%; height: 100%;"
+											class="d-flex  align-items-center"> <img
+											th:src="${randomStore.imageUrl}" alt="user_img"
+											class=" image-fluid " style="width: 100px; height: 100px">
 
+											<div class=" m-2 ">
+												<div class="bord_user mr-1">
+													<h4 th:text="${randomStore.storeName}"></h4>
+												</div>
+												<div class="bord_title mr-2">
+													<p th:text="${randomStore.storeContent}"></p>
+												</div>
+											</div>
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -233,95 +222,119 @@
 
 	</div>
 	<script>
-      const swiper1 = new Swiper('#swiper1', {
-         slidesPerView: 2,
-         spaceBetween: 10,
-         navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-         },
-         scrollbar: {
-            el: '.swiper-scrollbar',
-            hide: false,
-            draggable: true,
-         },
-         breakpoints: {
-            992: {
-               slidesPerView: 6,
-            },
-            768: {
-               slidesPerView: 5,
-            },
-            576: {
-               slidesPerView: 4,
-            },
-            400: {
-               slidesPerView: 3,
-            },
-         },
-         on: {
-            slideChange: function () {
-               updateNavigationButtons(this);
-            },
-            scrollbarDragMove: function () {
-               updateNavigationButtons(this);
-            },
-         },
-      });
+		const swiper1 = new Swiper('#swiper1', {
+			slidesPerView: 2,
+			spaceBetween: 10,
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			scrollbar: {
+				el: '.swiper-scrollbar',
+				hide: false,
+				draggable: true,
+			},
+			breakpoints: {
+				992: {
+					slidesPerView: 6,
+				},
+				768: {
+					slidesPerView: 5,
+				},
+				576: {
+					slidesPerView: 4,
+				},
+				400: {
+					slidesPerView: 3,
+				},
+			},
+			on: {
+				slideChange: function () {
+					updateNavigationButtons(this);
+				},
+				scrollbarDragMove: function () {
+					updateNavigationButtons(this);
+				},
+			},
+		});
 
-      const swiper2 = new Swiper('#swiper2', {
-         slidesPerView: 2,
-         spaceBetween: 10,
-         navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-         },
-         scrollbar: {
-            el: '.swiper-scrollbar',
-            hide: false,
-            draggable: true,
-         },
-         breakpoints: {
-            992: {
-               slidesPerView: 6,
-            },
-            768: {
-               slidesPerView: 5,
-            },
-            576: {
-               slidesPerView: 4,
-            },
-            400: {
-               slidesPerView: 3,
-            },
-         },
-         on: {
-            slideChange: function () {
-               updateNavigationButtons(this);
-            },
-            scrollbarDragMove: function () {
-               updateNavigationButtons(this);
-            },
-         },
-      });
+		const swiper2 = new Swiper('#swiper2', {
+			slidesPerView: 2,
+			spaceBetween: 10,
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			scrollbar: {
+				el: '.swiper-scrollbar',
+				hide: false,
+				draggable: true,
+			},
+			breakpoints: {
+				992: {
+					slidesPerView: 6,
+				},
+				768: {
+					slidesPerView: 5,
+				},
+				576: {
+					slidesPerView: 4,
+				},
+				400: {
+					slidesPerView: 3,
+				},
+			},
+			on: {
+				slideChange: function () {
+					updateNavigationButtons(this);
+				},
+				scrollbarDragMove: function () {
+					updateNavigationButtons(this);
+				},
+			},
+		});
+		const swiper3 = new Swiper('#swiper3', {
+			slidesPerView: 1,
+			spaceBetween: 20,
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			scrollbar: {
+				el: '.swiper-scrollbar',
+				hide: false,
+				draggable: true,
+			},
+			on: {
+				slideChange: function () {
+					updateNavigationButtons(this);
+				},
+				scrollbarDragMove: function () {
+					updateNavigationButtons(this);
+				},
 
-      function updateNavigationButtons(swiper) {
-         const nextButton = swiper.navigation.nextEl;
-         const prevButton = swiper.navigation.prevEl;
+			},
+		});
 
-         if (swiper.isEnd) {
-            nextButton.style.display = 'none'; // 마지막 슬라이드에서 '다음' 버튼 숨기기
-         } else {
-            nextButton.style.display = 'block'; // 그 외에는 '다음' 버튼 보이기
-         }
+		function updateNavigationButtons(swiper) {
+			const nextButton = swiper.navigation.nextEl;
+			const prevButton = swiper.navigation.prevEl;
 
-         if (swiper.isBeginning) {
-            prevButton.style.display = 'none'; // 첫 슬라이드에서 '이전' 버튼 숨기기
-         } else {
-            prevButton.style.display = 'block'; // 그 외에는 '이전' 버튼 보이기
-         }
-      }
+			if (swiper.isEnd) {
+				nextButton.style.display = 'none'; // 마지막 슬라이드에서 '다음' 버튼 숨기기
+			} else {
+				nextButton.style.display = 'block'; // 그 외에는 '다음' 버튼 보이기
+			}
 
-   </script>
+			if (swiper.isBeginning) {
+				prevButton.style.display = 'none'; // 첫 슬라이드에서 '이전' 버튼 숨기기
+			} else {
+				prevButton.style.display = 'block'; // 그 외에는 '이전' 버튼 보이기
+			}
+		}
+
+	</script>
 </div>
+
+
 </html>

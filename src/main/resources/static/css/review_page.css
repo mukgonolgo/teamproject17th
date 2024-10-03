@@ -18,6 +18,11 @@ a {
 .fa-heart {
     cursor: pointer;
 }
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /*카드 내용*/
 .S3_card-text{
    display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */

@@ -1,7 +1,7 @@
 p {
 	margin: 0;
-}
 
+}
 .container {
 	height: 100%;
 }
@@ -17,12 +17,14 @@ p {
 
 .box1 {
 	box-sizing: border-box;
-	height: 250px; /* 원하는 높이 조정 */
+	height: 250px;
+	/* 원하는 높이 조정 */
 }
 
 .box2 {
 	box-sizing: border-box;
-	height: 300px; /* 원하는 높이 조정 */
+	height: 300px;
+	/* 원하는 높이 조정 */
 }
 
 .box3 {
@@ -34,7 +36,9 @@ p {
 	border: 1px solid #dee2e6;
 	border-radius: 20px !important;
 	box-sizing: border-box;
-	height: 100%; /* 원하는 높이 조정 */
+	height: 100%;
+
+	/* 원하는 높이 조정 */
 }
 
 .my_s1 {
@@ -50,36 +54,40 @@ p {
 }
 
 .restaurant_img {
-	border: 1px solid black;
-	border-radius: 10px;
+
 	height: 250px;
 	width: 250px;
+	overflow: hidden;
 }
 
 .p_box {
 	padding: 20px;
 	padding-bottom: 30px;
-	
 }
+
 .my_boxs {
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-	height: 100%; /* 원하는 높이 조정 */
-	border-radius:20px;
+	height: 100%;
+	/* 원하는 높이 조정 */
+	border-radius: 20px;
 }
+
 .top_boxs {
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-	height: 100%; /* 원하는 높이 조정 */
-	border-radius: 10px;
+	height: 100%;
+	/* 원하는 높이 조정 */
+
 	overflow: hidden;
 }
 
 .under_boxs {
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-	height: 100%; /* 원하는 높이 조정 */
-	border-radius: 10px;
+	height: 100%;
+	/* 원하는 높이 조정 */
+
 	overflow-x: auto;
 	white-space: nowrap;
 }
@@ -112,38 +120,53 @@ p {
 }
 
 .card {
-	border-radius: 10px;
+
 	border: none;
 }
 
-
 .like_title {
-    overflow: hidden;          /* 내용이 넘칠 경우 숨김 처리 */
-    white-space: nowrap;      /* 텍스트가 줄 바꿈되지 않도록 설정 */
-    text-overflow: ellipsis;  /* 넘치는 텍스트에 ... 표시 */
-    width: 100%;              /* 부모 요소의 너비에 맞춤 */
+	overflow: hidden;
+	/* 내용이 넘칠 경우 숨김 처리 */
+	white-space: nowrap;
+	/* 텍스트가 줄 바꿈되지 않도록 설정 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
+	width: 100%;
+	/* 부모 요소의 너비에 맞춤 */
 }
 
 .re_title {
-    overflow: hidden;          /* 내용이 넘칠 경우 숨김 처리 */
-    white-space: nowrap;      /* 텍스트가 줄 바꿈되지 않도록 설정 */
-    text-overflow: ellipsis;  /* 넘치는 텍스트에 ... 표시 */
-    width: 100%;              /* 부모 요소의 너비에 맞춤 */
+	overflow: hidden;
+	/* 내용이 넘칠 경우 숨김 처리 */
+	white-space: nowrap;
+	/* 텍스트가 줄 바꿈되지 않도록 설정 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
+	width: 100%;
+	/* 부모 요소의 너비에 맞춤 */
 }
+
 .like_title .like_title {
-    max-width: 100%;          /* 최대 너비를 부모 요소에 맞춤 */
-    overflow: hidden;          /* 넘치는 내용 숨김 처리 */
-    white-space: nowrap;       /* 줄 바꿈 방지 */
-    text-overflow: ellipsis;   /* 넘치는 텍스트에 ... 표시 */
+	max-width: 100%;
+	/* 최대 너비를 부모 요소에 맞춤 */
+	overflow: hidden;
+	/* 넘치는 내용 숨김 처리 */
+	white-space: nowrap;
+	/* 줄 바꿈 방지 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
 }
 
 .re_title p {
-    font-size: 12px;
-    max-width: 100%;          /* 최대 너비를 부모 요소에 맞춤 */
-    overflow: hidden;          /* 넘치는 내용 숨김 처리 */
-    white-space: nowrap;       /* 줄 바꿈 방지 */
-    text-overflow: ellipsis;   /* 넘치는 텍스트에 ... 표시 */
-
+	font-size: 12px;
+	max-width: 100%;
+	/* 최대 너비를 부모 요소에 맞춤 */
+	overflow: hidden;
+	/* 넘치는 내용 숨김 처리 */
+	white-space: nowrap;
+	/* 줄 바꿈 방지 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
 }
 
 .reservation_btn {
@@ -164,38 +187,76 @@ p {
 }
 
 .swiper-scrollbar {
-	background: rgba(175, 175, 175, 0.1); /* 스크롤바 배경색 */
+	background: rgba(175, 175, 175, 0.1);
+	/* 스크롤바 배경색 */
 }
 
 .swiper-button-prev {
-	display: none; /* 기본 버튼 보이기 */
+	display: none;
 	color: #534d4d;
 }
 
-.swiper-button-next {
+.swiper-button-next, .swiper-button-prev {
 	color: #534d4d;
 }
+
 /* 웹킷 기반 브라우저용 스크롤바 스타일 */
 .under_list::-webkit-scrollbar {
-	width: 5px; /* 스크롤바 너비 */
-	height: 8px; /* 가로 스크롤바 높이 */
+	width: 5px;
+	/* 스크롤바 너비 */
+	height: 8px;
+	/* 가로 스크롤바 높이 */
 }
 
 .under_list::-webkit-scrollbar-track {
 	width: 10px;
-	background: white; /* 스크롤바 배경 */
-	border-radius: 10px; /* 트랙 모서리 둥글게 */
+	background: white;
+	/* 스크롤바 배경 */
+	border-radius: 10px;
+	/* 트랙 모서리 둥글게 */
 	margin: 2px;
 }
 
 .row .under_list::-webkit-scrollbar-thumb {
 	width: 5px;
-	background: rgb(131, 131, 131); /* 스크롤바 색상 */
-	border-radius: 10px; /* 스크롤바 모서리 둥글게 */
+	background: rgb(131, 131, 131);
+	/* 스크롤바 색상 */
+	border-radius: 10px;
+	/* 스크롤바 모서리 둥글게 */
 }
 
 .under_list::-webkit-scrollbar-thumb:hover {
-	background: #534d4d; /* 스크롤바에 마우스를 올렸을 때 색상 */
+	background: #534d4d;
+	/* 스크롤바에 마우스를 올렸을 때 색상 */
+}
+
+.bord_user h6 {
+	font-size: 13px;
+	max-width: 100%;
+	font-weight: 800;
+	margin-bottom: 5px;
+	/* 최대 너비를 부모 요소에 맞춤 */
+	overflow: hidden;
+	/* 넘치는 내용 숨김 처리 */
+	white-space: nowrap;
+	/* 줄 바꿈 방지 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
+}
+
+.bord_title span {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
+}
+
+.bord_title {
+	font-size: 15px;
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 @media screen and (max-width: 992px) {

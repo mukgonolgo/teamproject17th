@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class ReservationController {
 	private final StoreService storeService;
+	
 	private final ReservationService reservationService;
 	private final UserService userService;
 
@@ -121,7 +122,7 @@ public class ReservationController {
 	    List<Store> stores = storeService.getStoresByOwner(siteUser);
 
 	    // 페이징 설정
-	    Pageable pageable = PageRequest.of(page, 1);
+	    Pageable pageable = PageRequest.of(page, 10);
 
 	    // 검색어와 검색 유형에 따른 예약 리스트 필터링
 	    Page<Reservation> reservationPage;
@@ -197,7 +198,67 @@ public class ReservationController {
 
 	    return "reservation/my_reservation_list";
 	}
+	
+    @PostMapping("/succes")
+    public String succesReservation(@RequestParam("reservationid") Integer reservationid, 
+                               @RequestParam("page") int page, 
+                               @RequestParam("search") String search) {
+    	Reservation reservation = reservationService.getReservation(reservationid);
+        if (reservation.getReservationStatus() == 1) {
+        	reservation.setReservationStatus(2);
+        }
+        reservationService.save(reservation);
 
+
+        return "redirect:/reservation/mylist?page=" + page + "&search=" + search;
+    }
+
+    @PostMapping("/cancel")
+    public String cancelReservation(@RequestParam("reservationid") Integer reservationid){
+    	Reservation reservation = reservationService.getReservation(reservationid);
+        if (reservation.getReservationStatus() == 1) {
+        	reservation.setReservationStatus(3);
+        }
+        reservationService.save(reservation);
+		return "redirect:/reservation/completed/"+ reservation.getReservationid();
+    }
+    @PostMapping("/check")
+    public String checkReservation(@RequestParam("reservationid") Integer reservationid, 
+                               @RequestParam("page") int page, 
+                               @RequestParam("search") String search) {
+    	Reservation reservation = reservationService.getReservation(reservationid);
+        if (reservation.getReservationStatus() == 3) {
+        	reservation.setReservationStatus(4);
+        }
+        reservationService.save(reservation);
+
+
+        return "redirect:/reservation/mylist?page=" + page + "&search=" + search;
+    }
+
+    
+    // 가게 삭제 처리
+ // 가게 삭제 처리
+    @PostMapping("/delete")
+    public String deleteReservation(Model model, @RequestParam("reservationid") Integer reservationid) {
+        Reservation reservation = reservationService.getReservation(reservationid);
+        reservationService.deleteReservation(reservationid); 
+
+        // 연결된 스토어 ID를 가져오기
+        if (reservation.getStore() != null) {
+            model.addAttribute("store", reservation.getStore()); 
+            return "redirect:/store/detail/" + reservation.getStore().getStoreId(); // 삭제 후 스토어 상세 페이지로 리다이렉트
+        }
+        return "redirect:/store/list";
+    }
+    // 가게 삭제 처리
+    @PostMapping("/listdelete")
+    public String listdeleteReservation(@RequestParam("reservationid") Integer reservationid, 
+							            @RequestParam("page") int page, 
+							            @RequestParam("search") String search) {
+        reservationService.deleteReservation(reservationid); 
+        return "redirect:/reservation/mylist?page=" + page + "&search=" + search;
+    }
 
 
 

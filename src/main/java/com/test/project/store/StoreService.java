@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -38,7 +39,10 @@ public class StoreService {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new DataNotFoundException("Store not found"));
     }
-
+    // 특정 사용자가 좋아요를 누른 가게 리스트를 반환하는 메서드
+    public List<Store> getStoresLikedByUser(SiteUser user) {
+        return storeRepository.findByVoterContaining(user);
+    }
     // 가게 저장 (SiteUser 추가)
     public Store saveStore(String storeName, String postcode, String basicAddress, String detailAddress,
                            double storeLatitude, double storeLongitude, String storeContent, String kategorieGroup,
@@ -111,14 +115,7 @@ public class StoreService {
         this.storeRepository.save(store);
     }
 
-    public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {
-        try {
-            Integer id = Integer.parseInt(storeId);
-            return storeRepository.findByStoreId(id, pageable);
-        } catch (NumberFormatException e) {
-            return Page.empty(pageable);
-        }
-    }
+
 
     public Page<Store> searchStoresByStoreName(String storeName, Pageable pageable) {
         return storeRepository.findByStoreNameContainingIgnoreCase(storeName, pageable);
@@ -127,13 +124,17 @@ public class StoreService {
     public Page<Store> searchStoresByOwnerUsername(String username, Pageable pageable) {
         return storeRepository.findBySiteUser_UsernameContainingIgnoreCase(username, pageable);
     }
-    public List<Store> searchStoresByStoreName(String storeName) {
-        return storeRepository.findByStoreNameContainingIgnoreCase(storeName);
+
+ // 제목이나 내용에 검색어가 포함된 리뷰를 검색
+    public List<Store> searchStore(String query) {
+        return storeRepository.findByStoreNameContainingOrKategorieGroupContaining(query, query); // 제목 또는 내용에서 검색어로 리뷰 검색
+    }
+    public List<Store> getStoreByRegion(String region) {
+        // 지역 정보가 포함된 리뷰를 검색
+        return storeRepository.findByBasicAddressContainingIgnoreCase(region);
     }
 
-    public List<Store> searchStoresByBasicAddress(String basicAddress) {
-        return storeRepository.findByBasicAddressContainingIgnoreCase(basicAddress);
-    }
+
     
     public List<Store> getTopStores(int limit) {
         Pageable pageable = PageRequest.of(0, limit, Sort.by("createDate").descending());
@@ -144,7 +145,6 @@ public class StoreService {
     public Optional<Store> findById(Integer storeId) {
         return storeRepository.findById(storeId); // StoreRepository의 findById 메서드 호출
     }
-
     
 //	별점 계산
     public double getStoreForstar(Integer storeId) {
@@ -177,12 +177,25 @@ public class StoreService {
 		return null;
 	}
 
+	
+
+	public Store getStoreByOwner(SiteUser siteUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	 // 로그인한 사용자의 가게 리스트 반환
     public List<Store> getStoresByOwner(SiteUser siteUser) {
         return storeRepository.findBySiteUser(siteUser);
     }
-    
+    public Optional<Store> getRandomStoreWithApprovalStatus5() {
+        List<Store> stores = storeRepository.findByApprovalStatus(1); // approvalStatus가 5인 Store 목록 가져오기
+        if (stores.isEmpty()) {
+            return Optional.empty(); // 목록이 비어있으면 Optional.empty() 반환
+        }
+        Random random = new Random();
+        return Optional.of(stores.get(random.nextInt(stores.size()))); // 랜덤으로 하나 선택
+    }
     public Store getStoreById(Integer id) {
         return storeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Store not found"));
@@ -193,5 +206,6 @@ public class StoreService {
     public List<Store> searchStoresByKeyword(String keyword) {
         return storeRepository.searchStoresByKeyword(keyword);
     }
-   
+    
+    
 }
