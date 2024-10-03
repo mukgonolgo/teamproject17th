@@ -1,9 +1,9 @@
-/* 제목 스타일 */
+ /* 제목 스타일 */
 h2 {
     font-family: 'Arial', sans-serif;
     font-size: 28px;
     font-weight: bold;
-    color: hotpink;
+    color: black;
     text-align: center;
     margin-top: 300px;
 }
@@ -24,12 +24,12 @@ h2 {
     margin: 0 auto;
     background-color: white;
     margin-top: -10px; /* 컨테이너의 위치를 유지 */
-    border: 1px solid pink;
+    border: 1px solid black;
 }
 
 /* 로그인 버튼 스타일 */
 .Log_FIR_btn {
-    background-color: pink;
+    background-color: black;
     color: white;
     border: none;
     padding: 12px;
@@ -42,9 +42,7 @@ h2 {
     margin-top: 20px;
 }
 
-.Log_FIR_btn:hover {
-    background-color: hotpink;
-}
+
 
 /* 비밀번호 찾기 링크 스타일 */
 .Log_HelpLinks {
@@ -53,7 +51,7 @@ h2 {
 }
 
 .Log_HelpLink_btn {
-    color: pink;
+    color: black;
     text-decoration: none;
     font-size: 16px;
 }
@@ -61,3 +59,4 @@ h2 {
 .Log_HelpLink_btn:hover {
     text-decoration: underline;
 }
+    
