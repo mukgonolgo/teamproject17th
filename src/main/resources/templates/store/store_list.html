@@ -4,9 +4,11 @@
 	<!-- moment.js 포함 (필수) -->
 	<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	<!-- daterangepicker CSS 포함 -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	<!-- daterangepicker JS 포함 -->
-	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 	<!-- 커스텀 CSS 추가 -->
 	<link rel="stylesheet" href="/css/store/store_list.css">
 	<link rel="stylesheet" href="/css/category.css">
@@ -20,7 +22,8 @@
 				<div class="row justify-content-between align-items-center ">
 					<div class="col-auto d-flex">
 						<div class="col-auto">
-							<select name="h_area1" id="region1" onchange="updateSubRegion()" class="h_area1 form-control">
+							<select name="h_area1" id="region1" onchange="updateSubRegion()"
+								class="h_area1 form-control">
 								<option value="">지역</option>
 								<option value="seoul">서울특별시</option>
 								<option value="busan">부산광역시</option>
@@ -43,7 +46,8 @@
 						</div>
 
 						<div class="col-auto">
-							<select name="h_area2" id="region2" class="form-control" onchange="filterStores()">
+							<select name="h_area2" id="region2" class="form-control"
+								onchange="filterStores()">
 								<option value="">-선택-</option>
 								<!-- 기본 선택 옵션 -->
 								<option value="전체">전체</option>
@@ -55,10 +59,12 @@
 
 					<!-- 검색란 -->
 					<div class="col-auto">
-						<form action="/store/list" method="get" class="d-flex align-items-center">
-							<input type="text" class="form-control custom-search-bar" name="query"
-								placeholder="검색어를 입력하세요">
-							<button type="submit" class="btn btn-dark ml-2" style="width: 70px;">검색</button>
+						<form action="/store/list" method="get"
+							class="d-flex align-items-center">
+							<input type="text" class="form-control custom-search-bar"
+								name="query" placeholder="검색어를 입력하세요">
+							<button type="submit" class="btn btn-dark ml-2"
+								style="width: 70px;">검색</button>
 						</form>
 					</div>
 				</div>
@@ -73,49 +79,15 @@
 		<section class="S1_s2 mt-5" id="premium-ad">
 			<h3 class="S1_category">프리미엄 광고</h3>
 			<div class="row" th:if="${storeList != null}">
-				<div class="col-lg-4 col-md-6 col-sm-12 mb-4" th:each="store : ${stores}"
-					 th:if="${store.approvalStatus == 5}">
-					<div class="card">
-						<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}">
-						<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
-							<div class="carousel-inner">
-								<div class="carousel-item active">
-									<img th:src="@{{storeImage}(storeImage=${storeImage})}" class="card-img-top"
-										alt="가게 이미지 1" />
-								</div>
-							</div>
-						</div>
-						<div class="card-body">
-							<div class="storeicon d-flex align-items-center mb-2">
-								<i class="fa-solid fa-star" style="color: #FFD43B;"></i> <small class="ml-1">4.5</small>
-							</div>
-							<div class="d-flex justify-content-between align-items-center">
-								<h5 class="card-title mb-3" th:text="${store.storeName}">가게
-									이름</h5>
-							</div>
-							<div class="d-flex justify-content-between align-items-center mb-3">
-								<div class="d-flex align-items-center">
-									<i class="fa-solid fa-location-dot"></i> <small class="ml-1"
-										th:text="${store.basicAddress}">주소</small>
-								</div>
-							</div>
-							<!-- 상세 페이지로 이동 -->
-						</div>
-						</a>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section class="S1_s2 mt-5">
-			<h3 class="S1_category">맛집 리스트</h3>
-			<div class="row">
-				<div class="col-lg-4 col-md-6 col-sm-12 mb-4" th:each="store : ${stores}">
+				<div class="col-lg-4 col-md-6 col-sm-12 mb-4"
+					th:each="store : ${stores}" th:if="${store.approvalStatus == 5}">
 					<div class="card">
 						<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
-							class="store_list_btn" style="text-decoration: none; color: black;">
+							class="store_list_btn"
+							style="text-decoration: none; color: black;">
 
-							<div id="ProRestaurant1" class="carousel slide" data-ride="carousel">
+							<div id="ProRestaurant1" class="carousel slide"
+								data-ride="carousel">
 								<div class="carousel-inner">
 									<div class="carousel-item active">
 										<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
@@ -125,26 +97,68 @@
 							</div>
 							<div class="card-body">
 								<div class="storeicon d-flex align-items-center mb-">
-									<i class="fa-solid fa-star" style="color: #FFD43B;"></i>
-									<small class="ml-1">4.5</small>
+									<i class="fa-solid fa-star" style="color: #FFD43B;"></i> <small
+										class="ml-1">4.5</small>
 								</div>
 								<div class="d-flex justify-content-between align-items-center">
-									<h5 class="card-title mb-1" th:text="${store.storeName}">가게 이름</h5>
-									<a href="javascript:void(0);" 
-									   th:class="${hasVoted} ? 'mt-1 recommend red' : 'mt-1 recommend black'" 
-									   th:data-uri="@{|/store/vote/${store.storeId}|}" style="text-decoration: none;">
-									   <i class="fa-solid fa-heart"></i>
-									    <span style="font-size: 15px; color: black;">[[${#lists.size(store.voter)}]]</span>
-									</a>
+									<h5 class="card-title mb-1" th:text="${store.storeName}">가게
+										이름</h5>
 								</div>
 								<div class="d-flex align-items-center mb-2">
-									<i class="fa-solid fa-tag"></i>
-									<small ml-1 th:text="${store.kategorieGroup}"></small>
+									<i class="fa-solid fa-tag"></i> <small ml-1
+										th:text="${store.kategorieGroup}"></small>
 								</div>
-								<div class="d-flex justify-content-between align-items-center mb-3">
+								<div
+									class="d-flex justify-content-between align-items-center mb-3">
 									<div class="d-flex align-items-center">
-										<i class="fa-solid fa-location-dot"></i>
-										<small class="ml-1" th:text="${store.basicAddress}">주소</small>
+										<i class="fa-solid fa-location-dot"></i> <small class="ml-1"
+											th:text="${store.basicAddress}">주소</small>
+									</div>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="S1_s2 mt-5">
+			<h3 class="S1_category">맛집 리스트</h3>
+			<div class="row">
+				<div class="col-lg-4 col-md-6 col-sm-12 mb-4"
+					th:each="store : ${stores}">
+					<div class="card">
+						<a th:href="@{/store/detail/{storeId}(storeId=${store.storeId})}"
+							class="store_list_btn"
+							style="text-decoration: none; color: black;">
+
+							<div id="ProRestaurant1" class="carousel slide"
+								data-ride="carousel">
+								<div class="carousel-inner">
+									<div class="carousel-item active">
+										<img th:src="@{{storeImage}(storeImage=${store.imageUrl})}"
+											class="card-img-top" alt="가게 이미지" />
+									</div>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="storeicon d-flex align-items-center mb-">
+									<i class="fa-solid fa-star" style="color: #FFD43B;"></i> <small
+										class="ml-1">4.5</small>
+								</div>
+								<div class="d-flex justify-content-between align-items-center">
+									<h5 class="card-title mb-1" th:text="${store.storeName}">가게
+										이름</h5>
+								</div>
+								<div class="d-flex align-items-center mb-2">
+									<i class="fa-solid fa-tag"></i> <small ml-1
+										th:text="${store.kategorieGroup}"></small>
+								</div>
+								<div
+									class="d-flex justify-content-between align-items-center mb-3">
+									<div class="d-flex align-items-center">
+										<i class="fa-solid fa-location-dot"></i> <small class="ml-1"
+											th:text="${store.basicAddress}">주소</small>
 									</div>
 								</div>
 							</div>

@@ -196,4 +196,16 @@ public class StoreService {
         Random random = new Random();
         return Optional.of(stores.get(random.nextInt(stores.size()))); // 랜덤으로 하나 선택
     }
+    public Store getStoreById(Integer id) {
+        return storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found"));
+    }
+    
+
+    // 가게 검색 메소드
+    public List<Store> searchStoresByKeyword(String keyword) {
+        return storeRepository.searchStoresByKeyword(keyword);
+    }
+    
+    
 }

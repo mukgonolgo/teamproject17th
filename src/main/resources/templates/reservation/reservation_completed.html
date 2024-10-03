@@ -1,19 +1,21 @@
 <html layout:decorate="~{layout}" >
 <head>
     <link rel="stylesheet" href="/css/reservation_completed.css" />
+   <script type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=4711bf21a08674cf6e20b64443d34887"></script>
 </head>
 <div layout:fragment="content">
     <div class="container full-height text-center d-none d-xl-block ">
       <div class="row">
         <div class="col d-flex"> 
           <div class="card cs-card">
-			<div th:if="${reservation.reservationStatus == 4}"  class="No_btn d-flex m-3" style="position: absolute; right: 0; ">
-				<form th:action="@{/reservation/delete}" method="post">
-					<input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
-					<button type="submit" class="btn"><i class="fa-solid fa-x"
-							style="color: #ff0000;"></i></i></button>
-				</form>
-			</div>
+         <div th:if="${reservation.reservationStatus == 4}"  class="No_btn d-flex m-3" style="position: absolute; right: 0; ">
+            <form th:action="@{/reservation/delete}" method="post">
+               <input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
+               <button type="submit" class="btn"><i class="fa-solid fa-x"
+                     style="color: #ff0000;"></i></i></button>
+            </form>
+         </div>
 
             <div class="card-body cs-card-body  my-5">
               <h5 class="card-title display-4 text-center"th:if="${reservation.reservationStatus == 1}">예약 확인중입니다...</h5>
@@ -28,39 +30,39 @@
                   <!--프로필-->
                   <div class="text-center row mt-5" >
                       <div class="col">
-						<img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 120px" class="rounded-circle"/>
+                  <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 120px" class="rounded-circle"/>
                         <p class="font-weight-bold mt-2"><span th:text="${re_user.nickname}">너의 이름은?</span></p>
                       </div>
                   </div>
 
                     <div class="my-1">
                       <p>예약일시 :  <span th:text="${reservation.reservationDay}">>4명</span></p>
-					  <p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>					  
+                 <p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>                 
                       <p>예약인원 : <span th:text="${reservation.reservationMember}">>4명</span></p>
                     </div>
-					<div class="d-flex justify-content-center mt-5">
-						<a th:href="@{/reservation/modify/{reservationId}(reservationId=${reservation.reservationid})}" class="btn btn-dark mr-2">예약 수정</a>
-						<div th:if="${reservation.reservationStatus == 1}">
-							<form th:action="@{/reservation/cancel}" method="post" style="display:inline;">
-								<input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
-								<button type="submit" class="btn btn-dark">예약 취소</button>
-							</form>
-						</div>
-					</div>
+               <div class="d-flex justify-content-center mt-5">
+                  <a th:href="@{/reservation/modify/{reservationId}(reservationId=${reservation.reservationid})}" class="btn btn-dark mr-2">예약 수정</a>
+                  <div th:if="${reservation.reservationStatus == 1}">
+                     <form th:action="@{/reservation/cancel}" method="post" style="display:inline;">
+                        <input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
+                        <button type="submit" class="btn btn-dark">예약 취소</button>
+                     </form>
+                  </div>
+               </div>
                     <div class="btn_box mt-2">
-                    	<a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark ">상세페이지로 이동</a>						
-                  	</div>
+                       <a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark ">상세페이지로 이동</a>                  
+                     </div>
 
 
                 </div>
                 <!--col-->
                 
                 <div class="col-6 ">
-					<img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}" style="width: 300px; height: 300px; object-fit: cover;" class="img-fluid">
+               <img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}" style="width: 300px; height: 300px; object-fit: cover;" class="img-fluid">
                       <h5 class="card-title mt-3" th:text="${re_store.storeName}">상호명 : 돼지냠냠</h5>
-					  <span class="mb-5"th:text="'주소: ' + ${re_store.basicAddress}">주소 : This is some text within a card body.</span>
-					  <span class="mb-5"th:text="' ( '+ ${re_store.basicAddress} +' )' "> This is some text within a card body.</span>                      <div class="btn_box mt-5 pt-2">
-                      <a   class="btn btn-dark cs-btn">지도 보기</a>
+                 <span class="mb-5"th:text="'주소: ' + ${re_store.basicAddress}">주소 : This is some text within a card body.</span>
+                 <span class="mb-5"th:text="' ( '+ ${re_store.detailAddress} +' )' "> This is some text within a card body.</span>                      <div class="btn_box mt-5 pt-2">
+                  <button class="btn btn-dark location-button" onclick="openMap()">지도보기</button>
                       </div>
                 </div>
               
@@ -76,24 +78,38 @@
       <!--row-->
     </div>
     <!--container-->
-    
+   <!-- 지도 팝업 -->
+   <div id="overlay"
+      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;">
+   </div>
+   <div id="mapPopup"
+      style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; background-color: white; width: 600px; height: 400px;">
+      <div id="map" style="width: 100%; height: 100%;"></div>
+      <i class="fas fa-times" onclick="closeMap()" style="position: absolute; top: 10px; right: 10px; font-size: 24px; z-index: 99999; cursor: pointer;"></i>
+
+   </div>
+
+   <!-- 가게의 위도와 경도 값을 숨겨서 자바스크립트로 전달 -->
+   <input type="hidden" class="store-lat" th:value="${re_store.storeLatitude}" />
+   <input type="hidden" class="store-lng" th:value="${re_store.storeLongitude}" />
+
     
     
     <!-- lg사이즈부터 보이는 이미지 -->
     <div class="container text-center d-block d-xl-none full-height">
       <div class="row ">
-		<div th:if="${reservation.reservationStatus == 4}"  class="No_btn d-flex m-5" style="position: absolute; right: 0; ">
-			<form th:action="@{/reservation/delete}" method="post">
-				<input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
-				<button type="submit" class="btn"><i class="fa-solid fa-x"
-						style="color: #ff0000;"></i></i></button>
-			</form>
-		</div>
+      <div th:if="${reservation.reservationStatus == 4}"  class="No_btn d-flex m-5" style="position: absolute; right: 0; ">
+         <form th:action="@{/reservation/delete}" method="post">
+            <input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
+            <button type="submit" class="btn"><i class="fa-solid fa-x"
+                  style="color: #ff0000;"></i></i></button>
+         </form>
+      </div>
         <div class="col cs-card">
-			  <h1 class="text-center"th:if="${reservation.reservationStatus == 1}">예약 확인중입니다...</h1>
-			  <h1 class="text-center"th:if="${reservation.reservationStatus == 2}">예약이 완료 되었습니다!</h1> 
-			  <h1 class="text-center"th:if="${reservation.reservationStatus == 3}">예약 취소 확인중입니다...</h1>
-			  <h1 class="text-center"th:if="${reservation.reservationStatus == 4}">예약 취소 완료 되었습니다!</h1>
+           <h1 class="text-center"th:if="${reservation.reservationStatus == 1}">예약 확인중입니다...</h1>
+           <h1 class="text-center"th:if="${reservation.reservationStatus == 2}">예약이 완료 되었습니다!</h1> 
+           <h1 class="text-center"th:if="${reservation.reservationStatus == 3}">예약 취소 확인중입니다...</h1>
+           <h1 class="text-center"th:if="${reservation.reservationStatus == 4}">예약 취소 완료 되었습니다!</h1>
               <h6 class="card-subtitle mb-2 text-muted text-center my-3">예약번호 : <span th:text="${reservation.reservationid}">1234-5678-9ABCD</span></h6>
               <hr class="mt-4">
               <div class="row mt-5 align-items-center align-items-stretch">
@@ -102,36 +118,36 @@
                   <!--프로필-->
                   <div class="text-center row mt-5" >
                       <div class="col">
-						<img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 80px" class="rounded-circle"/>
+                  <img th:src="@{${profileImage} != null ? ${profileImage} : '/img/user/default-profile.png'}" alt="프로필이미지" style="width: 80px" class="rounded-circle"/>
                         <p class="font-weight-bold mt-2"><span th:text="${re_user.nickname}">너의 이름은?</span></p>
                       </div>
                   </div>
                   <!--프로필 끝-->
                     <div class="mt-3">
-						<p>예약일시 :  <span th:text="${reservation.reservationDay}">>4명</span></p>
-						<p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>					  
-						<p>예약인원 : <span th:text="${reservation.reservationMember}">>4명</span></p>
+                  <p>예약일시 :  <span th:text="${reservation.reservationDay}">>4명</span></p>
+                  <p>예약시간 :  <span th:text="${reservation.reservationtime}">>4명</span></p>                 
+                  <p>예약인원 : <span th:text="${reservation.reservationMember}">>4명</span></p>
                     </div>
-					<div class="d-flex justify-content-center my-5">
-						<a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark ">예약 수정</a>
-						<div th:if="${reservation.reservationStatus == 1}">
-							<form th:action="@{/reservation/cancel}" method="post" style="display:inline;">
-								<input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
-								<button type="submit" class="btn btn-dark">예약 취소</button>
-							</form>
-						</div>
-					</div>
+               <div class="d-flex justify-content-center my-5">
+                  <a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark ">예약 수정</a>
+                  <div th:if="${reservation.reservationStatus == 1}">
+                     <form th:action="@{/reservation/cancel}" method="post" style="display:inline;">
+                        <input type="hidden" name="reservationid" th:value="${reservation.reservationid}" />
+                        <button type="submit" class="btn btn-dark">예약 취소</button>
+                     </form>
+                  </div>
+               </div>
                     <div class="d-flex justify-content-center mt-5">
-						<a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark cs-btn">상세 보기</a>
-                  	</div>
+                  <a th:href="@{/store/detail/{storeId}(storeId=${re_store.storeId})}" class="btn btn-dark cs-btn">상세 보기</a>
+                     </div>
 
                 </div>
                 <!--col-->
                 <div class="col-12 col-md-6 mt-5">
-					<img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}" style="width: 300px; height: 300px; object-fit: cover;" class="img-fluid">
-					  <h5 class="card-title mt-3" th:text="${re_store.storeName}">상호명 : 돼지냠냠</h5>
+               <img th:src="@{{storeImage}(storeImage=${reservation.store.imageUrl})}" style="width: 300px; height: 300px; object-fit: cover;" class="img-fluid">
+                 <h5 class="card-title mt-3" th:text="${re_store.storeName}">상호명 : 돼지냠냠</h5>
                       <span class="mb-5"th:text="'주소: ' + ${re_store.basicAddress}">주소 : This is some text within a card body.</span>
-					  <span class="mb-5"th:text="' ( '+ ${re_store.basicAddress} +' )' "> This is some text within a card body.</span>
+                 <span class="mb-5"th:text="' ( '+ ${re_store.basicAddress} +' )' "> This is some text within a card body.</span>
                       <div class="btn_box mt-5 pt-2">
                       <button class="btn btn-dark cs-btn">지도 보기</button>
                       </div>
@@ -145,5 +161,54 @@
       <!--row-->
     </div>
     <!--container-->
+   <script>
+      let mapContainer = document.getElementById('map');
+      let mapPopup = document.getElementById('mapPopup');
+      let overlay = document.getElementById('overlay');
+      let map;
+      let marker;
+
+      function openMap() {
+         let storeLatitude = parseFloat(document.querySelector('.store-lat').value);
+         let storeLongitude = parseFloat(document.querySelector('.store-lng').value);
+         let storePosition = new kakao.maps.LatLng(storeLatitude, storeLongitude);
+
+         if (map) {
+            map.relayout();
+            map.setCenter(storePosition);
+            marker.setPosition(storePosition);
+         } else {
+            let mapOption = {
+               center: storePosition,
+               level: 3
+            };
+
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            marker = new kakao.maps.Marker({
+               position: storePosition
+            });
+            marker.setMap(map);
+         }
+
+         mapPopup.style.display = 'block';
+         overlay.style.display = 'block';
+         document.body.style.overflow = 'hidden';
+
+         setTimeout(function () {
+            map.relayout();
+            map.setCenter(storePosition);
+         }, 100);
+      }
+
+      function closeMap() {
+         mapPopup.style.display = 'none';
+         overlay.style.display = 'none';
+         document.body.style.overflow = 'auto';
+      }
+
+
+
+   </script>
 </div>
+
 </html>

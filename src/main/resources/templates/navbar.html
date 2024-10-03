@@ -31,14 +31,14 @@
                           </ul> -->
 
          <ul class="navbar-nav navbar-center" sec:authorize="isAnonymous()">
-            <li class="nav-item active mx-2">
+            <li class="nav-item  mx-2">
                <a class="nav-link" href="/store/list">맛집찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/review">이용후기</a>
             </li>
-            <li class="nav-item mx-2">
-               <a class="nav-link" href="/eat">밥친구찾기</a>
+       	    <li class="nav-item mx-2">
+               <a class="nav-link" th:href="@{/board}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -57,7 +57,7 @@
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 3">
 
-            <li class="nav-item active mx-2">
+            <li class="nav-item  mx-2">
                <a class="nav-link" th:href="@{/store/create}">식당등록</a>
             </li>
             <li class="nav-item active mx-2">
@@ -67,7 +67,8 @@
                <a class="nav-link" href="/review">이용후기</a>
             </li>
             <li class="nav-item mx-2">
-               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+
+               <a class="nav-link" th:href="@{/reservation/list}">예약 리스트 확인</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -83,7 +84,7 @@
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 2">
 
-            <li class="nav-item active mx-2">
+            <li class="nav-item mx-2">
                <a class="nav-link" th:href="@{/store/create}">식당등록</a>
             </li>
             <li class="nav-item active mx-2">
@@ -92,8 +93,8 @@
             <li class="nav-item mx-2">
                <a class="nav-link" href="/review">이용후기</a>
             </li>
-            <li class="nav-item mx-2">
-               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+       	    <li class="nav-item mx-2">
+               <a class="nav-link" th:href="@{/board}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -109,7 +110,7 @@
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 4">
 
-            <li class="nav-item active mx-2">
+            <li class="nav-item mx-2">
                <a class="nav-link" th:href="@{/store/create}">식당등록</a>
             </li>
             <li class="nav-item active mx-2">
@@ -118,8 +119,8 @@
             <li class="nav-item mx-2">
                <a class="nav-link" href="/review">이용후기</a>
             </li>
-            <li class="nav-item mx-2">
-               <a class="nav-link" th:href="@{/board/{id}(id=${userId})}">밥친구찾기</a>
+        	    <li class="nav-item mx-2">
+               <a class="nav-link" th:href="@{/board}">밥친구찾기</a>
             </li>
             <li class="nav-item mx-2">
                <a class="nav-link" href="/notices/list">공지사항</a>
@@ -137,18 +138,20 @@
          <!-- 일반 회원일 경우 메뉴 보이기 -->
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 1">
-            <li class="nav-item active mx-2">
+            <li class="nav-item  mx-2">
                <a class="nav-link" href="/store/list">맛집찾기</a>
             </li>
-            <li class="nav-item mx-2">
-               <a class="nav-link" href="/eat">밥친구찾기</a>
+                 <li class="nav-item mx-2">
+               <a class="nav-link" href="/review">이용후기</a>
             </li>
+     	    <li class="nav-item mx-2">
+               <a class="nav-link" th:href="@{/board}">밥친구찾기</a>
+            </li>
+
             <li class="nav-item mx-2">
                <a class="nav-link" th:href="@{/notices/list}">공지사항</a> <!-- 공지사항 메뉴 -->
             </li>
-            <li class="nav-item mx-2">
-                          <a class="nav-link" href="/review">이용후기</a>
-                       </li>
+       
          </ul>
 
 

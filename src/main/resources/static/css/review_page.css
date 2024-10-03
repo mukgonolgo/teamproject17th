@@ -18,6 +18,11 @@ a {
 .fa-heart {
     cursor: pointer;
 }
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /*카드 내용*/
 .S3_card-text{
    display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
@@ -50,9 +55,9 @@ a {
 }
 
 .S3_store{
+
 	margin: 0;
 	padding: 0;
-
 }
 .S3_custom-card-img {
     height: 100% !important;
@@ -198,3 +203,4 @@ a {
         margin-top: 20px;
          margin-bottom: 35px; /* 이름 아래에 추가적인 여백을 최소화 */
      }
+

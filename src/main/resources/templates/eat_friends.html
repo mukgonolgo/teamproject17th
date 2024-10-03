@@ -1,194 +1,104 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
-
+<html layout:decorate="~{layout}" >
 <head>
-	<!--csrf 토큰--> 
-	<meta name="username" content="${username}" />
-	<meta name="userID" content="${userID}" />
-	<meta name="csrf-token" content="${_csrf.token}">
-	<!--<link rel="stylesheet" href="/css/eat_friends.css" />-->
-	<link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.min.css" rel="stylesheet">
-	<link th:href="@{/css/room.css}" rel="stylesheet">
-	<link th:href="@{/css/eat_friends.css}" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
-	<script src="/webjars/jquery/jquery.min.js"></script>
-	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
-	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
-	<script src="/js/chat.js?v=1"></script> <!-- 기존 채팅 관련 JS 파일 포함 -->
-	
-
-
+    <link rel="stylesheet" href="/css/eat_friends.css" />
+      <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.min.css" rel="stylesheet">
 </head>
-<style>
-	.index {
-		z-index: 100;
-		padding-left: 222px;
-		position: absolute;
-		margin-top: 100px;
-	}
-</style>
-
-<body>
-	<div layout:fragment="content">
-		<div class="container my-5">
-		<div class="d-flex justify-content-end p-2">
-			               <button id="createRoomButton" class="btn btn-primary">채팅방 만들기</button>
-			           </div>
-
-			            채팅방 만들기 모달 
-			           <div id="createRoomModal" class="modal">
-			               <div class="modal-content">
-			                   <span class="close-button" id="closeCreateRoomModal">&times;</span>
-			                   <h2>채팅방 만들기</h2>
-			                   <form id="createRoomForm">
-			                       <label for="createRoomName">채팅방 이름:</label>
-			                       <input type="text" id="createRoomName" placeholder="채팅방 이름 입력" />
-			                       <button type="button" id="createRoomSubmit">만들기</button>
-			                   </form>
-			               </div>
-			           </div>
-			<!-- DTO 필드명을 기준으로 반복문을 사용하여 카드 생성 -->
-			<!--data-room-id="${room_id}"-->
-			<div th:each="eat_friends : ${eatfriends}" class="card mb-3 S2_card"
-				th:data-room-id="${eat_friends.roomID}">
-
-				<div class="row no-gutters">
-					<!--<p th:text="${eat_friends.roomID}" class="room-id"></p>-->
-					<!-- 데스크탑 전용 이미지 -->
-					<div class="col-md-4 p-3 d-none d-lg-block">
-						<img th:src="@{${eat_friends.image}}" alt="Eat_card" class="img-fluid h-100 S2_f_card_img">
-					</div>
-					<!-- 모바일 전용 이미지 -->
-					<div class="d-flex d-lg-none">
-						<img th:src="@{${eat_friends.image}}" alt="Eat_card" class="img-fluid h-100 S2_f_card_img_m">
-					</div>
-					<div class="col-lg-5 col-6 p-3 d-flex flex-column justify-content-between S2_txt">
-						<div>
-							<div>
-								<!-- 카드 제목 -->
-								<h4 class="card-title mt-2 font-weight-bold" th:text="${eat_friends.title}"></h4>
-								<p class="card-text mt-4">
-									<!-- 위치 정보 아이콘 및 텍스트 -->
-									<i class="ri-map-pin-2-line ri-2x"></i><span class="mt-3 ml-2"
-										th:text="${eat_friends.location}"></span><br>
-									<!-- 날짜 정보 아이콘 및 텍스트 -->
-									<i class="ri-calendar-schedule-line ri-2x"></i><span class="mt-3 ml-2"
-										th:text="${eat_friends.eventDate}"></span><br>
-									<!-- 식당 정보 아이콘 및 텍스트 -->
-									<i class="ri-restaurant-fill ri-2x"></i><span class="mt-3 ml-2"
-										th:text="${eat_friends.restaurant}"></span>
-
-										</p>
-							</div>
-							</span>
-							
-						</div>
-						<!-- 이벤트 시간 -->
-						<p class="card-text ml-2"><small class="text-muted" th:text="${eat_friends.eventTime}"></small>
-						</p>
-					</div>
-					<div
-						class="col-lg-3 col-6 d-flex flex-column justify-content-between position-relative px-3 S2_txt">
-						<!-- 총 인원 수 -->
-						<div class="d-flex justify-content-end p-2">
-							<div>
-							<span>총 인원수 <i class="ri-account-pin-circle-fill mt-3">
-									<span th:text="${eat_friends.totalMembers}"></span>
-									<span>/</span>
-									<span th:text="${eat_friends.maxMembers}"></span>
-								</i>
-								</div>
-							</span>
-					<div>
-						<span>채팅방 인원수
-						    <h1 id="roomName" th:text="${chatRoom.name}"></h1> <!-- 채팅방 이름을 표시 -->
-						    <p>Current Members: 
-						        <span th:id="'currentMembers_' + ${chatRoom.roomId}" class="index" th:text="${chatRoom.chatcurrentMembers}">0</span>
-						    </p>
-						    <p>Max Members: 
-						        <span th:id="'maxMembers_' + ${chatRoom.roomId}" class="index" th:text="${chatRoom.chatmaxMembers}">0</span>
-						    </p>
-						    <h2>Members</h2>
-						    <ul th:id="'membersList_' + ${chatRoom.roomId}">
-						        <li th:each="member : ${chatRoom.members}" th:text="${member.username}"></li>
-						    </ul>
-						</span>
-								</div>		
-						</div>
-						<!-- 채팅 버튼 -->
-						<div class="d-flex justify-content-end p-2">
-							<!--Authenticated 로 예약하기 한 사람만 보이게-->
-							<div id="chatToggle">
-								<button id="chatButton" class="trigger"
-									data-room-id="${eat_friends.roomID}"></button>채팅하기</button> <!-- 채팅하기 버튼 -->
-							</div>
-							<div class="modal">
-								<div class="modal-content">
-									<span class="close-button">&times;</span>
-									<div class="row">
-										<div class="col-md-12">
-											<table id="conversation" class="table table-striped">
-												<thead>
-													<tr>
-														<th th:text="${username} + ' 채팅방'"></th>
-													</tr>
-												</thead>
-
-											</table>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!--row-->
-			</div>
-			<!--card-->
-			<div class="modal" id="chatModal">
-				<div class="modal-content">
-					<span class="close-button" id="closeModal">&times;</span>
-					<button id="reserveButton" class="reserve-trigger" style="z-index: 100; width: 30px;">예약하기</button>
-					<button id="leaveRoomButton" class="btn btn-danger" style="z-index: 100;" >나가기</button>
-					<!-- 예약하기 버튼 -->
-
-
-
-					<div class="chat-room-list">
-						<ul id="chatRoomList">
-							<!-- 채팅방 리스트가 동적으로 추가됩니다. -->
-						</ul>
-					</div>
-					<div class="chatBox">
-						<table id="conversation" class="table table-striped">
-
-							<thead>
-								<tr>
-									<th th:text="${username} + ' 채팅방'"></th>
-
-								</tr>
-							</thead>
-							<tbody id="chatting">
-								<!-- 채팅 메시지가 동적으로 추가됩니다. -->
-							</tbody>
-						</table>
-						<form id="sendMessageForm" class="form-inline">
-							<input type="hidden" id="csrfToken" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<div class="form-group">
-								<input type="text" id="message" name="message" class="form-control"
-									placeholder="메시지 내용">
-								<button id="send" class="btn btn-default" type="button">보내기</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--container-->
-	</div>
-
-
-</body>
-
+<div layout:fragment="content">
+  <div class="container my-5">
+    <div class="card mb-3 S2_card">
+      <div class="row no-gutters">
+        <div class="col-md-4 p-3 d-none d-lg-block">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img">
+        </div>
+        <div class="d-flex d-lg-none">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img_m">
+        </div>
+        <div class="col-lg-5 col-6 p-3 d-flex flex-column justify-content-between S2_txt">
+          <div>
+            <h4 class="card-title mt-2 font-weight-bold">빙수 먹으실 분 찾습니다!</h4>
+            <p class="card-text mt-4">
+              <i class="ri-map-pin-2-line ri-2x"></i><span class="mt-3 ml-2">수원역 12번 출구</span><br>
+              <i class="ri-calendar-schedule-line ri-2x"></i><span class="mt-3 ml-2">2024년 08월 30일 12시30분</span><br>
+              <i class="ri-restaurant-fill ri-2x"></i><span class="mt-3 ml-2">투썸플레이스</span>
+            </p>
+          </div>
+          <p class="card-text ml-2"><small class="text-muted">2시간 전 업데이트</small></p>
+        </div>
+        <div class="col-lg-3 col-6 d-flex flex-column justify-content-between position-relative px-3 S2_txt">
+          <div class="d-flex justify-content-end p-2">
+            <i class="ri-account-pin-circle-fill mt-3"><span>3/4명</span></i>
+          </div>
+          <div class="d-flex justify-content-end p-2">
+            <button class="btn btn-dark">밥친구 채팅</button>
+          </div>
+        </div>
+      </div>
+      <!--row-->
+    </div>
+  <!--card-->
+    <div class="card mb-3 S2_card">
+      <div class="row no-gutters">
+        <div class="col-md-4 p-3 d-none d-lg-block">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img">
+        </div>
+        <div class="d-flex d-lg-none">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img_m">
+        </div>
+        <div class="col-lg-5 col-6 p-3 d-flex flex-column justify-content-between S2_txt">
+          <div>
+            <h4 class="card-title mt-2 font-weight-bold">빙수 먹으실 분 찾습니다!</h4>
+            <p class="card-text mt-4">
+              <i class="ri-map-pin-2-line ri-2x"></i><span class="mt-3 ml-2">수원역 12번 출구</span><br>
+              <i class="ri-calendar-schedule-line ri-2x"></i><span class="mt-3 ml-2">2024년 08월 30일 12시30분</span><br>
+              <i class="ri-restaurant-fill ri-2x"></i><span class="mt-3 ml-2">투썸플레이스</span>
+            </p>
+          </div>
+          <p class="card-text ml-2"><small class="text-muted">2시간 전 업데이트</small></p>
+        </div>
+        <div class="col-lg-3 col-6 d-flex flex-column justify-content-between position-relative px-3 S2_txt">
+          <div class="d-flex justify-content-end p-2">
+            <i class="ri-account-pin-circle-fill mt-3"><span>3/4명</span></i>
+          </div>
+          <div class="d-flex justify-content-end p-2">
+            <button class="btn btn-dark">밥친구 채팅</button>
+          </div>
+        </div>
+      </div>
+      <!--row-->
+    </div>
+  <!--card-->
+    <div class="card mb-3 S2_card">
+      <div class="row no-gutters">
+        <div class="col-md-4 p-3 d-none d-lg-block">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img">
+        </div>
+        <div class="d-flex d-lg-none">
+          <img src="img/food/food4.jpg" alt="Eat_card" class="img-fluid h-100 S2_f_card_img_m">
+        </div>
+        <div class="col-lg-5 col-6 p-3 d-flex flex-column justify-content-between S2_txt">
+          <div>
+            <h4 class="card-title mt-2 font-weight-bold">빙수 먹으실 분 찾습니다!</h4>
+            <p class="card-text mt-4">
+              <i class="ri-map-pin-2-line ri-2x"></i><span class="mt-3 ml-2">수원역 12번 출구</span><br>
+              <i class="ri-calendar-schedule-line ri-2x"></i><span class="mt-3 ml-2">2024년 08월 30일 12시30분</span><br>
+              <i class="ri-restaurant-fill ri-2x"></i><span class="mt-3 ml-2">투썸플레이스</span>
+            </p>
+          </div>
+          <p class="card-text ml-2"><small class="text-muted">2시간 전 업데이트</small></p>
+        </div>
+        <div class="col-lg-3 col-6 d-flex flex-column justify-content-between position-relative px-3 S2_txt">
+          <div class="d-flex justify-content-end p-2">
+            <i class="ri-account-pin-circle-fill mt-3"><span>3/4명</span></i>
+          </div>
+          <div class="d-flex justify-content-end p-2">
+            <button class="btn btn-dark">밥친구 채팅</button>
+          </div>
+        </div>
+      </div>
+      <!--row-->
+    </div>
+ 
+  </div>
+  <!--container-->
+</div>
 </html>

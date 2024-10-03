@@ -122,7 +122,7 @@ public class ReservationController {
 	    List<Store> stores = storeService.getStoresByOwner(siteUser);
 
 	    // 페이징 설정
-	    Pageable pageable = PageRequest.of(page, 1);
+	    Pageable pageable = PageRequest.of(page, 10);
 
 	    // 검색어와 검색 유형에 따른 예약 리스트 필터링
 	    Page<Reservation> reservationPage;

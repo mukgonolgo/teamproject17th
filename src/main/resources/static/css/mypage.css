@@ -1,7 +1,7 @@
 p {
 	margin: 0;
-}
 
+}
 .container {
 	height: 100%;
 }
@@ -37,6 +37,7 @@ p {
 	border-radius: 20px !important;
 	box-sizing: border-box;
 	height: 100%;
+
 	/* 원하는 높이 조정 */
 }
 
@@ -53,8 +54,7 @@ p {
 }
 
 .restaurant_img {
-	border: 1px solid black;
-	border-radius: 10px;
+
 	height: 250px;
 	width: 250px;
 	overflow: hidden;
@@ -63,7 +63,6 @@ p {
 .p_box {
 	padding: 20px;
 	padding-bottom: 30px;
-
 }
 
 .my_boxs {
@@ -79,7 +78,7 @@ p {
 	box-sizing: border-box;
 	height: 100%;
 	/* 원하는 높이 조정 */
-	border-radius: 10px;
+
 	overflow: hidden;
 }
 
@@ -88,7 +87,7 @@ p {
 	box-sizing: border-box;
 	height: 100%;
 	/* 원하는 높이 조정 */
-	border-radius: 10px;
+
 	overflow-x: auto;
 	white-space: nowrap;
 }
@@ -121,10 +120,9 @@ p {
 }
 
 .card {
-	border-radius: 10px;
+
 	border: none;
 }
-
 
 .like_title {
 	overflow: hidden;
@@ -169,7 +167,6 @@ p {
 	/* 줄 바꿈 방지 */
 	text-overflow: ellipsis;
 	/* 넘치는 텍스트에 ... 표시 */
-
 }
 
 .reservation_btn {
@@ -199,8 +196,7 @@ p {
 	color: #534d4d;
 }
 
-.swiper-button-next,
-.swiper-button-prev {
+.swiper-button-next, .swiper-button-prev {
 	color: #534d4d;
 }
 
@@ -248,7 +244,7 @@ p {
 	/* 넘치는 텍스트에 ... 표시 */
 }
 
-.bord_title span{
+.bord_title span {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -261,7 +257,6 @@ p {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-
 }
 
 @media screen and (max-width: 992px) {

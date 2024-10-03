@@ -94,7 +94,7 @@ public class BoardController {
         model.addAttribute("boardDTO", new BoardDTO());
         model.addAttribute("answerFormDTO", new AnswerFormDTO());
 
-        return "board";
+        return "board/board";
     }
 
    
@@ -112,7 +112,7 @@ public class BoardController {
         }
 
         setUserAttributes(model, userDetails);
-        return "boardwrite"; 
+        return "board/boardwrite"; 
     }
 
     @PostMapping("/boardwrite/{id}")
@@ -135,7 +135,7 @@ public class BoardController {
             bindingResult.getAllErrors().forEach(error -> {
                 System.out.println(error.getDefaultMessage()); // 콘솔에 오류 메시지 출력
             });
-            return "boardwrite"; // 오류가 있는 경우, 작성 페이지로 돌아감
+            return "board/boardwrite"; // 오류가 있는 경우, 작성 페이지로 돌아감
         }
 
         // 사용자 정보 세팅
@@ -178,7 +178,7 @@ public class BoardController {
       Board board = this.boardService.findById(id);
       model.addAttribute("board",board);
       model.addAttribute("answerFormDTO", answerFormDTO);
-       return "board_detail"; // board_detail.html로 이동
+       return "board/board_detail"; // board_detail.html로 이동
    }
    
 //글 수정
@@ -222,7 +222,7 @@ public class BoardController {
 
         // 제목 수정
         this.boardService.modifyTitle(board, boardDTO.getTitle()); // 제목으로 변경하는 메서드 호출
-        return String.format("redirect:/board_detail/%s", board.getBoardId()); // 수정 후 리다이렉트
+        return String.format("redirect:board/board_detail/%s", board.getBoardId()); // 수정 후 리다이렉트
     }
    
    //글 삭제
