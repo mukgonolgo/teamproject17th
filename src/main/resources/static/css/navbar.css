@@ -1,6 +1,7 @@
 @import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
 body {
     font-family: 'NanumSquare', sans-serif !important;
+ 
 }
 .cs-bg-black{
     background-color: #181818 !important;
@@ -12,5 +13,7 @@ body {
 .nav-link{
 	 white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
+    z-index: 9999;
+       
 }

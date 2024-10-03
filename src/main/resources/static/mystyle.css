@@ -1,210 +1,130 @@
 @font-face {
-    font-family: 'TTTtangsbudaejjigaeB';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/TTTtangsbudaejjigaeB.woff2') format('woff2');
-} 
+   font-family: 'TTTtangsbudaejjigaeB';
+   src:
+      url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2212@1.0/TTTtangsbudaejjigaeB.woff2')
+      format('woff2');
+}
 
 @font-face {
-    font-family: 'JNE-Bareun-TTF-Bold';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-1@1.0/JNE-Bareun-TTF-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
-
-.M_s1 .carousel-item {
-    height: 900px;
-    position: relative;
-}
-
-.carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-
-.carousel-caption {
-    position: absolute;
-    bottom: 450px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 10;
+   font-family: 'JNE-Bareun-TTF-Bold';
+   src:
+      url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-1@1.0/JNE-Bareun-TTF-Bold.woff2')
+      format('woff2');
+   font-weight: 700;
+   font-style: normal;
 }
 
 .text-title {
-	white-space: nowrap;
-    font-size: 3.5vw ;
-    font-family: 'TTTtangsbudaejjigaeB';
+   white-space: nowrap;
+   font-size: 5vh;
+   font-family: 'TTTtangsbudaejjigaeB';
 }
-
-.t-shadow {
-    text-shadow: 0px 0px 8px rgb(0, 0, 0);
-}
-
 .content {
-    font-family: 'JNE-Bareun-TTF-Bold';
+   font-family: 'JNE-Bareun-TTF-Bold';
 }
 
-.gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
-    z-index: 1;
+.M_s2_a1 {
+	overflow: hidden;
+	height: 100%;
+	position: relative;
+	padding: 20px 0;
 }
-.search-container {
-    position: absolute;
-    width: 50%;
-    margin: 50px auto;
-    z-index: 1;
-    top: 65%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-}
-
-.search-box {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    border: 1px solid lightblue;
-    border-radius: 30px;
-    background-color: #fff;
-    outline: none;
-    transition: background-color 0.3s ease, border-radius 0.3s ease;
-}
-
-.search-box::placeholder {
-    color: #aaa;
-}
-
-.search-box:focus {
-    background-color: #fff;
-}
-
-.dropdown-menu {
-    display: flex;
-    justify-content: space-between;
-    position: absolute;
-    top: 90%;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 1;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    width: 100%;
-    border-top: none;
-    border-left: 1px solid lightblue;
-    border-right: 1px solid lightblue;
-    border-bottom: 1px solid lightblue;
-}
-
-.search-container:focus-within .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.dropdown-section {
-    margin-top: 20px;
-    width: 45%;
-}
-.search-container:focus-within .search-box {
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-    border-bottom: none;
-}
-
-.dropdown-section h4 {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #555;
-}
-
-.search-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 14px;
-    color: #555;
-    text-decoration: none;
-}
-
-.close-icon {
-    cursor: pointer;
-    color: #555;
-}
-
-.close-icon:hover {
-    color: red;
-}
-
-.S1_category{
-	font-size: 30px;
-	padding: 10px;
-}
-
-
 
 .M_s2_a1 .card {
-    border-radius: 15px; /* 모서리를 둥글게 설정 */
-    overflow: hidden; /* 둥글게 만든 모서리 안의 내용이 잘리도록 설정 */
+	padding: 0;
+	border-radius: 15px;
+	/* 모서리를 둥글게 설정 */
+	overflow: hidden;
+	/* 둥글게 만든 모서리 안의 내용이 잘리도록 설정 */
 }
-.M_s2_a1.card-img-top {
-    height: 200px; /* 이미지 높이 설정 */
-    width: 100%; /* 이미지 너비를 100%로 설정 */
-    object-fit: cover; /* 이미지 비율 유지하면서 잘리도록 설정 */
+
+.M_s2_a1 .card-img-top {
+	height: 200px;
+	/* 이미지 높이 설정 */
+	width: 100%;
+	/* 이미지 너비를 100%로 설정 */
+	object-fit: cover;
+	/* 이미지 비율 유지하면서 잘리도록 설정 */
 }
+
 .M_s2_a1 .card-body {
 
-    max-height: 300px; /* 설명란 높이 설정 */
-    display: flex;
-    flex-direction: column;
-}
-.M_s2_a1 .card{
-    color: black;
-    text-decoration: none;
+	max-height: 300px;
+	/* 설명란 높이 설정 */
+	display: flex;
+	flex-direction: column;
 }
 
-.S1_s2_btnbox{
-    white-space: nowrap;
-}
-.M_s2_a1 .location-button {
-    margin-left: 10px; /* 위치와 버튼 간의 간격 설정 */
-}
-.heart {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: gray; /* 비활성화 시 색상 */
+.M_s2_a1 .card {
+	border-radius: 15px;
+	overflow: hidden;
+	margin: 20px;
+	/* 카드 간격 조정 */
 }
 
-.heart.active {
-    color: red; /* 활성화 시 색상 */
+.M_s2_a1 .card-title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 150px;
 }
-.ellipsis {
-    display: block; /* 블록 요소로 설정 */
-    width: 90%; /* 원하는 너비 */
-    overflow: hidden; /* 넘치는 내용 숨기기 */
-    white-space: nowrap; /* 줄 바꿈 방지 */
-    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
-    padding: 5px; 
+
+.M_s2_a1 .swiper-button-prev,
+.M_s2_a1 .swiper-button-next {
+	color: #434343;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	margin: 10px 0;
+	align-items: center;
+	justify-content: center;
+	z-index: 1;
+	/* 다른 요소 위에 표시 */
+
 }
+
+.M_s2_a1 .swiper-button-prev {
+	left: -8px;
+}
+
+.M_s2_a1 .swiper-button-next {
+	right: -8px;
+}
+
+.M_s2_a1 .swiper-pagination-bullet {
+	width: 5px;
+	height: 5px;
+	color: #000;
+	opacity: 1;
+	border-radius: 100px;
+	background: rgba(0, 0, 0, 0.2);
+	transition: width 0.1s ease-in-out;
+}
+
+.M_s2_a1 .swiper-pagination-bullet-active {
+	color: #fff;
+	background: rgb(0, 0, 0);
+	width: 50px;
+	height: 5px;
+	border-radius: 100px;
+}
+@media (max-width: 780px){
+   .M_s2_a1 .swiper-button-prev,
+   .M_s2_a1 .swiper-button-next {
+        display: none;
+    }
+}
+@media (min-width: 780px){
+   .M_s2_a1 .swiper-pagination-bullet{
+        display: none;
+    }
+}
+
 
 
 .store_tag {
-    display: inline-block; /* 인라인 블록으로 설정 */   
+	display: inline-block;
+	/* 인라인 블록으로 설정 */
 }
 
 /*    height:100%;  원하는 높이 
@@ -215,144 +135,347 @@
     -webkit-line-clamp: 3;  줄 수 설정 */
 
 @media (min-width: 992px) and (max-width: 1200px) {
-    .M_s2_a1 .card-img-top {
-        height: 15vw; /* 중간 화면 */
-    }
+	.M_s2_a1 .card-img-top {
+		height: 15vw;
+		/* 중간 화면 */
+		
+	}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-    .M_s2_a1 .card-img-top {
-        height: 30vw; /* 작은 중간 화면 */
-    }
+	.M_s2_a1 .card-img-top {
+		height: 20vw;
+		/* 작은 중간 화면 */
+	}
+
 }
 
 
 
 /*리뷰 리스트*/
 .M_s2_a2_card {
-    width: 105%;
+	width: 105%;
 }
- .custom-border{
-    border-radius: 20px !important;
- }
+
+.custom-border {
+	border-radius: 20px !important;
+}
+
 .fa-heart {
-    cursor: pointer;
+	cursor: pointer;
 }
+
 /*카드 내용*/
-.M_s2_a2_card-text{
-   display: -webkit-box; /* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
-    -webkit-box-orient: vertical; /* 수직 방향으로 박스 정렬 */
-    -webkit-line-clamp: 4; /* 줄 수를 설정합니다. (예: 3줄) */
-    height: auto; /* 높이는 자동으로 조절되도록 설정합니다. */
-    overflow: hidden;           
-    text-overflow: ellipsis !important;    
+.M_s2_a2_card-text {
+	display: -webkit-box;
+	/* Flexbox를 사용하여 텍스트 박스를 설정합니다. */
+	-webkit-box-orient: vertical;
+	/* 수직 방향으로 박스 정렬 */
+	-webkit-line-clamp: 4;
+	/* 줄 수를 설정합니다. (예: 3줄) */
+	height: auto;
+	/* 높이는 자동으로 조절되도록 설정합니다. */
+	overflow: hidden;
+	text-overflow: ellipsis !important;
 
 }
-.M_s2_a2_card-title{
-    font-size: 20px;
-    margin-top: -20px;
-    text-overflow: ellipsis;
-    white-space: nowrap;     
-    font-weight: bold;
-    color: black;
-    text-align: left; /* 텍스트를 왼쪽으로 정렬 */
-   
+
+.M_s2_a2_card-title {
+	font-size: 20px;
+	margin-top: -20px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: bold;
+	color: black;
+	text-align: left;
+	/* 텍스트를 왼쪽으로 정렬 */
+
 }
 
-.col-8, .col-4 ,.col-12{
-   padding: 0px;
-   margin: 0px;
+.col-8,
+.col-4,
+.col-12 {
+	padding: 0px;
+	margin: 0px;
 }
+
 .M_s2_a2_carousel-inner {
-    width: 100%;
-    height: 240px;
+	width: 100%;
+	height: 240px;
 
 }
-.M_s2_a2_store{
 
-   margin: 0;
-   padding: 0;
+.M_s2_a2_store {
+
+	margin: 0;
+	padding: 0;
 }
 
 .M_s2_a2_custom-card-img {
-    height: 100% !important;
-    object-fit: cover;
+	height: 100% !important;
+	object-fit: cover;
 }
+
 .M_s2_a2_carousel-item {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 }
-.M_s2_a2_hover_btn{
-    display: none;
+
+.M_s2_a2_hover_btn {
+	display: none;
 }
-.carousel:hover .M_s2_a2_hover_btn{
-    display: block;
-    margin-top: 230px;
-}  
+
+.carousel:hover .M_s2_a2_hover_btn {
+	display: block;
+	margin-top: 230px;
+}
+
 .M_s2_a2_card .text-end {
-    display: flex;
-    justify-content: flex-end;
+	display: flex;
+	justify-content: flex-end;
 }
+
 .M_s2_a2_card .text-end .fa-heart {
-    margin-right: 0; 
+	margin-right: 0;
 }
-.M_s2_a2 .text-dark{
-    margin-top: -4px;
+
+.M_s2_a2 .text-dark {
+	margin-top: -4px;
 }
 
 .M_s2_a2 .card-body {
-    position: relative; /* 자식 요소의 위치를 기준으로 설정 */
-    height:270px;
+	position: relative;
+	/* 자식 요소의 위치를 기준으로 설정 */
+	height: 270px;
 
 }
+
 .flex-grow-1 {
-    flex-grow: 1;
+	flex-grow: 1;
 }
 
 .M_s2_a2_tag_box {
-    position: absolute;
-    bottom: 0; /* 카드 하단에 고정 */
-    z-index: 2; /* 카드 내용 위에 표시되도록 설정 */ 
-    width: 85%; /* 원하는 너비 */
-    overflow: hidden; /* 넘치는 내용 숨기기 */
-    white-space: nowrap; /* 줄 바꿈 방지 */
-    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
+	position: absolute;
+	bottom: 0;
+	/* 카드 하단에 고정 */
+	z-index: 2;
+	/* 카드 내용 위에 표시되도록 설정 */
+	width: 85%;
+	/* 원하는 너비 */
+	overflow: hidden;
+	/* 넘치는 내용 숨기기 */
+	white-space: nowrap;
+	/* 줄 바꿈 방지 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
 }
 
 /* 카드에 호버 효과 추가 */
 .M_s2_a2_card {
-    transition: transform 0.3s ease; 
+	transition: transform 0.3s ease;
 }
 
 /* 호버 상태에서 카드 확대 */
 .M_s2_a2_card:hover {
-    transform: scale(1.02); 
+	transform: scale(1.02);
 }
+
 .gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    z-index: 1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+	z-index: 1;
 }
 
 
 @media (max-width: 1200px) {
-    .M_s2_a2_carousel-inner {
-        width: 100%;
-        height: 450px; 
-    }
-    .M_s2_a2_custom-card-img {
-        height: 100%;
-        object-fit: cover; 
-    }
-    .M_s2_a2_card {
-        width: 100%;
-    }
-    .M_s2_a2_card-title{
-    font-size: 3vh;
-    }
+	.M_s2_a2_carousel-inner {
+		width: 100%;
+		height: 450px;
+	}
 
+	.M_s2_a2_custom-card-img {
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.M_s2_a2_card {
+		width: 100%;
+	}
+
+	.M_s2_a2_card-title {
+		font-size: 3vh;
+	}
+
+}
+/*메인페이지 상단 css*/
+.container-fluid {
+    height: 100vh;
+    position: relative;
+    padding: 0 !important;
+
+}
+
+.overlay {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+/* 텍스트 스타일 */
+.text_box {
+   position:relative;
+    color: #fff;
+    top: 20px;
+}
+
+.main_title {
+    font-size: 60px; /* 화면 크기에 맞춰 동적으로 크기 조절 */
+}
+
+.main_txt {
+    font-size:20px;
+}
+
+/*검색*/
+
+.search-container {
+   position: absolute;
+   width: 50%;
+   margin: 50px auto;
+   z-index: 1;
+   top: 65%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+
+}
+
+.search-box {
+   width: 60%;
+   padding: 15px;
+   font-size: 18px;
+   border: 1px solid lightblue;
+   border-radius: 30px;
+   background-color: #fff;
+   outline: none;
+   transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.search-box::placeholder {
+   color: #aaa;
+}
+
+.search-box:focus {
+   background-color: #fff;
+}
+
+.dropdown-menu {
+   display: flex;
+   top: 90%;
+   left: 20%;
+   background-color: #fff;
+   padding: 20px;
+
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(-10px);
+   transition: opacity 0.3s ease, transform 0.3s ease;
+   z-index: 1;
+   border-bottom-left-radius: 30px;
+   border-bottom-right-radius: 30px;
+   width: 60%;
+   border-top: none;
+   border-left: 1px solid lightblue;
+   border-right: 1px solid lightblue;
+   border-bottom: 1px solid lightblue;
+
+}
+
+.search-container:focus-within .dropdown-menu {
+   opacity: 1;
+   visibility: visible;
+   transform:translateY(0);
+}
+#something.search-container{
+   width: 100%;
+}
+.dropdown-section {
+   margin-top: 20px;
+   width: 60%;
+   
+}
+
+.search-container:focus-within .search-box {
+   border-bottom-left-radius: 0px;
+   border-bottom-right-radius: 0px;
+   border-bottom: none;
+}
+
+.dropdown-section h4 {
+   font-size: 14px;
+   font-weight: bold;
+   margin-bottom: 15px;
+   color: #555;
+}
+
+.search-item {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 8px 0;
+   font-size: 14px;
+   color: #555;
+   text-decoration: none;
+}
+
+.close-icon {
+   cursor: pointer;
+   color: #555;
+}
+
+.close-icon:hover {
+   color: red;
+}
+
+.search-container input {
+   padding: 15px;
+   border-radius: 30px;
+   border: 1px solid #fff;
+}
+
+
+
+@media ( max-width : 1200px) {
+   .M_s2_a2_carousel-inner {
+      width: 100%;
+      height: 450px;
+   }
+   .M_s2_a2_custom-card-img {
+      height: 100%;
+      object-fit: cover;
+   }
+   .M_s2_a2_card {
+      width: 100%;
+   }
+   .M_s2_a2_card-title {
+      font-size: 3vh;
+   }
+   .main_title {
+    font-size: 40px; /* 화면 크기에 맞춰 동적으로 크기 조절 */
+}
+
+.main_txt {
+    font-size: 20px;
+}
+   
 }

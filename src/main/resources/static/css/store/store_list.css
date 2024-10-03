@@ -1,56 +1,77 @@
-.S1_category{
+.S1_category {
 	font-size: 30px;
 	padding: 10px;
 }
 
 .S1 .card {
-    border-radius: 15px; /* 모서리를 둥글게 설정 */
-    overflow: hidden; /* 둥글게 만든 모서리 안의 내용이 잘리도록 설정 */
+	border-radius: 15px;
+	/* 모서리를 둥글게 설정 */
+	overflow: hidden;
+	/* 둥글게 만든 모서리 안의 내용이 잘리도록 설정 */
 }
+
 .S1 .card-img-top {
-    height: 200px; /* 이미지 높이 설정 */
-    width: 100%; /* 이미지 너비를 100%로 설정 */
-    object-fit: cover; /* 이미지 비율 유지하면서 잘리도록 설정 */
+	height: 200px;
+	/* 이미지 높이 설정 */
+	width: 100%;
+	/* 이미지 너비를 100%로 설정 */
+	object-fit: cover;
+	/* 이미지 비율 유지하면서 잘리도록 설정 */
 }
+
 .S1 .card-body {
 
-    max-height: 300px; /* 설명란 높이 설정 */
-    display: flex;
-    flex-direction: column;
-}
-.S1 .card{
-    color: black;
-    text-decoration: none;
+	max-height: 300px;
+	/* 설명란 높이 설정 */
+	display: flex;
+	flex-direction: column;
 }
 
-.S1_s2_btnbox{
-    white-space: nowrap;
+.S1 .card {
+	color: black;
+	text-decoration: none;
 }
+
+.S1_s2_btnbox {
+	white-space: nowrap;
+}
+
 .S1 .location-button {
-    margin-left: 10px; /* 위치와 버튼 간의 간격 설정 */
+	margin-left: 10px;
+	/* 위치와 버튼 간의 간격 설정 */
 }
+
 .heart {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: gray; /* 비활성화 시 색상 */
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	color: gray;
+	/* 비활성화 시 색상 */
 }
 
 .heart.active {
-    color: red; /* 활성화 시 색상 */
+	color: red;
+	/* 활성화 시 색상 */
 }
+
 .ellipsis {
-    display: block; /* 블록 요소로 설정 */
-    width: 90%; /* 원하는 너비 */
-    overflow: hidden; /* 넘치는 내용 숨기기 */
-    white-space: nowrap; /* 줄 바꿈 방지 */
-    text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
-    padding: 5px; 
+	display: block;
+	/* 블록 요소로 설정 */
+	width: 90%;
+	/* 원하는 너비 */
+	overflow: hidden;
+	/* 넘치는 내용 숨기기 */
+	white-space: nowrap;
+	/* 줄 바꿈 방지 */
+	text-overflow: ellipsis;
+	/* 넘치는 텍스트에 ... 표시 */
+	padding: 5px;
 }
 
 
 .store_tag {
-    display: inline-block; /* 인라인 블록으로 설정 */   
+	display: inline-block;
+	/* 인라인 블록으로 설정 */
 }
 
 /*    height:100%;  원하는 높이 
@@ -59,15 +80,26 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;  줄 수 설정 */
+.recommend.red i {
+	color: #ff2424;
+	/* 기본 색상 */
+}
+
+.recommend.black i {
+	color: #bababa;
+	/* 기본 색상 */
+}
 
 @media (min-width: 992px) and (max-width: 1200px) {
-    .S1 .card-img-top {
-        height: 15vw; /* 중간 화면 */
-    }
+	.S1 .card-img-top {
+		height: 15vw;
+		/* 중간 화면 */
+	}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-    .S1 .card-img-top {
-        height: 30vw; /* 작은 중간 화면 */
-    }
+	.S1 .card-img-top {
+		height: 30vw;
+		/* 작은 중간 화면 */
+	}
 }
