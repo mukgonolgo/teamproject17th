@@ -181,7 +181,7 @@
          <!-- 관리자일 경우에만 보이는 왼쪽 네비게이션 바 -->
          <ul class="navbar-nav navbar-center"
             sec:authorize="principal instanceof T(com.test.project.user.CustomUserDetails) and principal.approvalStatus == 0">
-            <li class="nav-item active mx-2">
+            <li class="nav-item mx-2">
                <a class="nav-link" th:href="@{/user/list}">회원 리스트</a> <!-- 회원 리스트 메뉴 -->
             </li>
             <li class="nav-item mx-2">

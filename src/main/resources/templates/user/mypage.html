@@ -99,8 +99,8 @@
 															style="width: 100%; height: 100%; object-fit: cover;">
 													</div>
 													<div class="like_title mt-2">
-														<h5 class="like_title  " th:text="${store.storeName}">
-														</h5>
+														<h6 class="like_title  " th:text="${store.storeName}">
+														</h6>
 													</div>
 												</a>
 
@@ -126,11 +126,11 @@
 								<div class="col top_list p-3 d-flex align-items-center"
 									style="overflow: hidden;">
 									<div class="swiper-container align-items-center" id="swiper2">
-										<div class="swiper-wrapper">
-											<div class="swiper-slide card mr-2"
-												th:each="reservation : ${reservations}">
+										<div class="swiper-wrapper text-center mt-2" >
+											<div class="swiper-slide card mr-2 d-flex justify-content-center align-items-center "
+												th:each="reservation : ${reservations}" >
 												<div class="reservation_img"
-													style="width: 120px; height: 80px;">
+													style="border-radius:20px; width: 120px; height: 80px;">
 													<a
 														th:href="@{/reservation/completed/{reservationid}(reservationid=${reservation.reservationid})}"
 														style="width: 100%; height: 100%;"> <img
@@ -139,8 +139,8 @@
 														style="width: 100%; height: 100%; object-fit: cover;">
 													</a>
 												</div>
-												<div class="re_title m-2 text-center">
-													<h5 th:text="${reservation.store.storeName}">식당 이름:</h5>
+												<div class="re_title m-2 ">
+													<h6 th:text="${reservation.store.storeName}">식당 이름:</h6>
 													<p th:text="${reservation.reservationDay}">예약 날짜:</p>
 													<small><a
 														th:href="@{/review_create_form(storeId=${reservation.store.storeId}, storeName=${reservation.store.storeName})}">리뷰쓰기</a></small>
@@ -191,19 +191,20 @@
 								<div class="col  top_list p-3 d-flex align-items-center"
 									style="overflow: hidden;">
 									<div class="board d-flex align-items-center"
-										style=" width: 100%; height: 100px;">
+										style="border-radius: 20px; width: 100%; height: 100px;">
 										<a
 											th:href="@{/store/detail/{storeId}(storeId=${randomStore.storeId})}"
 											style="width: 100%; height: 100%;"
 											class="d-flex  align-items-center"> <img
 											th:src="${randomStore.imageUrl}" alt="user_img"
-											class=" image-fluid " style="width: 100px; height: 100px">
+											class=" image-fluid "
+											style="width: 100px; height: 100px">
 
 											<div class=" m-2 ">
-												<div class="bord_user mr-1">
+												<div class="bord_user ml-2">
 													<h4 th:text="${randomStore.storeName}"></h4>
 												</div>
-												<div class="bord_title mr-2">
+												<div class="bord_title ml-2 ">
 													<p th:text="${randomStore.storeContent}"></p>
 												</div>
 											</div>

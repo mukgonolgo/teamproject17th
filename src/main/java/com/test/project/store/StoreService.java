@@ -196,6 +196,7 @@ public class StoreService {
         Random random = new Random();
         return Optional.of(stores.get(random.nextInt(stores.size()))); // 랜덤으로 하나 선택
     }
+    
     public Store getStoreById(Integer id) {
         return storeRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Store not found"));
@@ -207,5 +208,14 @@ public class StoreService {
         return storeRepository.searchStoresByKeyword(keyword);
     }
     
+    
+    public Page<Store> searchStoresByStoreId(String storeId, Pageable pageable) {
+        try {
+            Integer id = Integer.parseInt(storeId);
+            return storeRepository.findByStoreId(id, pageable);
+        } catch (NumberFormatException e) {
+            return Page.empty(pageable);
+        }
+    }
     
 }

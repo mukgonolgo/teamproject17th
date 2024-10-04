@@ -219,5 +219,45 @@ public class StoreController {
 		storeService.deleteStore(storeId); // 가게 삭제 로직 호출
 		return "redirect:/store/store_alist"; // 삭제 후 리스트로 리디렉션
 	}
+	
+	 // 가게 리스트 표시 - 페이지네이션과 검색 추가
+    @GetMapping("/store_alist")
+    @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한이 있는 사용자만 접근 가능
+    public String getStoreListForAdmin(
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "7") int size,
+        @RequestParam(value = "search", required = false) String search,
+        @RequestParam(value = "searchType", defaultValue = "owner") String searchType, // 검색 유형 추가
+        Model model) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("storeName").ascending());
+        Page<Store> storePage;
+
+        // 검색 유형에 따른 검색 처리
+        if (search != null && !search.isEmpty()) {
+            switch (searchType) {
+                case "storeId":
+                    storePage = storeService.searchStoresByStoreId(search, pageable);
+                    break;
+                case "storeName":
+                    storePage = storeService.searchStoresByStoreName(search, pageable);
+                    break;
+                default:
+                    storePage = storeService.searchStoresByOwnerUsername(search, pageable);
+                    break;
+            }
+        } else {
+            storePage = storeService.getAllStores(pageable);
+        }
+
+        model.addAttribute("storePage", storePage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", storePage.getTotalPages());
+        model.addAttribute("search", search); // 검색어를 모델에 추가
+        model.addAttribute("searchType", searchType); // 검색 유형을 모델에 추가
+
+        return "store/store_alist";
+    }
+
 
 }
