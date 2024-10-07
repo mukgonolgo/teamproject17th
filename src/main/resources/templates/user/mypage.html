@@ -193,7 +193,7 @@
 									<div class="board d-flex align-items-center"
 										style="border-radius: 20px; width: 100%; height: 100px;">
 										<a
-											th:href="@{/store/detail/{storeId}(storeId=${randomStore.storeId})}"
+											th:if="${randomStore != null}" th:href="@{/store/${randomStore.storeId}}"
 											style="width: 100%; height: 100%;"
 											class="d-flex  align-items-center"> <img
 											th:src="${randomStore.imageUrl}" alt="user_img"
