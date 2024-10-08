@@ -24,26 +24,28 @@
 					<div id="carouselExample" class="carousel slide mt-3">
 						<div class="carousel-inner S3_d_carousel-inner">
 							<div class="carousel-item S3_d_carousel-item active">
-								<img th:src="${storeImage}" alt="Store Image" class="d-block w-100 custom-card-img">
+								<img th:src="${storeImage}" alt="Store Image"
+									class="d-block w-100 custom-card-img">
 
 							</div>
-					
+
 						</div>
-				
+
 					</div>
 					<div class="S3_d_card_text text-left mb-2 mx-3">
 						<h2 class="  mt-3">
-								<span th:text="${storeName}">가게 이름</span> 
+							<span th:text="${storeName}">가게 이름</span>
 						</h2>
 						<p>
-							<small
-								class="text-muted"><i
-								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i> <span class="font-weight-bold" th:text="${storeAddress}">가게 주소</span></small>
+							<small class="text-muted"><i
+								class="fa-solid fa-location-dot mx-2" style="color: #000000;"></i>
+								<span class="font-weight-bold" th:text="${storeAddress}">가게
+									주소</span></small>
 						</p>
-			
-	<a th:href="@{/store/detail/{storeId}(storeId=${storeId})}">
-    <button class="btn btn-secondary w-100">가게 보기</button>
-</a>
+
+						<a th:href="@{/store/detail/{storeId}(storeId=${storeId})}">
+							<button class="btn btn-secondary w-100">가게 보기</button>
+						</a>
 
 
 					</div>
@@ -55,22 +57,15 @@
 			<div class="col-xl-8 col-sm-12 ">
 				<div class="card custom-border p-3">
 					<div class="d-flex align-items-center mx-3 my-2">
-						<a
-								th:href="@{/user_feed/{userId}(userId=${review.user.id})}"
-								
+						<a th:href="@{/user_feed/{userId}(userId=${review.user.id})}"
 							class="text-dark d-flex align-items-center"
 							style="text-decoration: none;"> <img
 							th:src="@{${authorProfileImage} != null ? ${authorProfileImage} : '/img/user/default-profile.png'}"
 							alt="" class="rounded-circle"
 							style="width: 50px; height: 50px; object-fit: cover;"> <span
-							class="ml-3"> 
-									<h4 th:text="${review.user.nickname}"></h4>
-							</a>
-
-
-
-						</span>
-						</a> <i class="fa-solid fa-ellipsis-v ml-auto tap_btn"
+							class="ml-3">
+								<h4 th:text="${review.user.nickname}"></h4></a> </span> </a> <i
+							class="fa-solid fa-ellipsis-v ml-auto tap_btn"
 							style="color: #000000;"></i>
 					</div>
 
@@ -167,19 +162,19 @@
 								</div>
 							</div>
 						</div>
-<p class="col-12 S3_store_s mb-2">
-    <!-- 별점 표시 영역 -->
-    <small class="starRating ml-0" th:attr="data-review-id=${review.id}"></small>
-    <!-- 리뷰마다 고유한 ID 부여 -->
-    <a href="" style="text-decoration: none;">
-        <small class="text-muted">
-            <i class="fa-solid fa-location-dot" style="color: #000000;"></i>
-            <span class="font-weight-bold" th:text="${storeAddress}">가게 주소</span>
-            <!-- 가게 이름 표시 -->
-            <span th:text="${storeName}">가게 이름</span>
-        </small>
-    </a>
-</p>
+						<p class="col-12 S3_store_s mb-2">
+							<!-- 별점 표시 영역 -->
+							<small class="starRating ml-0"
+								th:attr="data-review-id=${review.id}"></small>
+							<!-- 리뷰마다 고유한 ID 부여 -->
+							<a href="" style="text-decoration: none;"> <small
+								class="text-muted"> <i class="fa-solid fa-location-dot"
+									style="color: #000000;"></i> <span class="font-weight-bold"
+									th:text="${storeAddress}">가게 주소</span> <!-- 가게 이름 표시 --> <span
+									th:text="${storeName}">가게 이름</span>
+							</small>
+							</a>
+						</p>
 
 
 
